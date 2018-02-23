@@ -1,0 +1,5 @@
+Flask
+Redis
+onnx
+onnx-caffe2
+Pillow
