@@ -7,8 +7,7 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 ADD . /app
 
-
-########## REQUIRED DEPENDENCIES ################
+# Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
@@ -21,11 +20,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python-dev \
     && rm -rf /var/lib/apt/lists/*
 
-
+# Install some python packages
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir future hypothesis numpy protobuf six
 
-########## INSTALLATION STEPS ###################
+# Caffe2 installation
 RUN git clone --branch master --recursive https://github.com/caffe2/caffe2.git
 RUN cd caffe2 && mkdir build && cd build \
     && cmake .. \
@@ -48,5 +47,8 @@ EXPOSE 80
 ENV NAME World
 ENV PYTHONPATH /usr/local
 
-# Run app.py when the container launches
-CMD ["python", "app.py"]
+# Set the working directory to /data
+WORKDIR /data
+
+# Run /data/run.py when the container launches
+CMD ["python", "run.py"]
