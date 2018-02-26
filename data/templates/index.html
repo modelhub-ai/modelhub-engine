@@ -11,7 +11,34 @@
     {{config|safe}}
     <h3>schematic</h3>
     {{schematic|safe}}
-    <h3>input<h3>
-    {{form|safe}}
+    <h3>inference<h3>
+    <table>
+      <tr>
+        <td valign="top">
+          <h2>Input:</h2>
+            <form method=post action="" enctype="multipart/form-data">
+              <table>
+                {% for field in form %}
+                  <tr><td>{{ field.name }}</td>
+                      <td>{{ field(size=20) }}</td>
+                      <td>{% if field.errors %}
+                        <ul class=errors>
+                        {% for error in field.errors %}
+                          <li>{{ error }}</li>
+                        {% endfor %}</ul>
+                      {% endif %}</td></tr>
+                {% endfor %}
+              </table>
+              <p><input type="submit" value="Compute">
+          </form></p>
+        </td>
+        <td valign="top">
+          {% if result != None %}
+            <h2>Results:</h2>
+              {{ result|safe }}
+          {% endif %}
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
