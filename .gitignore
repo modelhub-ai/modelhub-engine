@@ -1,3 +1,4 @@
 /tests
+/data/uploads
 *.pyc
 .vscode
