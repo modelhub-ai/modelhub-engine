@@ -19,9 +19,6 @@ redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 app = Flask(__name__)
 UPLOAD_DIR = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_DIR
-ALLOWED_EXTENSIONS = set(['jpg'])
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 def handle_request():
     form = Average(request.form)
@@ -30,12 +27,13 @@ def handle_request():
     if request.method == 'POST':
         if request.files:
             file = request.files[form.filename.name]
-            if file and allowed_file(file.filename):
+            if file:
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                result = infer(UPLOAD_DIR + filename)
-            else:
-                result = "wrong file format"
+                try:
+                    result = infer(UPLOAD_DIR + filename)
+                except Exception as e:
+                    result = "ERROR: " + str(e)
     #
     return form,result
 
