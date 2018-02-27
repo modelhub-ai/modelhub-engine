@@ -26,9 +26,18 @@
      "architecture": "Convolutional Neural Network (CNN)",
      "learning_type": "Supervised learning",
      "input": {
-       "dim_0": 2,
-       "dim_1": 64,
-       "dim_2": 64
+       "dim_limits": [
+        {
+          "min": 1,
+          "max": 4
+        },
+        {
+          "min": 64
+        },
+        {
+          "min": 64
+        }
+      ]
      },
      "license": "MIT"
    }
