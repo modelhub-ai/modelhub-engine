@@ -1,5 +1,6 @@
-from PIL import Image
 import numpy as np
+
+from modelhublib.imageloaders import PilImageLoader
 
 
 class ImagePreprocessorBase(object):
@@ -10,12 +11,16 @@ class ImagePreprocessorBase(object):
     """
     def __init__(self, config):
         self._config = config
+        self._imageLoader = PilImageLoader(self._config)
     
 
     def load(self, input):
         """
-        Preprocesses the input and returns a numpy array appropriate to feed into
-        the inference model.
+        Load input, preprocesses it and returns a numpy array appropriate to feed 
+        into the inference model (4 dimensions: [batchsize, z/color, height, width]).
+
+        There should be no need to overwrite this method in a derived class! 
+        Rather overwrite the individual processing steps used in this method!
         """
         image = self._load(input)
         image = self._preprocessBeforeConvert(image)
@@ -26,16 +31,37 @@ class ImagePreprocessorBase(object):
 
 
     def _load(self, input):
-        img = Image.open(input)
-        self.__checkConfigCompliance(img)
-        return img
+        """
+        Perform the actual loading of the image.
+        
+        Return image object which type will be the native image object type of 
+        the library/handler used for loading. Hence it might not always be the same.
+        """
+        image = self._imageLoader.load(input)
+        return image
     
 
     def _preprocessBeforeConvert(self, image):
+        """
+        Perform preprocessing on the native image object (see _load()).
+        
+        When overwriting this, make sure to handle the possible types appropriately 
+        and throw an IOException if you cannot preprocess a certain type.
+
+        Return image object must be of the same type as input image object.
+        """
         return image
     
 
     def _convertToNumpy(self, image):
+        """
+        Convert the image object into a corresponding numpy array 
+        with 4 dimensions: [batchsize, z/color, height, width].
+        
+        When overwriting this, make sure to handle the possible image 
+        object types appropriately and throw IOException if you cannot 
+        preprocess a certain type.
+        """
         npArr = np.array(image)
         if npArr.ndim == 2:
             npArr = npArr[np.newaxis,:]
@@ -46,14 +72,11 @@ class ImagePreprocessorBase(object):
     
 
     def _preprocessAfterConvert(self, npArr):
+        """
+        Perform preprocessing on the numpy array (the result of _convertToNumpy()).
+
+        Return numpy array with 4 dimensions: [batchsize, z/color, height, width].
+        """
         return npArr
 
     
-    def __checkConfigCompliance(self, image):
-        limits = self._config["model"]["input"]["dim_limits"]
-        imageDims = [len(image.getbands())]
-        imageDims.extend(list(image.size))
-        for i in range(3):
-            if ((("min" in limits[i]) and (limits[i]["min"] > imageDims[i])) or
-                (("max" in limits[i]) and (limits[i]["max"] < imageDims[i]))):
-                raise IOError("Image dimensions %s do not comply with input requirements" % str(tuple(imageDims)))

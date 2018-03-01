@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.7"
+cache: pip
+install:
+  - pip install numpy
+  - pip install Pillow
+script:
+  - cd data
+  - python -m unittest discover -p "*_test.py" -v
+notifications:
+  email:
+    on_success: change # default: change
+    on_failure: always # default: always
