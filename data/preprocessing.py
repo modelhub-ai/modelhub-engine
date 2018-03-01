@@ -1,13 +1,19 @@
-# preprocess.py
-# preprocesses numpy arrays according to contributors' pipeline
+from modelhublib.preprocessor import ImagePreprocessorBase
+import PIL
 import numpy as np
 
-def preprocess(arr):
-    if arr.shape[1] > 3:
-        arr = arr[:,0:3,:,:]
-    elif arr.shape[1] < 3:
-        arr = arr[:,[0],:,:]
-        arr = np.concatenate((arr, arr[:,[0],:,:]), axis = 1)
-        arr = np.concatenate((arr, arr[:,[0],:,:]), axis = 1)
-    print ('preprocessing done.')
-    return arr
+
+class ImagePreprocessor(ImagePreprocessorBase):
+
+    def _preprocessBeforeConvert(self, image):
+        image = image.resize((224,224), resample = PIL.Image.LANCZOS)
+        return image
+
+    def _preprocessAfterConvert(self, npArr):
+        if npArr.shape[1] > 3:
+            npArr = npArr[:,0:3,:,:]
+        elif npArr.shape[1] < 3:
+            npArr = npArr[:,[0],:,:]
+            npArr = np.concatenate((npArr, npArr[:,[0],:,:]), axis = 1)
+            npArr = np.concatenate((npArr, npArr[:,[0],:,:]), axis = 1)
+        return npArr
