@@ -16,13 +16,13 @@ class TestImagePreprocessorBase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_convertToNumpy_returns_correct_ndim_on_PILImageL(self):
+    def test_convertToNumpy_returns_correct_ndim__and_shape_on_PILImageL(self):
         image = PIL.Image.new("L", (64, 32))
         npArr = self.preprocessor._convertToNumpy(image)
         self.assertEqual(4, npArr.ndim)
         self.assertTupleEqual((1, 1, 32, 64), npArr.shape)
 
-    def test_convertToNumpy_returns_correct_ndim_on_PILImageRGB(self):
+    def test_convertToNumpy_returns_correct_ndim_and_shape_on_PILImageRGB(self):
         image = PIL.Image.new("RGB", (64, 32))
         npArr = self.preprocessor._convertToNumpy(image)
         self.assertEqual(4, npArr.ndim)
