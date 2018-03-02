@@ -8,7 +8,7 @@ from modelhublib.imageloaders import PilImageLoader
 class TestPilImageLoader(unittest.TestCase):
 
     def setUp(self):
-        self.testDataDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "testdata"))
+        self.testDataDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "testdata"))
         with open(os.path.join(self.testDataDir, "test_config.json")) as jsonFile:
             self.config = json.load(jsonFile)
         self.imageLoader = PilImageLoader(self.config)

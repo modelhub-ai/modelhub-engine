@@ -1,6 +1,7 @@
 import numpy as np
 
 from modelhublib.imageloaders import PilImageLoader
+from modelhublib.imageconverters import PilToNumpyConverter
 
 
 class ImagePreprocessorBase(object):
@@ -12,6 +13,7 @@ class ImagePreprocessorBase(object):
     def __init__(self, config):
         self._config = config
         self._imageLoader = PilImageLoader(self._config)
+        self._imageToNumpyConverter = PilToNumpyConverter()
     
 
     def load(self, input):
@@ -62,12 +64,7 @@ class ImagePreprocessorBase(object):
         object types appropriately and throw IOException if you cannot 
         preprocess a certain type.
         """
-        npArr = np.array(image)
-        if npArr.ndim == 2:
-            npArr = npArr[np.newaxis,:]
-        else:
-            npArr = np.moveaxis(npArr, -1, 0)
-        npArr = npArr[np.newaxis,:].astype(np.float32)
+        npArr = self._imageToNumpyConverter.convert(image)
         return npArr
     
 
