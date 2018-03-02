@@ -1,3 +1,6 @@
+| Build/Test Status | [![](https://travis-ci.org/modelhub-ai/modelhub-docker.svg?branch=master)](https://travis-ci.org/modelhub-ai/modelhub-docker) |
+| --- | --- |
+
 # modelhub-docker
 Files for creating a base modelhub docker image
 
