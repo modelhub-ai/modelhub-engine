@@ -5,6 +5,7 @@ cache: pip
 install:
   - pip install numpy
   - pip install Pillow
+  - pip install SimpleITK
 script:
   - cd data
   - python -m unittest discover -p "*_test.py" -v
