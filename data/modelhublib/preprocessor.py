@@ -1,7 +1,7 @@
 import numpy as np
 
-from modelhublib.imageloaders import PilImageLoader
-from modelhublib.imageconverters import PilToNumpyConverter
+from modelhublib.imageloaders import PilImageLoader, SitkImageLoader
+from modelhublib.imageconverters import PilToNumpyConverter, SitkToNumpyConverter
 
 
 class ImagePreprocessorBase(object):
@@ -13,7 +13,9 @@ class ImagePreprocessorBase(object):
     def __init__(self, config):
         self._config = config
         self._imageLoader = PilImageLoader(self._config)
+        self._imageLoader.setSuccessor(SitkImageLoader(self._config))
         self._imageToNumpyConverter = PilToNumpyConverter()
+        self._imageToNumpyConverter.setSuccessor(SitkToNumpyConverter())
     
 
     def load(self, input):
