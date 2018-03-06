@@ -1,12 +1,19 @@
 from modelhublib.preprocessor import ImagePreprocessorBase
 import PIL
+import SimpleITK
 import numpy as np
 
 
 class ImagePreprocessor(ImagePreprocessorBase):
 
     def _preprocessBeforeConvert(self, image):
-        image = image.resize((224,224), resample = PIL.Image.LANCZOS)
+        if isinstance(image, PIL.Image.Image):
+            image = image.resize((224,224), resample = PIL.Image.LANCZOS)
+        elif isinstance(image, SimpleITK.Image):
+            referenceImage = SimpleITK.Image([224,224], image.GetPixelIDValue())
+            image = SimpleITK.Resample(image, referenceImage)
+        else:
+            raise IOError("Image Type not supported for preprocessing.")
         return image
 
     def _preprocessAfterConvert(self, npArr):
