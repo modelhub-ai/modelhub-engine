@@ -5,13 +5,13 @@ class ImageLoader(object):
     """
     Abstract base class for image loaders, following chain of responsibility design pattern.
     """
-    def __init__(self, config, sucessor = None):
+    def __init__(self, config, successor = None):
         self._config = config
-        self._sucessor = sucessor
+        self._successor = successor
 
     
-    def setSucessor(self, sucessor):
-        self._sucessor = sucessor
+    def setSuccessor(self, successor):
+        self._successor = successor
 
 
     def load(self, input):
@@ -22,8 +22,8 @@ class ImageLoader(object):
         try:
             image = self._load(input)
         except:
-            if self._sucessor:
-                return self._sucessor.load()
+            if self._successor:
+                return self._successor.load(input)
             else:
                 if isinstance(input, six.string_types):
                     raise IOError("Was not able to load the file \"%s\"." % input)

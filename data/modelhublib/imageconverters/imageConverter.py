@@ -2,12 +2,12 @@ class ImageConverter(object):
     """
     Abstract base class for image converters, following chain of responsibility design pattern.
     """
-    def __init__(self, sucessor = None):
-        self._sucessor = sucessor
+    def __init__(self, successor = None):
+        self._successor = successor
     
 
-    def setSucessor(self, sucessor):
-        self._sucessor = sucessor
+    def setSuccessor(self, successor):
+        self._successor = successor
 
 
     def convert(self, image):
@@ -18,8 +18,8 @@ class ImageConverter(object):
         try:
             npArr = self._convert(image)
         except:
-            if self._sucessor:
-                return self._sucessor.convert()
+            if self._successor:
+                return self._successor.convert(image)
             else:
                 raise IOError("Could not convert image of type \"%s\" to Numpy array." % type(image).__name__)
         return npArr
