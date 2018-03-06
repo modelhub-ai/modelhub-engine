@@ -26,6 +26,13 @@ class TestSitkImageLoader(unittest.TestCase):
         self.config["model"]["input"]["dim_limits"][0]["min"] = 1
         self.config["model"]["input"]["dim_limits"][2]["max"] = 1
         self.assertRaises(IOError, self.imageLoader.load, imgFileName)
+    
+    def test_getImageDimensions_returns_correct_dims(self):
+        imgFileName = os.path.join(self.testDataDir, "testimage_checkers_64x32.nrrd")
+        image = self.imageLoader.load(imgFileName)
+        dims = self.imageLoader._getImageDimensions(image)
+        self.assertListEqual([1,32,64], dims)
+        
 
 
 if __name__ == '__main__':
