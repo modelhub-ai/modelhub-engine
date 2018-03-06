@@ -13,7 +13,9 @@ class TestImageLoader(unittest.TestCase):
 
     def test_class_is_abstract(self):
         self.assertRaises(NotImplementedError, self.imageLoader._load, None)
+        self.assertRaises(NotImplementedError, self.imageLoader._getImageDimensions, None)
         self.assertRaises(NotImplementedError, self.imageLoader._checkConfigCompliance, None)
+
 
 
 if __name__ == '__main__':

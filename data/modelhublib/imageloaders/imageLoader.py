@@ -5,13 +5,13 @@ class ImageLoader(object):
     """
     Abstract base class for image loaders, following chain of responsibility design pattern.
     """
-    def __init__(self, config, sucessor = None):
+    def __init__(self, config, successor = None):
         self._config = config
-        self._sucessor = sucessor
+        self._successor = successor
 
     
-    def setSucessor(self, sucessor):
-        self._sucessor = sucessor
+    def setSuccessor(self, successor):
+        self._successor = successor
 
 
     def load(self, input):
@@ -22,8 +22,8 @@ class ImageLoader(object):
         try:
             image = self._load(input)
         except:
-            if self._sucessor:
-                return self._sucessor.load()
+            if self._successor:
+                return self._successor.load(input)
             else:
                 if isinstance(input, six.string_types):
                     raise IOError("Was not able to load the file \"%s\"." % input)
@@ -47,8 +47,24 @@ class ImageLoader(object):
         """
         Check if image complies with configuration.
 
-        When overwriting this, make sure to raise IOError if image does
-        not comply with config.
+        There should be no need to overwrite this. Overwrite only
+        "_getImageDimensions" to supply the image dims to check against config.
+        """
+        imageDims = self._getImageDimensions(image)
+        limits = self._config["model"]["input"]["dim_limits"]
+        for i in range(3):
+            if ((("min" in limits[i]) and (limits[i]["min"] > imageDims[i])) or
+                (("max" in limits[i]) and (limits[i]["max"] < imageDims[i]))):
+                raise IOError("Image dimensions %s do not comply with input requirements" % str(tuple(imageDims)))
+
+        
+    
+    def _getImageDimensions(self, image):
+        """
+        Returns the dimensions of the loaded image, should be a 3 tuple (z, y, x).
+
+        Overwrite this in an implementation of this interface. This function
+        is used by "_checkConfigCompliance".
         """
         raise NotImplementedError("This is a method of an abstract class.")
 
