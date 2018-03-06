@@ -14,7 +14,13 @@ class TestPilImageConverter(unittest.TestCase):
     def tearDown(self):
         pass
     
-    def test_convert_success_on_PIL_Image(self):
+    def test_convert_success_on_PILImageL(self):
+        image = PIL.Image.new("L", (64, 32))
+        npArr = self.imageConverter.convert(image)
+        self.assertEqual(4, npArr.ndim)
+        self.assertTupleEqual((1, 1, 32, 64), npArr.shape)
+
+    def test_convert_success_on_PILImageRGB(self):
         image = PIL.Image.new("RGB", (64, 32))
         npArr = self.imageConverter.convert(image)
         self.assertEqual(4, npArr.ndim)

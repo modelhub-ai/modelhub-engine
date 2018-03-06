@@ -16,18 +16,6 @@ class TestImagePreprocessorBase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_convertToNumpy_returns_correct_ndim__and_shape_on_PILImageL(self):
-        image = PIL.Image.new("L", (64, 32))
-        npArr = self.preprocessor._convertToNumpy(image)
-        self.assertEqual(4, npArr.ndim)
-        self.assertTupleEqual((1, 1, 32, 64), npArr.shape)
-
-    def test_convertToNumpy_returns_correct_ndim_and_shape_on_PILImageRGB(self):
-        image = PIL.Image.new("RGB", (64, 32))
-        npArr = self.preprocessor._convertToNumpy(image)
-        self.assertEqual(4, npArr.ndim)
-        self.assertTupleEqual((1, 3, 32, 64), npArr.shape)
-
     def test_load_testimage_ramp_4x2_under_strict_config_dims(self):
         imgFileName = os.path.join(self.testDataDir, "testimage_ramp_4x2.png")
         self.config["model"]["input"]["dim_limits"][1]["min"] = 2
