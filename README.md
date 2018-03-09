@@ -17,10 +17,12 @@ git clone https://github.com/modelhub-ai/modelhub-docker.git
 cd modelhub-docker/app/
 # build docker image from /app folder
 docker build -t <name_your_image> .
-# check size ~1.3GB
+# check size ~1.7GB
 docker images
+# go one directory up
+cd ..
 # to run /data/run.py on the server (http://127.0.0.1:4000/)
-docker run -p 4000:80 -v <full_path_to_your_local_data_folder>:/data <image_name>
+docker run -p 4000:80 -v $PWD/data:/data <image_name>
 # to run container in detached mode (bash)
 docker run -d -p 4000:80 -v <full_path_to_your_local_data_folder>:/data <image_name> (this will return the container ID)
 docker ps (check container is running and get name)
