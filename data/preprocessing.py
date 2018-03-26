@@ -23,4 +23,6 @@ class ImagePreprocessor(ImagePreprocessorBase):
             npArr = npArr[:,[0],:,:]
             npArr = np.concatenate((npArr, npArr[:,[0],:,:]), axis = 1)
             npArr = np.concatenate((npArr, npArr[:,[0],:,:]), axis = 1)
+        #npArr[:, (2, 1, 0), :, :]
+        npArr = npArr - 127.5
         return npArr
