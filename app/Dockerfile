@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir future hypothesis numpy protobuf six
 
 # Caffe2 installation
-RUN git clone --branch master --recursive https://github.com/caffe2/caffe2.git
+RUN git clone --depth 1 --branch master --recursive https://github.com/caffe2/caffe2.git
 RUN cd caffe2 && mkdir build && cd build \
     && cmake .. \
     -DUSE_CUDA=OFF \
