@@ -10,7 +10,13 @@ class ImagePreprocessor(ImagePreprocessorBase):
         if isinstance(image, PIL.Image.Image):
             image = image.resize((224,224), resample = PIL.Image.LANCZOS)
         elif isinstance(image, SimpleITK.Image):
-            referenceImage = SimpleITK.Image([224,224], image.GetPixelIDValue())
+            newSize = [224, 224]
+            referenceImage = SimpleITK.Image(newSize, image.GetPixelIDValue())
+            referenceImage.SetOrigin(image.GetOrigin())
+            referenceImage.SetDirection(image.GetDirection())
+            referenceImage.SetSpacing([sz*spc/nsz for nsz,sz,spc in zip(newSize, 
+                                                                        image.GetSize(), 
+                                                                        image.GetSpacing())])
             image = SimpleITK.Resample(image, referenceImage)
         else:
             raise IOError("Image Type not supported for preprocessing.")

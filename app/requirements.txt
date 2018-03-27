@@ -1,7 +1,6 @@
 Flask
 Redis
 onnx
-onnx-caffe2
 Pillow
 json2html
 WTForms

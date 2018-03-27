@@ -1,5 +1,5 @@
 import onnx
-import onnx_caffe2.backend
+import caffe2.python.onnx.backend
 import numpy as np
 import json
 from preprocessing import ImagePreprocessor
@@ -13,7 +13,7 @@ def infer(inp):
     # load ONNX model
     model = onnx.load('model/squeezenet.onnx')
     # Run inference with caffe2
-    output = onnx_caffe2.backend.run_model(model, [arr])
+    output = caffe2.python.onnx.backend.run_model(model, [arr])
     # postprocess
     output = postprocess(output)
     return output
