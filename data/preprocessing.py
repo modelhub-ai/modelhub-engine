@@ -23,7 +23,6 @@ class ImagePreprocessor(ImagePreprocessorBase):
         return image
 
     def _preprocessAfterConvert(self, npArr):
-        print(npArr)
         if npArr.shape[1] > 3:
             npArr = npArr[:,0:3,:,:]
         elif npArr.shape[1] < 3:
