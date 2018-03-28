@@ -1,4 +1,5 @@
 /tests
-/data/uploads
+/usr_src/uploads
 *.pyc
 .vscode
+*.code-workspace
