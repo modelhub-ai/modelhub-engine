@@ -45,10 +45,13 @@ EXPOSE 80
 
 # Define environment variable
 ENV NAME World
-ENV PYTHONPATH /usr/local
+ENV PYTHONPATH /usr/local:/framework/:/usr_src/
 
-# Set the working directory to /data
-WORKDIR /data
+# Create dir where uploads go (e.g. from the webservice)
+WORKDIR /uploads
+
+# Switch to the dir that holds the usr sources
+WORKDIR /usr_src
 
 # Run /data/run.py when the container launches
 CMD ["python", "run.py"]
