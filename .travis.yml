@@ -7,7 +7,7 @@ install:
   - pip install Pillow
   - pip install SimpleITK
 script:
-  - cd data
+  - cd framework
   - python -m unittest discover -p "*_test.py" -v
 notifications:
   email:
