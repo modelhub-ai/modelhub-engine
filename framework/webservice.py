@@ -17,7 +17,7 @@ redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 
 # app and uploads
 app = Flask(__name__)
-UPLOAD_DIR = 'uploads/'
+UPLOAD_DIR = '../uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_DIR
 
 def handle_request():
@@ -60,5 +60,6 @@ def index():
     result=result
     )
 
-if __name__ == "__main__":
+
+def start():
     app.run(host='0.0.0.0', port=80)
