@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from redis import Redis, RedisError
 from werkzeug import secure_filename
 import json
@@ -40,25 +40,30 @@ def handle_request():
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    config_json = json.load(open("config.json"))
+    config_json = json.load(open("model/config.json"))
     title = config_json['publication']['title']
     config = json2html.convert(json =config_json)
-    schematic = '<img src="/static/schematic.png" alt="schematic" width="50%" \
-    height="auto">'
-    thumbnail = '<img src="/static/thumbnail.png" alt="thumbnail" width="10%" \
-    height="auto">'
+    schematic = '<img src="/model/figures/schematic.png" \
+                 alt="schematic" width="auto" height="auto">'
+    thumbnail = '<img src="/model/figures/thumbnail.png" \
+                 alt="thumbnail" width="auto" height="auto">'
     #
     form, result = handle_request()
     #
     return render_template(
-    'index.html',
-    title=title,
-    config=config,
-    schematic=schematic,
-    thumbnail=thumbnail,
-    form=form,
-    result=result
+        'index.html',
+        title=title,
+        config=config,
+        schematic=schematic,
+        thumbnail=thumbnail,
+        form=form,
+        result=result
     )
+
+
+@app.route('/model/figures/<figureName>')
+def sendFigure(figureName):
+    return send_from_directory("../usr_src/model/figures/", figureName)
 
 
 def start():

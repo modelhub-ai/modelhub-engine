@@ -6,7 +6,7 @@ from preprocessing import ImagePreprocessor
 from postprocessing import postprocess
 
 def infer(inp):
-    config_json = json.load(open("config.json"))
+    config_json = json.load(open("model/config.json"))
     # load preprocessed input
     preprocessor = ImagePreprocessor(config_json)
     arr = preprocessor.load(inp)

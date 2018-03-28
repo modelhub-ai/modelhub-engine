@@ -9,7 +9,7 @@ def postprocess(results):
     probs = np.squeeze(np.asarray(results))
     top5Idx = probs.argsort()[-5:][::-1]    
     top5Results = collections.OrderedDict()
-    with open("labels.json") as jsonFile:
+    with open("model/labels.json") as jsonFile:
         labels = json.load(jsonFile)
     for idx in top5Idx:
         top5Results[labels[str(idx)]] = probs[idx]
