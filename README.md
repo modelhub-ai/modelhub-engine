@@ -26,14 +26,17 @@ git clone https://github.com/modelhub-ai/modelhub-docker.git
 cd modelhub-docker/app/
 # build docker image from /app folder
 docker build -t <name_your_image> .
-# check size ~1.7GB
+# check size ~1.5GB
 docker images
 # go one directory up
 cd ..
-# to run /data/run.py on the server (http://127.0.0.1:4000/)
-docker run -p 4000:80 -v $PWD/data:/data <image_name>
+# to run /usr_src/run.py on the server (http://127.0.0.1:4000/) 
+# and mount the framwork and user code into the docker
+docker run -p 4000:80 -v $PWD/framework:/framework -v $PWD/usr_src:/usr_src <image_name>
+# to get a bash in an interactive mode of the docker
+docker run -it -p 4000:80 -v $PWD/framework:/framework -v $PWD/usr_src:/usr_src <image_name> /bin/bash
 # to run container in detached mode (bash)
-docker run -d -p 4000:80 -v <full_path_to_your_local_data_folder>:/data <image_name> (this will return the container ID)
+docker run -d -p 4000:80 -v $PWD/framework:/framework -v $PWD/usr_src:/usr_src <image_name> (this will return the container ID)
 docker ps (check container is running and get name)
 docker exec -it <container_name> bash
 # kill the container
