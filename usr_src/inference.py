@@ -5,11 +5,11 @@ import json
 from preprocessing import ImagePreprocessor
 from postprocessing import postprocess
 
-def infer(inp):
+def infer(input):
     config_json = json.load(open("model/config.json"))
     # load preprocessed input
     preprocessor = ImagePreprocessor(config_json)
-    arr = preprocessor.load(inp)
+    arr = preprocessor.load(input)
     # load ONNX model
     model = onnx.load('model/squeezenet.onnx')
     # Run inference with caffe2
