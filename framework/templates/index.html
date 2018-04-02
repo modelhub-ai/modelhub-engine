@@ -1,17 +1,19 @@
 <html>
-  <head>
-    <title>modelhub</title>
-  </head>
-  <body>
-    <h1>modelhub</h1>
-    <h2>model: {{title}}</h2>
-    <h3>thumbnail</h3>
-    {{thumbnail|safe}}
-    <h3>config file dump</h3>
-    {{config|safe}}
-    <h3>schematic</h3>
-    {{schematic|safe}}
-    <h3>inference<h3>
+
+<head>
+  <title>modelhub</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/icon.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/material.teal-orange.min.css') }}">
+  <script defer src="{{ url_for('static',filename='js/material.min.js') }}"></script>
+</head>
+
+<body>
+  <h1>modelhub</h1>
+  <h2>model: {{title}}</h2>
+  <h3>thumbnail</h3> {{thumbnail|safe}}
+  <h3>config file dump</h3> {{config|safe}}
+  <h3>schematic</h3> {{schematic|safe}}
+  <h3>inference<h3>
     <table>
       <tr>
         <td valign="top">
@@ -41,4 +43,5 @@
       </tr>
     </table>
   </body>
+
 </html>
