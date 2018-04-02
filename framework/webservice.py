@@ -41,21 +41,24 @@ def handle_request():
 @app.route("/", methods=['GET', 'POST'])
 def index():
     config_json = json.load(open("model/config.json"))
-    title = config_json['publication']['title']
-    config = json2html.convert(json =config_json)
-    schematic = '<img src="/model/figures/schematic.png" \
-                 alt="schematic" width="auto" height="auto">'
-    thumbnail = '<img src="/model/figures/thumbnail.png" \
-                 alt="thumbnail" width="auto" height="auto">'
+    name = config_json['meta']['name']
+    mailto = "mailto:" + config_json['publication']['email']
+    # config = json2html.convert(json =config_json)
+    # schematic = '<img src="/model/figures/schematic.png" \
+    #              alt="schematic" width="auto" height="auto">'
+    # thumbnail = '<img src="/model/figures/thumbnail.png" \
+    #              alt="thumbnail" width="auto" height="auto">'
     #
     form, result = handle_request()
     #
     return render_template(
         'index.html',
-        title=title,
-        config=config,
-        schematic=schematic,
-        thumbnail=thumbnail,
+        name=name,
+        mailto=mailto,
+        publication=config_json['publication'],
+        # config=config,
+        # schematic=schematic,
+        # thumbnail=thumbnail,
         form=form,
         result=result
     )
