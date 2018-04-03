@@ -7,7 +7,7 @@ with the following command:
 docker build -t <name+tag> -f app/<docker-file-name> .
 ```
 
-# How to push an image to Docker github
+# How to push an image to DockerHub
 
 Make sure the Docker name starts with "modelhub/" and the tag should also be
 a unique version number (e.g. "modelhub/release:1.2.3").
