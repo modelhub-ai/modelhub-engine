@@ -1,5 +1,4 @@
 /tests
-/usr_src/uploads
 /usr_src/.ipynb_checkpoints
 *.pyc
 .vscode
