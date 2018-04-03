@@ -1,0 +1,16 @@
+<div class="mdl-layout__tab-panel" id="publication">
+  <section class="section--center mdl-grid mdl-grid--no-spacing">
+    <div class="mdl-cell mdl-cell--12-col">
+      <h5>Title</h5> {{publication["title"]}}
+      <h5>Authors</h5> {{publication["authors"]}}
+      <h5>Abstract</h5> {{publication["abstract"]}}
+      <h5>Year</h5> {{publication["year"]}}
+      <h5>bibtex</h5>
+      <div class="bibtex">{{publication["bibtex"]}}</div>
+      <div class="buttons">
+        <a href={{publication[ "url"]}} target="_blank" id="butt" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">{{publication["journal"]}}</a>
+        <a href={{publication[ "google_scholar"]}} target="_blank" id="butt" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">Citations</a>
+      </div>
+    </div>
+  </section>
+</div>

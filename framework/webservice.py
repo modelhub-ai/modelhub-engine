@@ -34,33 +34,28 @@ def handle_request():
                     result = infer(UPLOAD_DIR + filename)
                 except Exception as e:
                     result = "ERROR: " + str(e)
-    #
     return form,result
 
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
     config_json = json.load(open("model/config.json"))
-    title = config_json['publication']['title']
-    config = json2html.convert(json =config_json)
-    schematic = '<img src="/model/figures/schematic.png" \
-                 alt="schematic" width="auto" height="auto">'
-    thumbnail = '<img src="/model/figures/thumbnail.png" \
-                 alt="thumbnail" width="auto" height="auto">'
-    #
+    name = config_json['meta']['name']
+    mailto = "mailto:" + config_json['publication']['email']
     form, result = handle_request()
     #
     return render_template(
         'index.html',
-        title=title,
-        config=config,
-        schematic=schematic,
-        thumbnail=thumbnail,
+        name=name,
+        mailto=mailto,
+        meta=config_json['meta'],
+        publication=config_json['publication'],
+        model=config_json['model'],
         form=form,
         result=result
     )
 
-
+# routing for figures that exist in the usr_src
 @app.route('/model/figures/<figureName>')
 def sendFigure(figureName):
     return send_from_directory("../usr_src/model/figures/", figureName)
