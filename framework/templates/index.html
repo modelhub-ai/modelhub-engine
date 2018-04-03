@@ -59,17 +59,18 @@
       <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
         <a href="#overview" class="mdl-layout__tab is-active">Overview</a>
         <a href="#publication" class="mdl-layout__tab">Publication</a>
+        <a href="#model" class="mdl-layout__tab">Model</a>
         <a href="#test" class="mdl-layout__tab">Test</a>
         <a href={{mailto}}>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="add">
-              <i class="material-icons" role="presentation">mail</i>
-              <span class="visuallyhidden">Add</span>
-          </button>
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="add">
+                <i class="material-icons" role="presentation">mail</i>
+                <span class="visuallyhidden">mail</span>
+            </button>
         </a>
       </div>
     </header>
     <main class="mdl-layout__content">
-      {% include 'overview.html' %} {% include 'publication.html' %} {% include 'test.html' %}
+      {% include 'overview.html' %} {% include 'publication.html' %} {% include 'model.html' %} {% include 'test.html' %}
     </main>
   </div>
 

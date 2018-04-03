@@ -43,6 +43,11 @@ body {
 #butt {
   margin-right: 10px;
 }
+#thumbnail {
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
 }
