@@ -3,17 +3,18 @@ import caffe2.python.onnx.backend
 import numpy as np
 import json
 from preprocessing import ImagePreprocessor
-from postprocessing import postprocess
+from postprocessing import Postprocessor
 
-def infer(inp):
+def infer(input):
     config_json = json.load(open("model/config.json"))
     # load preprocessed input
     preprocessor = ImagePreprocessor(config_json)
-    arr = preprocessor.load(inp)
+    inputAsNpArr = preprocessor.load(input)
     # load ONNX model
     model = onnx.load('model/squeezenet.onnx')
     # Run inference with caffe2
-    output = caffe2.python.onnx.backend.run_model(model, [arr])
-    # postprocess
-    output = postprocess(output)
+    results = caffe2.python.onnx.backend.run_model(model, [inputAsNpArr])
+    # postprocess results into output
+    postprocessor = Postprocessor(config_json)
+    output = postprocessor.computeOutput(results)
     return output

@@ -5,3 +5,4 @@ Pillow
 json2html
 WTForms
 SimpleITK
+jupyter

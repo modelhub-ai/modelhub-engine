@@ -27,9 +27,9 @@ class ImagePreprocessorBase(object):
         Rather overwrite the individual processing steps used in this method!
         """
         image = self._load(input)
-        image = self._preprocessBeforeConvert(image)
+        image = self._preprocessBeforeConversionToNumpy(image)
         npArr = self._convertToNumpy(image)
-        npArr = self._preprocessAfterConvert(npArr)
+        npArr = self._preprocessAfterConversionToNumpy(npArr)
         print ('preprocessing done.')
         return npArr
 
@@ -45,7 +45,7 @@ class ImagePreprocessorBase(object):
         return image
     
 
-    def _preprocessBeforeConvert(self, image):
+    def _preprocessBeforeConversionToNumpy(self, image):
         """
         Perform preprocessing on the native image object (see _load()).
         
@@ -70,7 +70,7 @@ class ImagePreprocessorBase(object):
         return npArr
     
 
-    def _preprocessAfterConvert(self, npArr):
+    def _preprocessAfterConversionToNumpy(self, npArr):
         """
         Perform preprocessing on the numpy array (the result of _convertToNumpy()).
 
