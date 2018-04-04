@@ -26,13 +26,13 @@
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+  <link rel="icon" sizes="192x192" href="{{ url_for('static',filename='img/android-desktop.png') }}">
 
   <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Material Design Lite">
-  <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+  <link rel="apple-touch-icon-precomposed" href="{{ url_for('static',filename='img/ios-desktop.png') }}">
 
   <!-- Tile icon for Win8 (144x144 + tile color) -->
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
@@ -43,6 +43,12 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/icon.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/material.teal-orange.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+
+  <script src="{{ url_for('static',filename='js/material.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/jquery-2.0.2.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/jquery.filedrop.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/plotly-latest.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/underscore-min.js') }}"></script>
 
 </head>
 
@@ -57,10 +63,10 @@
         <h2>{{name}}</h2>
       </div>
       <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
-        <a href="#overview" class="mdl-layout__tab is-active">Overview</a>
-        <a href="#publication" class="mdl-layout__tab">Publication</a>
+        <a href="#overview" class="mdl-layout__tab">Overview</a>
         <a href="#model" class="mdl-layout__tab">Model</a>
-        <a href="#test" class="mdl-layout__tab">Test</a>
+        <!-- CHANGE FOR TESTING -->
+        <a href="#test" class="mdl-layout__tab is-active">Test</a>
         <a href={{mailto}}>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="add">
                 <i class="material-icons" role="presentation">mail</i>
@@ -70,11 +76,12 @@
       </div>
     </header>
     <main class="mdl-layout__content">
-      {% include 'overview.html' %} {% include 'publication.html' %} {% include 'model.html' %} {% include 'test.html' %}
+      {% include 'overview.html' %} {% include 'model.html' %} {% include 'test.html' %}
     </main>
   </div>
 
-  <script defer src="{{ url_for('static',filename='js/material.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/upload.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/result.js') }}"></script>
 </body>
 
 </html>

@@ -22,6 +22,108 @@ body {
   background-color: #616161 !important;
 }
 
+#resultCard {
+  width: 100%;
+  height: 500px;
+}
+
+#result {
+  width: 100%;
+  height: 100%;
+}
+
+#dropboxCard {
+  width: 100%;
+  height: 500px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 500px;
+}
+
+#dropbox {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#examplesCard {
+  width: 100%;
+  height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 50px;
+}
+
+#examples {
+  width: 100%;
+  height: 100%;
+}
+
+/*****/
+#dropbox .preview {
+  width: 245px;
+  height: 215px;
+  float: left;
+  margin: 55px 0 0 60px;
+  position: relative;
+  text-align: center;
+}
+
+#dropbox .preview img {
+  max-width: 240px;
+  max-height: 180px;
+  border: 3px solid #fff;
+  display: block;
+  box-shadow: 0 0 2px #000;
+}
+
+#dropbox .imageHolder {
+  display: inline-block;
+  position: relative;
+}
+
+#dropbox .uploaded {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: none;
+}
+
+#dropbox .preview.done .uploaded {
+  display: block;
+}
+
+#dropbox .progressHolder {
+  position: absolute;
+  background-color: #252f38;
+  height: 12px;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  box-shadow: 0 0 2px #000;
+}
+
+#dropbox .progress {
+  background-color: #2586d0;
+  position: absolute;
+  height: 100%;
+  left: 0;
+  width: 0;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.4) inset;
+  -moz-transition: 0.25s;
+  -webkit-transition: 0.25s;
+  -o-transition: 0.25s;
+  transition: 0.25s;
+}
+
+#dropbox .preview.done .progress {
+  width: 100% !important;
+}
+
+/** **/
+
 .bibtex {
   background-color: #fff;
   padding: 20px;
