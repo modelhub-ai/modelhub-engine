@@ -12,7 +12,44 @@ declare -a -r requiredFiles=("$modelIdentifier""/inference.py"
                              "$modelIdentifier""/model/labels.json"
                              "$modelIdentifier""/model/squeezenet.onnx"
                              "$modelIdentifier""/model/figures/thumbnail.jpg"
+                             "$modelIdentifier""/sample_data/cat.jpg"
                             )
+
+
+# ---------------------------------------------------------
+# Process commandline parameters
+# ---------------------------------------------------------
+function printArgUsageAndExit()
+{
+    echo "Starts model with modehub framework and downloads model and prerequisites"
+    echo "if they don't exist yet."
+    echo ""
+    echo "By default starts a webservice showing details about the model providing"
+    echo "an easy user interface to run inference."
+    echo ""
+    echo "Usage: ./start_<modelname>.sh [option]"
+    echo ""
+    echo "  available options (select only one or none):"
+    echo "    -e, --expert   Start in expert mode. Provides a jupyter notebook"
+    echo "                   environment to experiment."
+    echo "    -b, --bash     Start modelhub Docker in bash mode. Explore the Docker"
+    echo "                   on your own."
+    echo "    -h, --help     Print this help."
+
+    exit 1
+}
+
+MODE="basic"
+if [ $# = 1 ]; then
+    key="$1"
+    case $key in
+        -e|--expert) MODE="expert";;
+        -b|--bash) MODE="bash";;
+        *|-h|--help) printArgUsageAndExit;;
+    esac
+elif [ $# -gt 1 ]; then
+    printArgUsageAndExit
+fi
 
 # ---------------------------------------------------------
 # Check prerequisites
@@ -65,5 +102,48 @@ fi
 # ---------------------------------------------------------
 # Run model
 # ---------------------------------------------------------
-echo "Starting model."
-docker run -p 4000:80 -v $PWD/usr_src:/usr_src "$dockerIdentifier"
+function runBasic()
+{
+    echo ""
+    echo "============================================================"
+    echo "Model started."
+    echo "Open http://localhost:4000/ in your web browser to access"
+    echo "modelhub web interface."
+    echo "Press CTRL+C to quit session."
+    echo "============================================================"
+    echo ""
+    docker run -p 4000:80 -v $PWD/usr_src:/usr_src "$dockerIdentifier"
+}
+
+function runExpert()
+{
+    echo ""
+    echo "============================================================"
+    echo "Modelhub Docker started in expert mode."
+    echo "Open the link displayed below to show jupyter dashboard and"
+    echo "open sandbox.ipynb for a prepared playground."
+    echo "Press CTRL+C to quit session."
+    echo "============================================================"
+    echo ""
+    docker run -p 8888:8888 -p 4000:80 -v $PWD/usr_src:/usr_src modelhub/test:1.1 jupyter notebook --ip 0.0.0.0 --allow-root
+}
+
+function runBash()
+{
+    echo ""
+    echo "============================================================"
+    echo "Modelhub Docker started in interactive bash mode."
+    echo "You can freely explore the docker here."
+    echo "Press CTRL+D to quit session."
+    echo "============================================================"
+    echo ""
+    docker run -it -p 8888:8888 -p 4000:80 -v $PWD/usr_src:/usr_src modelhub/test:1.1 /bin/bash
+}
+
+if [ "$MODE" = "basic" ]; then
+    runBasic
+elif [ "$MODE" = "expert" ]; then
+    runExpert
+elif [ "$MODE" = "bash" ]; then
+    runBash
+fi
