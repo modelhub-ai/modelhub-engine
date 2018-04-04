@@ -10,7 +10,8 @@ $(function() {
     uploadFinished: function(i, file, response) {
       $.data(file).addClass("done");
       console.log("uploaded!");
-      $("#result").text(JSON.stringify(response));
+      $("#result").text();
+      plotHistogram(response.result, 5);
     },
 
     error: function(err, file) {
