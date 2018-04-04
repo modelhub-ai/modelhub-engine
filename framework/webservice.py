@@ -1,19 +1,27 @@
 from flask import Flask, render_template, request, send_from_directory, jsonify
 from urllib import unquote
 from redis import Redis, RedisError
-from werkzeug import secure_filename
 import json
-from json2html import *
 import os
 import socket
-import wtforms as wtf
 from inference import infer
 from datetime import datetime
-from collections import OrderedDict
+import pprint
 
-# form
-class Average(wtf.Form):
-    filename   = wtf.FileField(validators=[wtf.validators.InputRequired()])
+# https://stackoverflow.com/questions/25466904/print-raw-http-request-in-flask-or-wsgi
+class LoggingMiddleware(object):
+    def __init__(self, app):
+        self._app = app
+
+    def __call__(self, environ, resp):
+        errorlog = environ['wsgi.errors']
+        pprint.pprint(('REQUEST', environ), stream=errorlog)
+
+        def log_response(status, headers, *args):
+            pprint.pprint(('RESPONSE', status, headers), stream=errorlog)
+            return resp(status, headers, *args)
+
+        return self._app(environ, log_response)
 
 # Connect to Redis
 redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
@@ -24,13 +32,15 @@ app.config['UPLOAD_FOLDER'] = '../uploads/'
 
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 
-@app.route('/upload', methods=['POST'])
+@app.route('/predict', methods=['POST'])
 def upload():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             now = datetime.now()
-            filename = os.path.join(app.config['UPLOAD_FOLDER'], "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), file.filename.rsplit('.', 1)[1]))
+            filename = os.path.join(app.config['UPLOAD_FOLDER'],
+            "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+            file.filename.rsplit('.', 1)[1]))
             file.save(filename)
             try:
                 result = infer(filename)
@@ -61,4 +71,5 @@ def sendFigure(figureName):
     return send_from_directory("../usr_src/model/figures/", figureName)
 
 def start():
+    app.wsgi_app = LoggingMiddleware(app.wsgi_app)
     app.run(host='0.0.0.0', port=80)
