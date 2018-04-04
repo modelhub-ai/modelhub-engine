@@ -1,11 +1,10 @@
-console.log("script running");
 // https://github.com/Bouni/HTML5-jQuery-Flask-file-upload
 $(function() {
   var dropbox = $("#dropbox"),
     message = $(".message", dropbox);
   dropbox.filedrop({
     paramname: "file",
-    maxfiles: 10,
+    maxfiles: 1,
     maxfilesize: 5,
     url: "/upload",
     uploadFinished: function(i, file, response) {

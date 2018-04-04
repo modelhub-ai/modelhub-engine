@@ -34,7 +34,6 @@ def upload():
             file.save(filename)
             try:
                 result = infer(filename)
-                print result
             except Exception as e:
                 result = "ERROR: " + str(e)
             return jsonify(result=result)
