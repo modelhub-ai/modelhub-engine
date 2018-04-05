@@ -3,10 +3,11 @@ function plotHistogram(result, topX) {
   let sortedResult = _.sortBy(result, "probability");
   // Take the top x entries
   let topXResult = sortedResult.slice(-1 * topX);
+  //var yAxisTitle = "top " + topX.toString() + " classes";
   let x = [];
   let y = [];
   for (let key in topXResult.slice(0, 5)) {
-    x.push(topXResult[key].probability);
+    x.push(parseFloat(topXResult[key].probability).toFixed(3));
     y.push(topXResult[key].label);
   }
   let data = [
@@ -14,17 +15,36 @@ function plotHistogram(result, topX) {
       type: "bar",
       x: x,
       y: y,
-      orientation: "h"
+      orientation: "h",
+      text: x,
+      textposition: "outside",
+      hoverinfo: "none",
+      marker: {
+        color: "rgb(0,150,136)"
+      }
     }
   ];
-
-  let layout = [
-    (margin: {
-      left: 40
-    })
-  ];
-  Plotly.newPlot("result", data);
+  var layout = {
+    title: "Result",
+    margin: {
+      l: 200,
+      r: 90,
+      pad: 10
+    },
+    xaxis: {
+      autorange: "false",
+      range: [0, 1],
+      title: "Probabilities"
+    },
+    yaxis: {
+      //title: yAxisTitle
+    }
+  };
+  var options = {
+    displayModeBar: false
+  };
+  Plotly.newPlot("result", data, layout, options);
   window.onresize = function() {
-    Plotly.newPlot("result", data);
+    Plotly.newPlot("result", data, layout, options);
   };
 }
