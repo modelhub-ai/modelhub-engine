@@ -22,7 +22,7 @@ git clone https://github.com/modelhub-ai/modelhub-docker.git
 # change directories
 cd modelhub-docker/app/
 # build docker image from /app folder
-docker build -t <name_your_image> .
+docker build -f Dockerfile.dev -t <name_your_image> .
 # check size ~1.5GB
 docker images
 # go one directory up
