@@ -11,7 +11,7 @@ def infer(input):
     preprocessor = ImagePreprocessor(config_json)
     inputAsNpArr = preprocessor.load(input)
     # load ONNX model
-    model = onnx.load('model/squeezenet.onnx')
+    model = onnx.load('model/model.onnx')
     # Run inference with caffe2
     results = caffe2.python.onnx.backend.run_model(model, [inputAsNpArr])
     # postprocess results into output
