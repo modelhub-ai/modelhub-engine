@@ -2,7 +2,6 @@ Flask
 Redis
 onnx
 Pillow
-json2html
-WTForms
 SimpleITK
 jupyter
+netron

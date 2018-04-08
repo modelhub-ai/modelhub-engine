@@ -5,10 +5,11 @@ FROM ubuntu:16.04
 WORKDIR /app
 
 # Copy the app directory contents into the container at /app
-ADD /app /app
+ADD . /app
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    vim \
     build-essential \
     cmake \
     curl \
@@ -41,11 +42,14 @@ RUN cd caffe2 && mkdir build && cd build \
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Make port 80 available to the world outside this container
-EXPOSE 80
+EXPOSE 80 81
 
 # Define environment variable
 ENV NAME World
 ENV PYTHONPATH /usr/local:/framework/:/usr_src/
+
+# change header line in netron
+RUN sed -i '1s:.*:#!/usr/bin/python:' /usr/local/bin/netron
 
 # Set the working directory to /framework
 WORKDIR /framework
