@@ -1,6 +1,6 @@
 # How to build the Docker images
 
-Execute the docker build command from the parent directory of this one,
+Execute the docker build command **from the parent directory** of this one,
 with the following command:
 
 ```
