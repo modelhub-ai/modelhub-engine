@@ -72,4 +72,4 @@ def sendFigure(figureName):
 
 def start():
     app.wsgi_app = LoggingMiddleware(app.wsgi_app)
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=80, threaded=True)
