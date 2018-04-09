@@ -10,7 +10,7 @@ declare -a -r requiredFiles=("$modelIdentifier""/inference.py"
                              "$modelIdentifier""/sandbox.ipynb"
                              "$modelIdentifier""/model/config.json"
                              "$modelIdentifier""/model/labels.json"
-                             "$modelIdentifier""/model/squeezenet.onnx"
+                             "$modelIdentifier""/model/model.onnx"
                              "$modelIdentifier""/model/figures/thumbnail.jpg"
                              "$modelIdentifier""/sample_data/cat.jpg"
                             )
