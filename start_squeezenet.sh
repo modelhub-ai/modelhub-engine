@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -r dockerIdentifier="modelhub/test:1.1"
+declare -r dockerIdentifier="modelhub/test:1.2"
 declare -r serverAddress="https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/"
 declare -r modelIdentifier="usr_src"
 declare -a -r requiredFiles=("$modelIdentifier""/inference.py"
@@ -125,7 +125,7 @@ function runExpert()
     echo "Press CTRL+C to quit session."
     echo "============================================================"
     echo ""
-    docker run -p 8888:8888 -p 4000:80 -v "$PWD"/usr_src:/usr_src modelhub/test:1.1 jupyter notebook --ip 0.0.0.0 --allow-root
+    docker run -p 8888:8888 -p 4000:80 -v "$PWD"/usr_src:/usr_src "$dockerIdentifier" jupyter notebook --ip 0.0.0.0 --allow-root
 }
 
 function runBash()
@@ -137,7 +137,7 @@ function runBash()
     echo "Press CTRL+D to quit session."
     echo "============================================================"
     echo ""
-    docker run -it -p 8888:8888 -p 4000:80 -v "$PWD"/usr_src:/usr_src modelhub/test:1.1 /bin/bash
+    docker run -it -p 8888:8888 -p 4000:80 -v "$PWD"/usr_src:/usr_src "$dockerIdentifier" /bin/bash
 }
 
 if [ "$MODE" = "basic" ]; then
