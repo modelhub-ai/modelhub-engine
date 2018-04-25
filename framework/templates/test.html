@@ -1,31 +1,28 @@
 <div class="mdl-layout__tab-panel is-active" id="test">
   <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--1-col"></div>
-    <div class="mdl-cell mdl-cell--5-col mdl-cell--12-col-tablet">
-      <div id=dropboxCard class="mdl-card mdl-shadow--2dp">
-        <div id="dropbox">
-          <div id="dropboxText"> DRAG AND DROP HERE TO TEST </div>
-          <img id="dropboxPreview"> </img>
-        </div>
-      </div>
-    </div>
-    <div class="mdl-cell mdl-cell--5-col mdl-cell--12-col-tablet">
-      <div id=resultCard class="mdl-card mdl-shadow--2dp">
-        <div id="result">
-          <div id="resultText"> RESULT </div>
-        </div>
-      </div>
-    </div>
-    <div class="mdl-cell mdl-cell--1-col"></div>
-    <!-- new row -->
-    <div class="mdl-cell mdl-cell--1-col"></div>
     <div class="mdl-cell mdl-cell--10-col mdl-cell--12-col-tablet">
-      <div id=examplesCard class="mdl-card mdl-shadow--2dp">
-        <div id=examples>
-          examples
+      <div id=card class="mdl-card mdl-shadow--2dp">
+        <div id=dropboxContainer class="mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
+          <div id=dropbox> <img id="dropboxPreview"> </img>
+          </div>
+          <div id=gallery>
+            <div id=galleryContents>
+            </div>
+          </div>
+        </div>
+        <div id=resultContainer class="mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
+          <div id=result>
+          </div>
+          <div id=input>
+            <label class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">
+              <input id="fileupload" type="file" name="file"></input>
+            TRY YOUR OWN FILE
+            </label>
+          </div>
         </div>
       </div>
     </div>
-    <div class="mdl-cell mdl-cell--1-col"></div>
   </div>
+  <div class="mdl-cell mdl-cell--1-col"></div>
 </div>

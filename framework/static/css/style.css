@@ -46,51 +46,87 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#resultCard {
+#card {
   width: 100%;
-  height: 500px;
+  display: -webkit-box;
 }
 
-#result {
-  width: 100%;
-  height: 100%;
-}
-
-#resultText,
-#dropboxText {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 500px;
-  font-size: 30px;
-  font-weight: 700;
-  opacity: 0.5;
-  position: absolute;
-}
-
-#dropboxCard {
-  width: 100%;
-  height: 500px;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 500px;
+#dropboxContainer {
+  background-color: #eeeeee;
 }
 
 #dropbox {
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
+  height: 500px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 500px;
 }
 
 #dropboxPreview {
   width: 50%;
 }
 
+#gallery {
+  background-color: #d4d4d4;
+  padding: 20px;
+  overflow-y: hidden;
+  height: 100px;
+}
+
+#galleryContents {
+  display: flex;
+  height: 100%;
+}
+
+#sample {
+  margin-left: 10px;
+  flex: 1;
+  height: 100%;
+  cursor: pointer;
+}
+
+#result {
+  height: 550px;
+}
+
+#resultContainer {
+}
+
+#input {
+  height: 50px;
+  text-align: center;
+}
+
+#fileupload {
+  display: none;
+}
+
+#fileuploadvisual {
+  width: 50%;
+  background-color: rgb(255, 171, 64);
+  color: rgb(66, 66, 66);
+  height: 30px;
+}
+/*  */
+
+#resultText,
+#dropboxText {
+  /* height: 100%;
+  background-color: #ffff00; */
+  /* text-align: center;
+  vertical-align: middle;
+  line-height: 500px; */
+  /* font-size: 30px;
+  font-weight: 700;
+  opacity: 0.5;
+  position: absolute; */
+}
+
 #examplesCard {
   width: 100%;
   height: 50px;
-  text-align: center;
+  text-align: left;
+  padding: 10px;
   vertical-align: middle;
   line-height: 50px;
 }
@@ -105,68 +141,8 @@ body {
   height: 100%;
   background-color: #ff0000;
 }
+
 /*****/
-#dropbox .preview {
-  width: 245px;
-  height: 215px;
-  float: left;
-  margin: 55px 0 0 60px;
-  position: relative;
-  text-align: center;
-}
-
-#dropbox .preview img {
-  max-width: 240px;
-  max-height: 180px;
-  border: 3px solid #fff;
-  display: block;
-  box-shadow: 0 0 2px #000;
-}
-
-#dropbox .imageHolder {
-  display: inline-block;
-  position: relative;
-}
-
-#dropbox .uploaded {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  display: none;
-}
-
-#dropbox .preview.done .uploaded {
-  display: block;
-}
-
-#dropbox .progressHolder {
-  position: absolute;
-  background-color: #252f38;
-  height: 12px;
-  width: 100%;
-  left: 0;
-  bottom: 0;
-  box-shadow: 0 0 2px #000;
-}
-
-#dropbox .progress {
-  background-color: #2586d0;
-  position: absolute;
-  height: 100%;
-  left: 0;
-  width: 0;
-  box-shadow: 0 0 1px rgba(255, 255, 255, 0.4) inset;
-  -moz-transition: 0.25s;
-  -webkit-transition: 0.25s;
-  -o-transition: 0.25s;
-  transition: 0.25s;
-}
-
-#dropbox .preview.done .progress {
-  width: 100% !important;
-}
 
 /** **/
 
