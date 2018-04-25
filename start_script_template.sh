@@ -104,7 +104,7 @@ function runBasic()
     echo "Press CTRL+C to quit session."
     echo "============================================================"
     echo ""
-    docker run -p 4000:80 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier"
+    docker run -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier"
 }
 
 function runExpert()
@@ -117,7 +117,7 @@ function runExpert()
     echo "Press CTRL+C to quit session."
     echo "============================================================"
     echo ""
-    docker run -p 8888:8888 -p 4000:80 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier" jupyter notebook --ip 0.0.0.0 --allow-root
+    docker run -p 8888:8888 -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier" jupyter notebook --ip 0.0.0.0 --allow-root
 }
 
 function runBash()
@@ -129,7 +129,7 @@ function runBash()
     echo "Press CTRL+D to quit session."
     echo "============================================================"
     echo ""
-    docker run -it -p 8888:8888 -p 4000:80 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier" /bin/bash
+    docker run -it -p 8888:8888 -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier" /bin/bash
 }
 
 if [ "$MODE" = "basic" ]; then
