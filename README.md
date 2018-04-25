@@ -14,7 +14,9 @@ Files for creating a base modelhub docker image
 
 **/app** contains files for building the docker image.
 
-**/data** contains files that will be mount as a volume to the docker container. This way, dev ops can continue on files under /data without having to rebuild the image every time. /data will not persist in the docker when it is killed, but we have it locally and in this repo.
+**/framework** contains the modelhub framework providing a convenient backend to run inference on DL models incl. pre- and postprocessing, and a frontend for basic + expert access to the model.
+
+**/usr_src_template** template files for the user/contributer source which provides the full model (i.e. the actual net plus required pre- and postprocessing). Note that actual user/contributer sources (i.e. full models) are [located in a different repository.](https://github.com/modelhub-ai/modelhub)
 
 ```
 # clone this repo
