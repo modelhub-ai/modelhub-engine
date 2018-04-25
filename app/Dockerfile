@@ -25,8 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir future hypothesis numpy protobuf six
 
-# Caffe2 installation
-RUN git clone --depth 1 --branch master --recursive https://github.com/caffe2/caffe2.git
+# Caffe2 installation (beware of the "exit 0" after clone, this is a hack 
+# to fix a current cloning issue, to be removed when we change the repo to pytorch)
+RUN git clone --depth 1 --branch master --recursive https://github.com/caffe2/caffe2.git; exit 0
 RUN cd caffe2 && mkdir build && cd build \
     && cmake .. \
     -DUSE_CUDA=OFF \
@@ -45,14 +46,26 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 EXPOSE 80 81
 
 # Define environment variable
-ENV NAME World
 ENV PYTHONPATH /usr/local:/framework/:/usr_src/
+
+# Netron fixes
+# change header line in netron
+RUN sed -i '1s:.*:#!/usr/bin/python:' /usr/local/bin/netron
+# copy bugfix sources, fixing netron hanging on multiple requests
+# this should not be necessary anymore when netron > 1.7.4 is available (which should contain the fix)
+WORKDIR /usr/local/lib/python2.7/dist-packages/netron
+RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/netron
+RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/netron.py
+RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/onnx-operator.json
+
+# Set the working directory to /framework
+WORKDIR /framework
+
+# Copy the framework directory contents into the container at /framework
+ADD /framework /framework
 
 # Create dir where uploads go (e.g. from the webservice)
 WORKDIR /uploads
-
-# change header line in netron
-RUN sed -i '1s:.*:#!/usr/bin/python:' /usr/local/bin/netron
 
 # Switch to the dir that holds the usr sources
 WORKDIR /usr_src

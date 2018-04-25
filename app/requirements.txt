@@ -4,4 +4,4 @@ onnx
 Pillow
 SimpleITK
 jupyter
-netron
+netron==1.7.4
