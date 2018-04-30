@@ -44,14 +44,13 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/material.teal-orange.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
 
-  <script src="{{ url_for('static',filename='js/material.min.js') }}"></script>
-  <script src="{{ url_for('static',filename='js/plotly-latest.min.js') }}"></script>
-  <script src="{{ url_for('static',filename='js/underscore-min.js') }}"></script>
-
-  <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
-  <script src="{{ url_for('static',filename='js/jquery.ui.widget.js') }}"></script>
-  <script src="{{ url_for('static',filename='js/jquery.iframe-transport.js') }}"></script>
-  <script src="{{ url_for('static',filename='js/jquery.fileupload.js') }}"></script>
+  <script src="{{ url_for('static',filename='lib/material.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='lib/plotly-latest.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='lib/underscore-min.js') }}"></script>
+  <script src="{{ url_for('static',filename='lib/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='lib/jquery.ui.widget.js') }}"></script>
+  <script src="{{ url_for('static',filename='lib/jquery.iframe-transport.js') }}"></script>
+  <script src="{{ url_for('static',filename='lib/jquery.fileupload.js') }}"></script>
 
 
 
@@ -61,17 +60,16 @@
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
       <div id="header1" class="mdl-layout--large-screen-only mdl-layout__header-row">
-        <img class="mhlogo" src="{{ url_for('static',filename='img/modelhub_w.png') }}">
-        <h4>modelhub</h4> <br>
+        <img class="mhlogo" src="{{ url_for('static',filename='img/logo.svg') }}"><br>
       </div>
       <div id="header2" class="mdl-layout--large-screen-only mdl-layout__header-row">
         <h2>{{name}}</h2>
       </div>
       <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
-        <a href="#overview" class="mdl-layout__tab">Overview</a>
+        <a href="#overview" class="mdl-layout__tab is-active">Overview</a>
         <a href="#model" class="mdl-layout__tab">Model</a>
         <!-- CHANGE FOR TESTING -->
-        <a href="#test" class="mdl-layout__tab is-active">Test</a>
+        <a href="#test" class="mdl-layout__tab">Test</a>
         <a href={{mailto}}>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="add">
                 <i class="material-icons" role="presentation">mail</i>
@@ -80,7 +78,7 @@
         </a>
       </div>
     </header>
-    <main class="mdl-layout__content">
+    <main id="content" class="mdl-layout__content">
       {% include 'overview.html' %} {% include 'model.html' %} {% include 'test.html' %}
     </main>
   </div>

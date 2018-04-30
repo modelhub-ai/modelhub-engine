@@ -20,6 +20,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #616161 !important;
+  height: 100%;
 }
 
 @font-face {
@@ -30,6 +31,9 @@ body {
     format("woff2");
 }
 
+#content {
+  height: 100%;
+}
 .material-icons {
   font-family: "Material Icons";
   font-weight: normal;
@@ -46,28 +50,30 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#card {
-  width: 100%;
-  display: -webkit-box;
+#dropboxContainer {
+  background-color: #fff;
+  height: 600px;
+  margin-bottom: 30px;
 }
 
-#dropboxContainer {
-  background-color: #eeeeee;
+#resultContainer {
+  background-color: #fff;
+  height: 640px;
 }
 
 #dropbox {
-  height: 500px;
   text-align: center;
   vertical-align: middle;
   line-height: 500px;
+  height: 500px;
 }
 
 #dropboxPreview {
-  width: 50%;
+  height: 50%;
 }
 
 #gallery {
-  background-color: #d4d4d4;
+  background-color: #eeeeee;
   padding: 20px;
   overflow-y: hidden;
   height: 100px;
@@ -78,18 +84,22 @@ body {
   height: 100%;
 }
 
-#sample {
+.sample {
   margin-left: 10px;
   flex: 1;
   height: 100%;
   cursor: pointer;
+  border: 3px solid transparent;
+}
+
+.current {
+  border-style: solid;
+  border-width: 3px;
+  border-color: #ffab40;
 }
 
 #result {
-  height: 550px;
-}
-
-#resultContainer {
+  height: 570px;
 }
 
 #input {
@@ -103,56 +113,32 @@ body {
 
 #fileuploadvisual {
   width: 50%;
-  background-color: rgb(255, 171, 64);
-  color: rgb(66, 66, 66);
+  background-color: #ffab40;
+  color: #424242;
   height: 30px;
 }
-/*  */
 
-#resultText,
-#dropboxText {
-  /* height: 100%;
-  background-color: #ffff00; */
-  /* text-align: center;
-  vertical-align: middle;
-  line-height: 500px; */
-  /* font-size: 30px;
-  font-weight: 700;
-  opacity: 0.5;
-  position: absolute; */
-}
-
-#examplesCard {
-  width: 100%;
-  height: 50px;
-  text-align: left;
-  padding: 10px;
-  vertical-align: middle;
-  line-height: 50px;
-}
-
-#examples {
+#model {
   width: 100%;
   height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
 }
-
 #netron {
-  width: 100%;
+  overflow: hidden;
   height: 100%;
-  background-color: #ff0000;
+  width: 100%;
 }
 
 /*****/
-
-/** **/
 
 .bibtex {
   background-color: #fff;
   padding: 20px;
 }
 .mhlogo {
-  width: 25px !important;
-  padding-right: 7px !important;
+  height: 25px !important;
 }
 #header1 {
   padding-top: 20px;
