@@ -87,9 +87,10 @@ body {
   flex: 1;
   height: 100%;
   cursor: pointer;
+  border: 3px solid transparent;
 }
 
-.sample .current {
+.current {
   border-style: solid;
   border-width: 3px;
   border-color: #ffab40;

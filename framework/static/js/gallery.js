@@ -22,7 +22,8 @@ $(document).ready(function() {
       // on gallery image click
       data.samples.map((sample, idx) => {
         $('[name="' + sample + '"]').click(function(e) {
-          // $(this).addClass("current")
+          $(".sample").removeClass("current");
+          $(this).addClass("current");
           // e.target.name
           $("#dropboxPreview").attr("src", url2 + "/" + e.target.name);
           getPredictions(url3 + e.target.name);

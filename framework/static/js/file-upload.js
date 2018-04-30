@@ -5,6 +5,7 @@ $(document).ready(function() {
     type: "POST",
     url: "/predict",
     done: function(e, data) {
+      $(".sample").removeClass("current");
       createImage(data.files[0]);
       plotHistogram(data.result.result, 5);
     }
