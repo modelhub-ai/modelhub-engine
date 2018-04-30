@@ -20,6 +20,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #616161 !important;
+  height: 100%;
 }
 
 @font-face {
@@ -30,6 +31,9 @@ body {
     format("woff2");
 }
 
+#content {
+  height: 100%;
+}
 .material-icons {
   font-family: "Material Icons";
   font-weight: normal;
@@ -136,15 +140,20 @@ body {
   height: 100%;
 }
 
-#netron {
+#model {
   width: 100%;
   height: 100%;
-  background-color: #ff0000;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
+#netron {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
 }
 
 /*****/
-
-/** **/
 
 .bibtex {
   background-color: #fff;
