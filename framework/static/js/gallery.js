@@ -10,7 +10,7 @@ $(document).ready(function() {
       // Load the gallery with images
       data.samples.map((sample, idx) => {
         $("#galleryContents").append(
-          "<img id=sample name=" +
+          "<img class=sample name=" +
             sample +
             " src='" +
             url2 +
@@ -22,14 +22,17 @@ $(document).ready(function() {
       // on gallery image click
       data.samples.map((sample, idx) => {
         $('[name="' + sample + '"]').click(function(e) {
+          // $(this).addClass("current")
           // e.target.name
           $("#dropboxPreview").attr("src", url2 + "/" + e.target.name);
           getPredictions(url3 + e.target.name);
         });
       });
       // on first Load
-      $("#dropboxPreview").attr("src", url2 + "/" + data.samples[0]);
-      getPredictions(url3 + data.samples[0]);
+      let firstSample = data.samples[0];
+      $('[name="' + firstSample + '"]').addClass("current");
+      $("#dropboxPreview").attr("src", url2 + "/" + firstSample);
+      getPredictions(url3 + firstSample);
     }
   });
 });
