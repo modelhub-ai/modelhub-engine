@@ -50,20 +50,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#card {
-  width: 100%;
-  display: -webkit-box;
+#dropboxContainer {
+  background-color: #fff;
+  height: 600px;
+  margin-bottom: 30px;
 }
 
-#dropboxContainer {
-  background-color: #eeeeee;
+#resultContainer {
+  background-color: #fff;
+  height: 640px;
 }
 
 #dropbox {
-  height: 500px;
   text-align: center;
   vertical-align: middle;
   line-height: 500px;
+  height: 500px;
 }
 
 #dropboxPreview {
@@ -71,7 +73,7 @@ body {
 }
 
 #gallery {
-  background-color: #d4d4d4;
+  background-color: #eeeeee;
   padding: 20px;
   overflow-y: hidden;
   height: 100px;
@@ -97,7 +99,7 @@ body {
 }
 
 #result {
-  height: 550px;
+  height: 570px;
 }
 
 #input {
