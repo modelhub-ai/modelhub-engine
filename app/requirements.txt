@@ -1,7 +1,7 @@
-Flask
-Redis
-onnx
-Pillow
-SimpleITK
-jupyter
+Flask==0.12.2
+Redis==2.10.6
+onnx==1.1.1
+Pillow==5.1.0
+SimpleITK==1.1.0
+jupyter==1.0.0
 netron==1.7.4
