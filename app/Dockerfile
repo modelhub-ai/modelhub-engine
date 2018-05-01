@@ -1,43 +1,5 @@
-# Use an official ubuntu runtime as a parent image
-FROM ubuntu:16.04
-
-# Set the working directory to /app
-WORKDIR /app
-
-# Copy the app directory contents into the container at /app
-ADD /app /app
-
-# Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    vim \
-    build-essential \
-    cmake \
-    curl \
-    git \
-    libgoogle-glog-dev \
-    libprotobuf-dev \
-    python-pip \
-    protobuf-compiler \
-    python-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install some python packages
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-RUN pip install --no-cache-dir future hypothesis numpy protobuf six
-
-# Caffe2 installation (beware of the "exit 0" after clone, this is a hack
-# to fix a current cloning issue, to be removed when we change the repo to pytorch)
-RUN git clone --depth 1 --branch master --recursive https://github.com/caffe2/caffe2.git; exit 0
-RUN cd caffe2 && mkdir build && cd build \
-    && cmake .. \
-    -DUSE_CUDA=OFF \
-    -DUSE_NNPACK=OFF \
-    -DUSE_ROCKSDB=OFF \
-    && make -j"$(nproc)" install \
-    && ldconfig \
-    && make clean \
-    && cd .. \
-    && rm -rf build
+# Use our Caffe2 base image as parent
+FROM modelhub/base_caffe2:1.0.0
 
 # Install requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
