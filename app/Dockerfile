@@ -8,7 +8,7 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 EXPOSE 80 81
 
 # Define environment variable
-ENV PYTHONPATH /usr/local:/framework/:/usr_src/
+ENV PYTHONPATH /usr/local:/framework/:/contrib_src/
 
 # Netron fixes
 # change header line in netron
@@ -30,7 +30,7 @@ ADD /framework /framework
 WORKDIR /uploads
 
 # Switch to the dir that holds the usr sources
-WORKDIR /usr_src
+WORKDIR /contrib_src
 
 # Run /data/run.py when the container launches
 CMD ["python", "run.py"]

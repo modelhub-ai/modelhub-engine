@@ -76,25 +76,25 @@ def upload2():
     if request.method == 'GET':
         filename = request.args.get('filename')
         try:
-            result = infer("../usr_src/sample_data/" + filename)
+            result = infer("../contrib_src/sample_data/" + filename)
         except Exception as e:
             result = "ERROR: " + str(e)
         return jsonify(result=result)
 
-# routing for figures that exist in the usr_src - model thumbnail
+# routing for figures that exist in the contrib_src - model thumbnail
 @app.route('/model/figures/<figureName>')
 def sendFigureModel(figureName):
-    return send_from_directory("../usr_src/model/figures/", figureName)
+    return send_from_directory("../contrib_src/model/figures/", figureName)
 
-# routing for figures that exist in the usr_src - sample_data
+# routing for figures that exist in the contrib_src - sample_data
 @app.route('/sample_data/<figureName>')
 def sendFigureSample(figureName):
-    return send_from_directory("../usr_src/sample_data/", figureName)
+    return send_from_directory("../contrib_src/sample_data/", figureName)
 
 # routing to get list of files in sample_data
 @app.route('/get_samples')
 def make_tree():
-    return jsonify(samples=os.listdir("../usr_src/sample_data/"))
+    return jsonify(samples=os.listdir("../contrib_src/sample_data/"))
 
 def start():
     # app.wsgi_app = LoggingMiddleware(app.wsgi_app)

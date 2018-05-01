@@ -1,5 +1,5 @@
 /tests
-/usr_src/.ipynb_checkpoints
+/contrib_src/.ipynb_checkpoints
 *.pyc
 .vscode
 *.code-workspace
