@@ -125,11 +125,7 @@ body {
   padding: 0px;
   overflow: hidden;
 }
-#netron {
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-}
+
 #buttonLabel {
   margin-bottom: 8px;
 }
