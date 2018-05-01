@@ -130,7 +130,9 @@ body {
   height: 100%;
   width: 100%;
 }
-
+#buttonLabel {
+  margin-bottom: 8px;
+}
 /*****/
 
 .bibtex {

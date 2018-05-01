@@ -30,7 +30,7 @@ redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = '../uploads/'
 
-ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
+ALLOWED_EXTENSIONS = json.load(open("model/config.json"))['model']['input']['format']
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -43,7 +43,8 @@ def index():
         mailto=mailto,
         meta=config_json['meta'],
         publication=config_json['publication'],
-        model=config_json['model']
+        model=config_json['model'],
+        allowed= ', '.join(config_json['model']['input']['format'])
     )
 
 def allowed_file(filename):
