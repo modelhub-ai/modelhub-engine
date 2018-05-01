@@ -4,34 +4,28 @@
     "name": "",
     "application_area": "",
     "task": "",
-    "task_extended":
-      "",
+    "task_extended": "",
     "data_type": "",
     "data_source": ""
   },
   "publication": {
-    "title":
-      "",
+    "title": "",
     "journal": "",
     "year": 0000,
-    "authors":
-      "",
+    "authors": "",
     "email": "",
-    "abstract":
-      "",
+    "abstract": "",
     "url": "",
-    "google_scholar":
-      "",
-    "bibtex":
-      ""
+    "google_scholar": "",
+    "bibtex": ""
   },
   "model": {
     "name": "",
-    "description":
-      "",
+    "description": "",
     "architecture": "",
     "learning_type": "",
     "input": {
+      "format": [],
       "dim_limits": [
         {
           "min": 0,
