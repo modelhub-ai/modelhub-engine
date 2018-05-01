@@ -3,8 +3,8 @@
 declare -r dockerIdentifier="modelhub/test:1.3"
 declare -r serverAddress="https://raw.githubusercontent.com/modelhub-ai/modelhub/master/"
 declare -r modelIdentifier="MODEL_ID_TEMPLATE"
-declare -a -r requiredFiles=("$modelIdentifier""/usr_src/SRC_TEMPLATE"
-                             "$modelIdentifier""/usr_src/SRC_TEMPLATE"
+declare -a -r requiredFiles=("$modelIdentifier""/contrib_src/SRC_TEMPLATE"
+                             "$modelIdentifier""/contrib_src/SRC_TEMPLATE"
                             )
 
 
@@ -104,7 +104,7 @@ function runBasic()
     echo "Press CTRL+C to quit session."
     echo "============================================================"
     echo ""
-    docker run -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier"
+    docker run -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/contrib_src:/contrib_src "$dockerIdentifier"
 }
 
 function runExpert()
@@ -117,7 +117,7 @@ function runExpert()
     echo "Press CTRL+C to quit session."
     echo "============================================================"
     echo ""
-    docker run -p 8888:8888 -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier" jupyter notebook --ip 0.0.0.0 --allow-root
+    docker run -p 8888:8888 -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/contrib_src:/contrib_src "$dockerIdentifier" jupyter notebook --ip 0.0.0.0 --allow-root
 }
 
 function runBash()
@@ -129,7 +129,7 @@ function runBash()
     echo "Press CTRL+D to quit session."
     echo "============================================================"
     echo ""
-    docker run -it -p 8888:8888 -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/usr_src:/usr_src "$dockerIdentifier" /bin/bash
+    docker run -it -p 8888:8888 -p 4000:80 -p 4001:81 -v "$PWD"/"$modelIdentifier"/contrib_src:/contrib_src "$dockerIdentifier" /bin/bash
 }
 
 if [ "$MODE" = "basic" ]; then

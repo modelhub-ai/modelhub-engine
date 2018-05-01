@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir future hypothesis numpy protobuf six
 
-# Caffe2 installation (beware of the "exit 0" after clone, this is a hack 
+# Caffe2 installation (beware of the "exit 0" after clone, this is a hack
 # to fix a current cloning issue, to be removed when we change the repo to pytorch)
 RUN git clone --depth 1 --branch master --recursive https://github.com/caffe2/caffe2.git; exit 0
 RUN cd caffe2 && mkdir build && cd build \
@@ -46,7 +46,7 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 EXPOSE 80 81
 
 # Define environment variable
-ENV PYTHONPATH /usr/local:/framework/:/usr_src/
+ENV PYTHONPATH /usr/local:/framework/:/contrib_src/
 
 # Netron fixes
 # change header line in netron
@@ -68,7 +68,7 @@ ADD /framework /framework
 WORKDIR /uploads
 
 # Switch to the dir that holds the usr sources
-WORKDIR /usr_src
+WORKDIR /contrib_src
 
 # Run /data/run.py when the container launches
 CMD ["python", "run.py"]

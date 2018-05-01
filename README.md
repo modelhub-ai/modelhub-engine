@@ -29,9 +29,9 @@ docker build -f Dockerfile.dev -t <name_your_image> .
 docker images
 # go one directory up
 cd ..
-# to run /usr_src/run.py on the server (http://127.0.0.1:4000/)
+# to run /contrib_src/run.py on the server (http://127.0.0.1:4000/)
 # and mount the framwork and user code into the docker
-docker run -p 4000:80 -v $PWD/framework:/framework -v $PWD/usr_src:/usr_src <image_name>
+docker run -p 4000:80 -v $PWD/framework:/framework -v $PWD/contrib_src:/contrib_src <image_name>
 # to get a bash in an interactive mode of the docker
 docker run -it -p 4000:80 -v $PWD/framework:/framework -v $PWD/usr_src:/usr_src <image_name> /bin/bash
 # to run container in detached mode (bash)
