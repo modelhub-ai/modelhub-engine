@@ -1,10 +1,13 @@
 $(document).ready(function() {
   let bool = true;
+  let split = window.location.href.split(":");
+  let url = split[0] + ":" + split[1] + ":" + "4001/";
   $("#modeltab").on("click", function() {
-    console.log("clicked");
     if (bool) {
       $("#model").html(
-        '<iframe id="netron" height="100%" width=500 src="http://127.0.0.1:4001/"></iframe>'
+        '<iframe id="netron" height="100%" width=500 src="' +
+          url +
+          '"></iframe>'
       );
       bool = false;
     }
