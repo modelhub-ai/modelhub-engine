@@ -1,4 +1,4 @@
-Copyright (c) 2018 ModelHub
+Copyright (c) 2018 ModelHub  
 Licensend under the [MIT License](https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/LICENSE)
 
 ### Acknowledgements
