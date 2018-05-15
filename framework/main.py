@@ -3,6 +3,8 @@ import netron
 import sys
 import time
 from multiprocessing import Process
+import os
+import glob
 
 
 def start(startNetron=True):
@@ -20,7 +22,9 @@ def _startWithNetron():
 
 
 def _startNetron():
-    netron.serve_file("/contrib_src/model/model.onnx", port=81, host="0.0.0.0")
+    path = '/contrib_src/model/'
+    for modelFile in glob.glob( os.path.join(path, 'model.*') ):
+        netron.serve_file(modelFile, port=81, host="0.0.0.0")
 
 
 def _startWebservice():
