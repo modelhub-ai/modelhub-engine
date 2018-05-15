@@ -1,8 +1,14 @@
 # Use our Caffe2 base image as parent
 FROM modelhub/base_caffe2:1.0.0
 
-# Install requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
+# Install requirements
+RUN pip install Flask==0.12.2 \
+    Redis==2.10.6 \
+    onnx==1.1.1 \
+    Pillow==5.1.0 \
+    SimpleITK==1.1.0 \
+    jupyter==1.0.0 \
+    netron==1.7.4
 
 # Make port 80 available to the world outside this container
 EXPOSE 80 81
