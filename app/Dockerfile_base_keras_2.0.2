@@ -1,0 +1,78 @@
+# Use an official ubuntu runtime as a parent image
+FROM ubuntu:16.04
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the app directory contents into the container at /app
+ADD /app /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    vim \
+    build-essential \
+    cmake \
+    curl \
+    git \
+    libgoogle-glog-dev \
+    libprotobuf-dev \
+    python-pip \
+    protobuf-compiler \
+    python-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install some python packages
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir future hypothesis numpy protobuf six
+
+# keras installation
+
+RUN pip install h5py==2.7.1 \
+  tensorflow==1.0.1 \
+  keras==2.0.2 \
+  Flask==0.12.2 \
+  Redis==2.10.6 \
+  Pillow==5.1.0 \
+  SimpleITK==1.1.0 \
+  jupyter==1.0.0 \
+  netron==1.7.4
+
+#
+#
+# modelhub-specific
+#
+#
+
+# Install requirements.txt
+# RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80 81
+
+# Define environment variable
+ENV PYTHONPATH /usr/local:/framework/:/contrib_src/
+
+# Netron fixes
+# change header line in netron
+RUN sed -i '1s:.*:#!/usr/bin/python:' /usr/local/bin/netron
+# copy bugfix sources, fixing netron hanging on multiple requests
+# this should not be necessary anymore when netron > 1.7.4 is available (which should contain the fix)
+WORKDIR /usr/local/lib/python2.7/dist-packages/netron
+RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/netron
+RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/netron.py
+RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/onnx-operator.json
+
+# Set the working directory to /framework
+WORKDIR /framework
+
+# Copy the framework directory contents into the container at /framework
+ADD /framework /framework
+
+# Create dir where uploads go (e.g. from the webservice)
+WORKDIR /uploads
+
+# Switch to the dir that holds the usr sources
+WORKDIR /contrib_src
+
+# Run /data/run.py when the container launches
+CMD ["python", "run.py"]
