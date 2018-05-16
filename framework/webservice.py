@@ -5,12 +5,9 @@ import os
 import socket
 from inference import infer
 import pprint
-from PIL import Image
 import numpy as np
 import utils
 import json
-# from StringIO import StringIO
-# from io import BytesIO
 
 # https://stackoverflow.com/questions/25466904/print-raw-http-request-in-flask-or-wsgi
 class LoggingMiddleware(object):
@@ -60,31 +57,22 @@ def upload1():
             filename = utils.saveUploadedFile(file, app.config['WORKING_FOLDER'])
             try:
                 result = infer(filename)
-                if isinstance(result, Image.Image):
-                    filename = utils.savePredictedImage(result, app.config['WORKING_FOLDER'])
-                    result = jsonify(type='image',result=filename)
-                else:
-                    result = jsonify(result=result)
+                result = utils.sortResultType(result, app.config['WORKING_FOLDER'])
             except Exception as e:
                 result = "ERROR: " + str(e)
             return result
 
-# WARNING: route for getting predictions via url - only for our sample_data
-#  only safely works for our sample data - for other urls, we need more
-# GET with "content-type" in header
+# WARNING TEMP SOLUTION: route for getting predictions via url - only for our
+# sample_data only safely works for our sample data - for other urls, we need
+# more GET with "content-type" in header
 # https://stackoverflow.com/questions/4776924/how-to-safely-get-the-file-extension-from-a-url
-#
 @app.route('/predict_sample', methods=['GET'])
 def upload2():
     if request.method == 'GET':
         filename = request.args.get('filename')
         try:
             result = infer("../contrib_src/sample_data/" + filename)
-            if isinstance(result, Image.Image):
-                filename = utils.savePredictedImage(result, app.config['WORKING_FOLDER'])
-                result = jsonify(type='image',result=filename)
-            else:
-                result = jsonify(type='probabilities',result=result)
+            result = utils.sortResultType(result, app.config['WORKING_FOLDER'])
         except Exception as e:
             result = "ERROR: " + str(e)
         return result
