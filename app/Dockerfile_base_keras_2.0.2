@@ -1,5 +1,41 @@
-# Use our Caffe2 base image as parent
-FROM modelhub/base_caffe2:1.0.0
+# Use an official ubuntu runtime as a parent image
+FROM ubuntu:16.04
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the app directory contents into the container at /app
+ADD /app /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    vim \
+    build-essential \
+    cmake \
+    curl \
+    git \
+    libgoogle-glog-dev \
+    libprotobuf-dev \
+    python-pip \
+    protobuf-compiler \
+    python-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install some python packages
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir future hypothesis numpy protobuf six
+
+# keras installation
+RUN pip install h5py==2.7.1 \
+  tensorflow==1.0.1 \
+  keras==2.0.2
+
+
+#
+#
+# TEMP: modelhub-specific (taken from Dockerfile)
+#
+#
 
 # Install requirements
 RUN pip install Flask==0.12.2 \
