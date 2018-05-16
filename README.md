@@ -45,3 +45,8 @@ docker kill <container_name>
 ## Deployment
 
 stay tuned!
+
+## Acknowledgements
+
+see notice.md file in this repository for acknowledgements of third party technologies used
+
