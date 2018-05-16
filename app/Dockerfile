@@ -8,7 +8,8 @@ RUN pip install Flask==0.12.2 \
     Pillow==5.1.0 \
     SimpleITK==1.1.0 \
     jupyter==1.0.0 \
-    netron==1.7.4
+    netron==1.7.4 \
+    jsonpickle==0.9.6
 
 # Make port 80 available to the world outside this container
 EXPOSE 80 81
