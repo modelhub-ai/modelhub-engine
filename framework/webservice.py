@@ -1,15 +1,16 @@
 from flask import Flask, render_template, request, send_from_directory, jsonify, send_file
 from urllib import unquote
 from redis import Redis, RedisError
-import json
 import os
 import socket
 from inference import infer
-from datetime import datetime
 import pprint
 from PIL import Image
 import numpy as np
-from StringIO import StringIO
+import utils
+import json
+# from StringIO import StringIO
+# from io import BytesIO
 
 # https://stackoverflow.com/questions/25466904/print-raw-http-request-in-flask-or-wsgi
 class LoggingMiddleware(object):
@@ -31,9 +32,8 @@ redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 
 # app and uploads
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '../uploads/'
-
-ALLOWED_EXTENSIONS = json.load(open("model/config.json"))['model']['input']['format']
+# the working folder contains both uploads and predicted images.
+app.config['WORKING_FOLDER'] = '../working/'
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -50,31 +50,19 @@ def index():
         allowed= ', '.join(config_json['model']['input']['format'])
     )
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-# https://stackoverflow.com/questions/7877282/how-to-send-image-generated-by-pil-to-browser
-def serve_pil_image(pil_img):
-    img_io = StringIO()
-    pil_img.save(img_io, 'JPEG', quality=100)
-    img_io.seek(0)
-    return send_file(img_io, mimetype='image/jpeg')
-
 # route for getting predictions via file upload
 @app.route('/predict', methods=['POST'])
 def upload1():
     if request.method == 'POST':
         file = request.files['file']
-        if file and allowed_file(file.filename):
-            now = datetime.now()
-            filename = os.path.join(app.config['UPLOAD_FOLDER'],
-            "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-            file.filename.rsplit('.', 1)[1]))
-            file.save(filename)
+        if file and utils.allowed_file(file.filename):
+            # save input
+            filename = utils.saveUploadedFile(file, app.config['WORKING_FOLDER'])
             try:
                 result = infer(filename)
                 if isinstance(result, Image.Image):
-                    result = serve_pil_image(result)
+                    filename = utils.savePredictedImage(result, app.config['WORKING_FOLDER'])
+                    result = jsonify(type='image',result=filename)
                 else:
                     result = jsonify(result=result)
             except Exception as e:
@@ -93,9 +81,10 @@ def upload2():
         try:
             result = infer("../contrib_src/sample_data/" + filename)
             if isinstance(result, Image.Image):
-                result = serve_pil_image(result)
+                filename = utils.savePredictedImage(result, app.config['WORKING_FOLDER'])
+                result = jsonify(type='image',result=filename)
             else:
-                result = jsonify(result=result)
+                result = jsonify(type='probabilities',result=result)
         except Exception as e:
             result = "ERROR: " + str(e)
         return result
@@ -114,6 +103,11 @@ def sendFigureSample(figureName):
 @app.route('/get_samples')
 def make_tree():
     return jsonify(samples=os.listdir("../contrib_src/sample_data/"))
+
+# routing for figures that exist in the contrib_src - sample_data
+@app.route('/working/<figureName>')
+def sendWorkingFiles(figureName):
+    return send_from_directory("../working/", figureName)
 
 def start():
     # app.wsgi_app = LoggingMiddleware(app.wsgi_app)
