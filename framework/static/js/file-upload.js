@@ -7,7 +7,7 @@ $(document).ready(function() {
     done: function(e, data) {
       $(".sample").removeClass("current");
       createImage(data.files[0]);
-      plotHistogram(data.result.result, 5);
+      sortDataType(data.result);
     }
   });
 });

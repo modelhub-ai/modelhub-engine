@@ -44,7 +44,18 @@ function getPredictions(url) {
     type: "GET",
     url: url,
     success: function(data) {
-      plotHistogram(data.result, 5);
+      sortDataType(data);
     }
   });
+}
+
+function sortDataType(data) {
+  if (data.type == "probabilities") {
+    plotHistogram(data.result, 5);
+  } else if (data.type == "image") {
+    let filePath = data.result.substr(2);
+    let split = window.location.href.split(":");
+    let src = split[0] + ":" + split[1] + ":" + "4000" + filePath;
+    $("#resultImage").attr("src", src);
+  }
 }
