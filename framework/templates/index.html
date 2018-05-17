@@ -90,11 +90,11 @@
       {% include 'overview.html' %} {% include 'model.html' %} {% include 'test.html' %}
     </main>
   </div>
-
+  <script src="{{ url_for('static',filename='js/globalVar.js') }}"></script>
   <script src="{{ url_for('static',filename='js/plot.js') }}"></script>
   <script src="{{ url_for('static',filename='js/gallery.js') }}"></script>
   <script src="{{ url_for('static',filename='js/netron.js') }}"></script>
-  <script src="{{ url_for('static',filename='js/file-upload.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/fileUpload.js') }}"></script>
 </body>
 
 </html>

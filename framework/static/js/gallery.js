@@ -1,7 +1,7 @@
 $(document).ready(function() {
-  var url1 = "http://" + window.location.host + "/get_samples";
-  var url2 = "http://" + window.location.host + "/sample_data";
-  var url3 = "http://" + window.location.host + "/predict_sample?filename=";
+  var url1 = "http://" + windowLocation + "/get_samples";
+  var url2 = "http://" + windowLocation + "/sample_data";
+  var url3 = "http://" + windowLocation + "/predict_sample?filename=";
   $.ajax({
     type: "GET",
     dataType: "json",
@@ -53,9 +53,8 @@ function sortDataType(data) {
   if (data.type == "probabilities") {
     plotHistogram(data.result, 5);
   } else if (data.type == "image") {
-    let filePath = data.result.substr(2);
-    let split = window.location.href.split(":");
-    let src = split[0] + ":" + split[1] + ":" + "4000" + filePath;
+    let filePath = data.result.substr(3);
+    let src = appUrl + filePath;
     $("#resultImage").attr("src", src);
   }
 }
