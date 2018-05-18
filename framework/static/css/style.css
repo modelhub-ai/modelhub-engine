@@ -99,12 +99,21 @@ body {
 }
 
 #result {
-  height: 570px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 500px;
+  height: 500px;
+}
+
+#resultImage {
+  height: 50%;
 }
 
 #input {
-  height: 50px;
   text-align: center;
+  padding-top: 40px;
+  height: 100px;
+  background-color: #eeeeee;
 }
 
 #fileupload {
@@ -128,6 +137,11 @@ body {
 
 #buttonLabel {
   margin-bottom: 8px;
+}
+#netronDisclaimer {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
 }
 /*****/
 
@@ -156,6 +170,62 @@ body {
   height: 100%;
   opacity: 0.8;
 }
+
+/****/
+
+dialog {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* width: -moz-fit-content;
+  width: -webkit-fit-content;
+  width: fit-content; */
+  width: 50% !important;
+  box-shadow: none !important;
+  height: -moz-fit-content;
+  height: -webkit-fit-content;
+  height: fit-content;
+  margin: auto;
+  border: solid;
+  padding: 1em;
+  background: white;
+  color: black;
+  display: block;
+}
+
+dialog:not([open]) {
+  display: none;
+}
+
+dialog + .backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+._dialog_overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+dialog.fixed {
+  position: fixed;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.closeButton {
+  display: none;
+}
+
+/****/
+
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
 }

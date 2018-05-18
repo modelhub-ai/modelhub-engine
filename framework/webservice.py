@@ -44,7 +44,9 @@ def index():
         meta=config_json['meta'],
         publication=config_json['publication'],
         model=config_json['model'],
-        allowed= ', '.join(config_json['model']['input']['format'])
+        allowed= ', '.join(config_json['model']['input']['format']),
+        modelLic=open("../contrib_src/license/model",'r').read(),
+        sampleDataLic=open("../contrib_src/license/sample_data",'r').read()
     )
 
 # route for getting predictions via file upload
