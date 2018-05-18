@@ -1,48 +1,51 @@
-Copyright (c) 2018 ModelHub  
-Licensend under the [MIT License](https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/LICENSE)
-
 ### Acknowledgements
 
 The ModelHub project uses the following Third Party technologies:
 
 #### Caffe2
+
 Copyright (c) 2016-present, Facebook Inc.  
 License: [Apache License, Version 2.0](https://raw.githubusercontent.com/caffe2/caffe2/master/LICENSE)  
-Webpage: https://github.com/caffe2/caffe2  
+Webpage: https://github.com/caffe2/caffe2
 
 #### Flask
+
 Copyright (c) 2015 by Armin Ronacher and contributors.  
 License: [Three clause BSD](http://flask.pocoo.org/docs/0.12/license/)  
-Webpage: http://flask.pocoo.org/  
+Webpage: http://flask.pocoo.org/
 
 #### Jupyter
+
 Copyright (c) 2017, Project Jupyter Contributors  
 License: [BSD 3-Clause](https://raw.githubusercontent.com/jupyter/jupyter/master/LICENSE)  
-Webpage: http://jupyter.org/  
+Webpage: http://jupyter.org/
 
 #### Netron
+
 Copyright (c) Lutz Roeder  
 License: [MIT](https://raw.githubusercontent.com/lutzroeder/Netron/master/LICENSE)  
 Webpage: https://github.com/lutzroeder/Netron
 
 #### ONNX
+
 Copyright (c) Facebook, Inc. and Microsoft Corporation.  
 License: [MIT](https://raw.githubusercontent.com/onnx/onnx/master/LICENSE)  
-Webpage: https://github.com/onnx/onnx  
+Webpage: https://github.com/onnx/onnx
 
 #### Pillow
+
 Copyright © 2010-2018 by Alex Clark and contributors  
 License: [PIL Software License](https://raw.githubusercontent.com/python-pillow/Pillow/master/LICENSE)  
-Webpage: https://github.com/python-pillow/Pillow  
+Webpage: https://github.com/python-pillow/Pillow
 
 #### SimpleITK
+
 Copyright 1999-2013 Insight Software Consortium  
 License: [Apache License, Version 2.0](https://raw.githubusercontent.com/SimpleITK/SimpleITK/master/LICENSE)  
-Webpage: http://www.simpleitk.org/   
+Webpage: http://www.simpleitk.org/
 
 #### Redis
+
 Copyright (c) 2006-2015, Salvatore Sanfilippo  
 License: [Three clause BSD](https://redis.io/topics/license)  
-Webpage: https://redis.io/  
-
-
+Webpage: https://redis.io/
