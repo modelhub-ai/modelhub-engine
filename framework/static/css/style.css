@@ -63,13 +63,14 @@ body {
 
 #dropbox {
   text-align: center;
-  vertical-align: middle;
   line-height: 500px;
   height: 500px;
 }
 
 #dropboxPreview {
-  height: 50%;
+  width: 50%;
+  max-height: 100%;
+  overflow: auto;
 }
 
 #gallery {
@@ -100,13 +101,21 @@ body {
 
 #result {
   text-align: center;
-  vertical-align: middle;
   line-height: 500px;
   height: 500px;
+  position: relative;
 }
 
-#resultImage {
-  height: 50%;
+.overlayImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+}
+
+#loading {
+  position: relative;
 }
 
 #input {
@@ -138,11 +147,7 @@ body {
 #buttonLabel {
   margin-bottom: 8px;
 }
-#netronDisclaimer {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-}
+
 /*****/
 
 .bibtex {
@@ -171,15 +176,12 @@ body {
   opacity: 0.8;
 }
 
-/****/
+/**DIALOG**/
 
 dialog {
   position: absolute;
   left: 0;
   right: 0;
-  /* width: -moz-fit-content;
-  width: -webkit-fit-content;
-  width: fit-content; */
   width: 50% !important;
   box-shadow: none !important;
   height: -moz-fit-content;
@@ -224,7 +226,49 @@ dialog.fixed {
   display: none;
 }
 
-/****/
+/**FOOTER**/
+
+#spacer {
+  width: 100%;
+  height: 200px;
+}
+.invisible-button {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-weight: 500;
+  color: #9e9e9e;
+  font-size: 14px;
+  font-family: inherit;
+}
+.float {
+  margin-top: 80px;
+}
+.bold {
+  color: #fff;
+}
+.fixed {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  margin-top: 100px;
+}
+
+#netronDisclaimer {
+  position: fixed;
+  bottom: 65px;
+  left: 16px;
+}
+
+#github {
+  right: 50px;
+  position: absolute;
+}
+/**MDL**/
 
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;

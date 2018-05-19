@@ -24,37 +24,54 @@ $(document).ready(function() {
         $('[name="' + sample + '"]').click(function(e) {
           $(".sample").removeClass("current");
           $(this).addClass("current");
-          // e.target.name
-          $("#dropboxPreview").attr("src", url2 + "/" + e.target.name);
-          getPredictions(url3 + e.target.name);
+          viewInputAndGetPredictions(
+            url2 + "/" + e.target.name,
+            url3 + e.target.name
+          );
         });
       });
       // on first Load
       let firstSample = data.samples[0];
       $('[name="' + firstSample + '"]').addClass("current");
-      $("#dropboxPreview").attr("src", url2 + "/" + firstSample);
-      getPredictions(url3 + firstSample);
+      viewInputAndGetPredictions(url2 + "/" + firstSample, url3 + firstSample);
     }
   });
 });
 
+// views the input image on the left + returns its position and height attributes
+function viewInputAndGetPredictions(inputSrc, resultSrc) {
+  const preview = $("#dropboxPreview");
+  preview.attr("src", inputSrc);
+  getPredictions(resultSrc);
+}
+
 function getPredictions(url) {
+  // clear existing
+  $("#resultImage").attr("src", "");
+  $("#inputImage").attr("src", "");
+  // show spinner
+  $("#loading").addClass("is-active");
+  // make call
   $.ajax({
     dataType: "json",
     type: "GET",
     url: url,
     success: function(data) {
+      // remove spinner
+      $("#loading").removeClass("is-active");
+      // display new result
       sortDataType(data);
     }
   });
 }
 
+// splits into images vs probabilities
 function sortDataType(data) {
   if (data.type == "probabilities") {
     plotHistogram(data.result, 5);
   } else if (data.type == "image") {
     let filePath = data.result.substr(3);
-    let src = appUrl + filePath;
-    $("#resultImage").attr("src", src);
+    $("#resultImage").attr("src", appUrl + filePath);
+    $("#inputImage").attr("src", appUrl + data.input);
   }
 }
