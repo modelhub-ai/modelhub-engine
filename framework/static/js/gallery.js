@@ -47,10 +47,9 @@ function viewInputAndGetPredictions(inputSrc, resultSrc) {
 
 function getPredictions(url) {
   // clear existing
-  $("#resultImage").attr("src", "");
-  $("#inputImage").attr("src", "");
+  clearResult();
   // show spinner
-  $("#loading").addClass("is-active");
+  $("#loading2").addClass("is-active");
   // make call
   $.ajax({
     dataType: "json",
@@ -58,11 +57,17 @@ function getPredictions(url) {
     url: url,
     success: function(data) {
       // remove spinner
-      $("#loading").removeClass("is-active");
+      $("#loading2").removeClass("is-active");
       // display new result
       sortDataType(data);
     }
   });
+}
+
+// clears all results
+function clearResult() {
+  $("#resultImage").attr("src", "");
+  $("#inputImage").attr("src", "");
 }
 
 // splits into images vs probabilities

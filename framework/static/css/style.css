@@ -65,6 +65,15 @@ body {
   text-align: center;
   line-height: 500px;
   height: 500px;
+  outline-color: #f6a940;
+  outline-style: dashed;
+  outline-width: 2px;
+  outline-offset: -6px;
+}
+
+.dragging {
+  outline-width: 5px !important;
+  outline-offset: -6px !important;
 }
 
 #dropboxPreview {
@@ -114,7 +123,8 @@ body {
   width: 50%;
 }
 
-#loading {
+#loading1,
+#loading2 {
   position: relative;
 }
 
