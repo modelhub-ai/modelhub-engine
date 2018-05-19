@@ -8,6 +8,10 @@ import pprint
 import numpy as np
 import utils
 import json
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+print os.getcwd()
 
 # https://stackoverflow.com/questions/25466904/print-raw-http-request-in-flask-or-wsgi
 class LoggingMiddleware(object):
@@ -44,22 +48,35 @@ def index():
         meta=config_json['meta'],
         publication=config_json['publication'],
         model=config_json['model'],
-        allowed= ', '.join(config_json['model']['input']['format']),
-        modelLic=open("../contrib_src/license/model",'r').read(),
-        sampleDataLic=open("../contrib_src/license/sample_data",'r').read()
+        allowed= ', '.join(config_json['model']['input']['format'])
     )
+
+# returns all acknowledgemnts and licenses.
+@app.route('/get_license', methods=['GET'])
+def get_license():
+    if request.method == 'GET':
+        try:
+            result =  jsonify(
+            license=open("../framework/LICENSE",'r').read(),
+            acknowledgements=open("../framework/NOTICE",'r').read(),
+            model_lic=open("license/model",'r').read(),
+            sample_data_lic=open("license/sample_data",'r').read()
+            )
+        except Exception as e:
+            result = "ERROR: " + str(e)
+        return result
 
 # route for getting predictions via file upload
 @app.route('/predict', methods=['POST'])
-def upload1():
+def predict():
     if request.method == 'POST':
         file = request.files['file']
         if file and utils.allowed_file(file.filename):
             # save input
-            filename = utils.saveUploadedFile(file, app.config['WORKING_FOLDER'])
+            filename = utils.save_uploaded_file(file, app.config['WORKING_FOLDER'])
             try:
                 result = infer(filename)
-                result = utils.sortResultType(result, app.config['WORKING_FOLDER'])
+                result = utils.sort_result_type(result, app.config['WORKING_FOLDER'], filename)
             except Exception as e:
                 result = "ERROR: " + str(e)
             return result
@@ -69,34 +86,34 @@ def upload1():
 # more GET with "content-type" in header
 # https://stackoverflow.com/questions/4776924/how-to-safely-get-the-file-extension-from-a-url
 @app.route('/predict_sample', methods=['GET'])
-def upload2():
+def predict_sample():
     if request.method == 'GET':
         filename = request.args.get('filename')
         try:
-            result = infer("../contrib_src/sample_data/" + filename)
-            result = utils.sortResultType(result, app.config['WORKING_FOLDER'])
+            result = infer("sample_data/" + filename)
+            result = utils.sort_result_type(result, app.config['WORKING_FOLDER'], "sample_data/" + filename)
         except Exception as e:
             result = "ERROR: " + str(e)
         return result
 
 # routing for figures that exist in the contrib_src - model thumbnail
-@app.route('/model/figures/<figureName>')
-def sendFigureModel(figureName):
-    return send_from_directory("../contrib_src/model/figures/", figureName)
+# @app.route('/model/figures/<figureName>')
+# def sendFigureModel(figureName):
+#     return send_from_directory("model/figures/", figureName)
 
 # routing for figures that exist in the contrib_src - sample_data
 @app.route('/sample_data/<figureName>')
-def sendFigureSample(figureName):
+def send_figure_sample(figureName):
     return send_from_directory("../contrib_src/sample_data/", figureName)
 
 # routing to get list of files in sample_data
 @app.route('/get_samples')
 def make_tree():
-    return jsonify(samples=os.listdir("../contrib_src/sample_data/"))
+    return jsonify(samples=os.listdir("sample_data/"))
 
 # routing for figures that exist in the contrib_src - sample_data
 @app.route('/working/<figureName>')
-def sendWorkingFiles(figureName):
+def send_working_files(figureName):
     return send_from_directory("../working/", figureName)
 
 def start():
