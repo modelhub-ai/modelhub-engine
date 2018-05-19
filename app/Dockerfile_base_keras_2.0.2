@@ -68,8 +68,8 @@ WORKDIR /framework
 # Copy the framework directory contents into the container at /framework
 ADD /framework /framework
 
-# Create dir where uploads go (e.g. from the webservice)
-WORKDIR /uploads
+# Create dir where working files go (e.g. from the webservice)
+WORKDIR /working
 
 # Switch to the dir that holds the usr sources
 WORKDIR /contrib_src

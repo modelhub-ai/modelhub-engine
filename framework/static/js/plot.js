@@ -34,9 +34,11 @@ function plotHistogram(result, topX) {
     xaxis: {
       autorange: "false",
       range: [0, 1],
-      title: "Probabilities"
+      title: "Probabilities",
+      fixedrange: true
     },
     yaxis: {
+      fixedrange: true
       //title: yAxisTitle
     }
   };

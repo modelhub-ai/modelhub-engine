@@ -51,8 +51,7 @@
   <script src="{{ url_for('static',filename='lib/jquery.ui.widget.js') }}"></script>
   <script src="{{ url_for('static',filename='lib/jquery.iframe-transport.js') }}"></script>
   <script src="{{ url_for('static',filename='lib/jquery.fileupload.js') }}"></script>
-
-
+  <script src="{{ url_for('static',filename='lib/dialog-polyfill.js') }}"></script>
 
 </head>
 
@@ -65,8 +64,6 @@
         <a href="http://modelhub.ai/" target="_blank">
             <img class="mhlogo" src="{{ url_for('static',filename='img/logo.svg') }}">
           </a>
-
-
 
         <br>
       </div>
@@ -87,14 +84,15 @@
       </div>
     </header>
     <main id="content" class="mdl-layout__content">
-      {% include 'overview.html' %} {% include 'model.html' %} {% include 'test.html' %}
+      {% include 'overview.html' %} {% include 'model.html' %} {% include 'test.html' %} {% with class="fixed" %} {% include 'footer.html' %} {% endwith %}
     </main>
   </div>
-
-  <script src="{{ url_for('static',filename='js/file-upload.js') }}"></script>
-  <script src="{{ url_for('static',filename='js/result.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/globalVar.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/plot.js') }}"></script>
   <script src="{{ url_for('static',filename='js/gallery.js') }}"></script>
   <script src="{{ url_for('static',filename='js/netron.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/fileUpload.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/dialog.js') }}"></script>
 </body>
 
 </html>

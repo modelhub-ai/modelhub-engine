@@ -1,15 +1,17 @@
 from flask import Flask, render_template, request, send_from_directory, jsonify, send_file
 from urllib import unquote
 from redis import Redis, RedisError
-import json
 import os
 import socket
 from inference import infer
-from datetime import datetime
 import pprint
-from PIL import Image
 import numpy as np
-from StringIO import StringIO
+import utils
+import json
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+print os.getcwd()
 
 # https://stackoverflow.com/questions/25466904/print-raw-http-request-in-flask-or-wsgi
 class LoggingMiddleware(object):
@@ -31,9 +33,8 @@ redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 
 # app and uploads
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '../uploads/'
-
-ALLOWED_EXTENSIONS = json.load(open("model/config.json"))['model']['input']['format']
+# the working folder contains both uploads and predicted images.
+app.config['WORKING_FOLDER'] = '../working/'
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -50,70 +51,70 @@ def index():
         allowed= ', '.join(config_json['model']['input']['format'])
     )
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-# https://stackoverflow.com/questions/7877282/how-to-send-image-generated-by-pil-to-browser
-def serve_pil_image(pil_img):
-    img_io = StringIO()
-    pil_img.save(img_io, 'JPEG', quality=100)
-    img_io.seek(0)
-    return send_file(img_io, mimetype='image/jpeg')
+# returns all acknowledgemnts and licenses.
+@app.route('/get_license', methods=['GET'])
+def get_license():
+    if request.method == 'GET':
+        try:
+            result =  jsonify(
+            license=open("../framework/LICENSE",'r').read(),
+            acknowledgements=open("../framework/NOTICE",'r').read(),
+            model_lic=open("license/model",'r').read(),
+            sample_data_lic=open("license/sample_data",'r').read()
+            )
+        except Exception as e:
+            result = "ERROR: " + str(e)
+        return result
 
 # route for getting predictions via file upload
 @app.route('/predict', methods=['POST'])
-def upload1():
+def predict():
     if request.method == 'POST':
         file = request.files['file']
-        if file and allowed_file(file.filename):
-            now = datetime.now()
-            filename = os.path.join(app.config['UPLOAD_FOLDER'],
-            "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-            file.filename.rsplit('.', 1)[1]))
-            file.save(filename)
+        if file and utils.allowed_file(file.filename):
+            # save input
+            filename = utils.save_uploaded_file(file, app.config['WORKING_FOLDER'])
             try:
                 result = infer(filename)
-                if isinstance(result, Image.Image):
-                    result = serve_pil_image(result)
-                else:
-                    result = jsonify(result=result)
+                result = utils.sort_result_type(result, app.config['WORKING_FOLDER'], filename)
             except Exception as e:
                 result = "ERROR: " + str(e)
             return result
 
-# WARNING: route for getting predictions via url - only for our sample_data
-#  only safely works for our sample data - for other urls, we need more
-# GET with "content-type" in header
+# WARNING TEMP SOLUTION: route for getting predictions via url - only for our
+# sample_data only safely works for our sample data - for other urls, we need
+# more GET with "content-type" in header
 # https://stackoverflow.com/questions/4776924/how-to-safely-get-the-file-extension-from-a-url
-#
 @app.route('/predict_sample', methods=['GET'])
-def upload2():
+def predict_sample():
     if request.method == 'GET':
         filename = request.args.get('filename')
         try:
-            result = infer("../contrib_src/sample_data/" + filename)
-            if isinstance(result, Image.Image):
-                result = serve_pil_image(result)
-            else:
-                result = jsonify(result=result)
+            result = infer("sample_data/" + filename)
+            result = utils.sort_result_type(result, app.config['WORKING_FOLDER'], "sample_data/" + filename)
         except Exception as e:
             result = "ERROR: " + str(e)
         return result
 
 # routing for figures that exist in the contrib_src - model thumbnail
-@app.route('/model/figures/<figureName>')
-def sendFigureModel(figureName):
-    return send_from_directory("../contrib_src/model/figures/", figureName)
+# @app.route('/model/figures/<figureName>')
+# def sendFigureModel(figureName):
+#     return send_from_directory("model/figures/", figureName)
 
 # routing for figures that exist in the contrib_src - sample_data
 @app.route('/sample_data/<figureName>')
-def sendFigureSample(figureName):
+def send_figure_sample(figureName):
     return send_from_directory("../contrib_src/sample_data/", figureName)
 
 # routing to get list of files in sample_data
 @app.route('/get_samples')
 def make_tree():
-    return jsonify(samples=os.listdir("../contrib_src/sample_data/"))
+    return jsonify(samples=os.listdir("sample_data/"))
+
+# routing for figures that exist in the contrib_src - sample_data
+@app.route('/working/<figureName>')
+def send_working_files(figureName):
+    return send_from_directory("../working/", figureName)
 
 def start():
     # app.wsgi_app = LoggingMiddleware(app.wsgi_app)
