@@ -40,8 +40,7 @@ $(document).ready(function() {
 
 // views the input image on the left + returns its position and height attributes
 function viewInputAndGetPredictions(inputSrc, resultSrc) {
-  const preview = $("#dropboxPreview");
-  preview.attr("src", inputSrc);
+  $("#dropboxPreview").attr("src", inputSrc);
   getPredictions(resultSrc);
 }
 
@@ -66,6 +65,9 @@ function getPredictions(url) {
 
 // clears all results
 function clearResult() {
+  // if plot
+  $(".plot-container").empty();
+  // if image
   $("#resultImage").attr("src", "");
   $("#inputImage").attr("src", "");
 }

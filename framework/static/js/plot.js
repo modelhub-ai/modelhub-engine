@@ -25,7 +25,8 @@ function plotHistogram(result, topX) {
     }
   ];
   var layout = {
-    title: "Result",
+    // title: "Result",
+    autosize: true,
     margin: {
       l: 200,
       r: 90,
