@@ -19,6 +19,7 @@ $(document).ready(function() {
     clearResult();
     activateAllSpinners();
     $(".sample").removeClass("current");
+    $(this).removeClass("dragging");
   });
 
   $("#fileupload").fileupload({
