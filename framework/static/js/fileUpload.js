@@ -38,6 +38,7 @@ function createImage(file) {
   var reader = new FileReader();
   reader.onload = function(e) {
     $("#loading1").removeClass("is-active");
+    $("#loading2").removeClass("is-active");
     $("#dropboxPreview").attr("src", e.target.result);
   };
   reader.readAsDataURL(file);
