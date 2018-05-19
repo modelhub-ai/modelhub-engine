@@ -84,7 +84,7 @@
       </div>
     </header>
     <main id="content" class="mdl-layout__content">
-      {% include 'overview.html' %} {% include 'model.html' %} {% include 'test.html' %}
+      {% include 'overview.html' %} {% include 'model.html' %} {% include 'test.html' %} {% with class="fixed" %} {% include 'footer.html' %} {% endwith %}
     </main>
   </div>
   <script src="{{ url_for('static',filename='js/globalVar.js') }}"></script>
