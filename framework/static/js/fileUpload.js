@@ -18,6 +18,7 @@ $(document).ready(function() {
     event.stopPropagation();
     clearResult();
     activateAllSpinners();
+    $(".sample").removeClass("current");
   });
 
   $("#fileupload").fileupload({
