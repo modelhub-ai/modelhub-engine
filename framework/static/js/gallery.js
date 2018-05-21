@@ -41,6 +41,7 @@ $(document).ready(function() {
 // views the input image on the left + returns its position and height attributes
 function viewInputAndGetPredictions(inputSrc, resultSrc) {
   $("#dropboxPreview").attr("src", inputSrc);
+  $("#loading1").hide();
   getPredictions(resultSrc);
 }
 
@@ -48,7 +49,7 @@ function getPredictions(url) {
   // clear existing
   clearResult();
   // show spinner
-  $("#loading2").addClass("is-active");
+  $("#loading2").show();
   // make call
   $.ajax({
     dataType: "json",
@@ -56,7 +57,7 @@ function getPredictions(url) {
     url: url,
     success: function(data) {
       // remove spinner
-      $("#loading2").removeClass("is-active");
+      $("#loading2").hide();
       // display new result
       sortDataType(data);
     }

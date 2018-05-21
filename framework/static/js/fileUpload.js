@@ -37,8 +37,8 @@ $(document).ready(function() {
 function createImage(file) {
   var reader = new FileReader();
   reader.onload = function(e) {
-    $("#loading1").removeClass("is-active");
-    $("#loading2").removeClass("is-active");
+    $("#loading1").hide();
+    $("#loading2").hide();
     $("#dropboxPreview").attr("src", e.target.result);
   };
   reader.readAsDataURL(file);
@@ -48,6 +48,6 @@ function activateAllSpinners() {
   // clear input
   $("#dropboxPreview").attr("src", "");
   // activate spinners
-  $("#loading1").addClass("is-active");
-  $("#loading2").addClass("is-active");
+  $("#loading1").show();
+  $("#loading2").show();
 }
