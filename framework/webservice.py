@@ -80,6 +80,9 @@ def predict():
             except Exception as e:
                 result = "ERROR: " + str(e)
             return result
+        else:
+            return jsonify(type='error',result="File format not supported", input=file.filename)
+
 
 # WARNING TEMP SOLUTION: route for getting predictions via url - only for our
 # sample_data only safely works for our sample data - for other urls, we need
