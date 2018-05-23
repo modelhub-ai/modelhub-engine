@@ -112,7 +112,8 @@ def send_figure_sample(figureName):
 # routing to get list of files in sample_data
 @app.route('/get_samples')
 def make_tree():
-    return jsonify(samples=os.listdir("sample_data/"))
+    _, _, sample_files = next(os.walk("sample_data/"))
+    return jsonify(samples=sample_files)
 
 # routing for figures that exist in the contrib_src - sample_data
 @app.route('/working/<figureName>')
