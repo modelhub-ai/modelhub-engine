@@ -1,0 +1,47 @@
+# Use an official ubuntu runtime as a parent image
+FROM ubuntu:16.04
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the app directory contents into the container at /app
+ADD /app /app
+
+# caffe2 installation from pytorch repository
+# taken from here (+ some changes):
+# https://caffe2.ai/docs/getting-started.html?platform=ubuntu&configuration=compile
+
+
+# Install dependencies
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends \
+      build-essential \
+      git \
+      cmake \
+      libgoogle-glog-dev \
+      libgtest-dev \
+      libiomp-dev \
+      libleveldb-dev \
+      liblmdb-dev \
+      libopencv-dev \
+      libopenmpi-dev \
+      libsnappy-dev \
+      libprotobuf-dev \
+      openmpi-bin \
+      openmpi-doc \
+      protobuf-compiler \
+      python-dev \
+      python-pip
+
+# Install some python packages
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir future hypothesis numpy protobuf six
+
+RUN apt-get install -y --no-install-recommends libgflags-dev
+
+# Clone Caffe2's source code from our Github repository
+RUN git clone --branch master --recursive https://github.com/pytorch/pytorch \
+    && cd pytorch \
+    && git checkout 3749c581b79cba49f511b19fa02c0f50fa05b250 \
+    && python setup_caffe2.py install
+    
