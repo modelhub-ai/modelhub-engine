@@ -4,11 +4,17 @@ from modelhublib.imageloaders import PilImageLoader, SitkImageLoader
 from modelhublib.imageconverters import PilToNumpyConverter, SitkToNumpyConverter
 
 
-class ImagePreprocessorBase(object):
+class ImageProcessorBase(object):
     """
-    Base class for image preprocessing. An image preprocessor handles loading input 
-    images, converting the images to the appropriate numpy array format required 
-    by the model, and optionally modifying the image.
+    Base class for image pre- and postprocessing, thus handeling all data 
+    processing before and after the inference.
+    
+    An image processor handles:
+    1. Loading of the input image(s).
+    2. Converting the loaded images to the appropriate numpy array format required 
+       by the model, and optionally modifying the image. After this step the data
+       should be prepared to be directly feed to the inference step.
+    3. Processing the inference result and convert it to the expected output format.
     """
     def __init__(self, config):
         self._config = config
@@ -18,13 +24,20 @@ class ImagePreprocessorBase(object):
         self._imageToNumpyConverter.setSuccessor(SitkToNumpyConverter())
     
 
-    def load(self, input):
+    def loadAndPreprocess(self, input):
         """
         Load input, preprocesses it and returns a numpy array appropriate to feed 
         into the inference model (4 dimensions: [batchsize, z/color, height, width]).
 
         There should be no need to overwrite this method in a derived class! 
         Rather overwrite the individual processing steps used in this method!
+
+        Args:
+            input (str): Name of the input file to be loaded
+
+        Returns:
+            numpy array: appropriate to feed into the inference model 
+                         (4 dimensions: [batchsize, z/color, height, width])
         """
         image = self._load(input)
         image = self._preprocessBeforeConversionToNumpy(image)
@@ -33,6 +46,15 @@ class ImagePreprocessorBase(object):
         print ('preprocessing done.')
         return npArr
 
+
+    def computeOutput(self, inferenceResults):
+        """
+        Overwrite this method to define how to postprocess the inference results 
+        computed by the model into a proper output as defined in the model
+        configuration file.
+        """
+        raise NotImplementedError("This is a method of an abstract class.")
+    
 
     def _load(self, input):
         """
