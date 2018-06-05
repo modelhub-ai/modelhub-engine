@@ -14,9 +14,11 @@ class PostprocessorBase(object):
         by the modelhub framework.
 
         Currently supported output formats are:
+
         - OrderedDict of labels (string) mapped to probabilities (float).
         - 2D or 3D numpy array representing a mask (int), classification 
           labels (int), or probability map (float)
+        
         """
         raise NotImplementedError("This is a method of an abstract class.")
 
