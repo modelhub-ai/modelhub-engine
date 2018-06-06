@@ -16,6 +16,7 @@ class ImageProcessorBase(object):
        should be prepared to be directly feed to the inference step.
     3. Processing the inference result and convert it to the expected output format.
     """
+    
     def __init__(self, config):
         self._config = config
         self._imageLoader = PilImageLoader(self._config)

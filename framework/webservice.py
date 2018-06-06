@@ -3,7 +3,6 @@ from urllib import unquote
 from redis import Redis, RedisError
 import os
 import socket
-from inference import infer
 import pprint
 import numpy as np
 import utils
@@ -12,6 +11,8 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 print os.getcwd()
+
+g_model = None
 
 # https://stackoverflow.com/questions/25466904/print-raw-http-request-in-flask-or-wsgi
 class LoggingMiddleware(object):
@@ -75,7 +76,7 @@ def predict():
             # save input
             filename = utils.save_uploaded_file(file, app.config['WORKING_FOLDER'])
             try:
-                result = infer(filename)
+                result = g_model.infer(filename)
                 result = utils.sort_result_type(result, app.config['WORKING_FOLDER'], filename)
             except Exception as e:
                 result = "ERROR: " + str(e)
@@ -93,7 +94,7 @@ def predict_sample():
     if request.method == 'GET':
         filename = request.args.get('filename')
         try:
-            result = infer("sample_data/" + filename)
+            result = g_model.infer("sample_data/" + filename)
             result = utils.sort_result_type(result, app.config['WORKING_FOLDER'], "sample_data/" + filename)
         except Exception as e:
             result = "ERROR: " + str(e)
@@ -120,6 +121,8 @@ def make_tree():
 def send_working_files(figureName):
     return send_from_directory("../working/", figureName)
 
-def start():
+def start(model):
+    global g_model 
+    g_model = model
     # app.wsgi_app = LoggingMiddleware(app.wsgi_app)
     app.run(host='0.0.0.0', port=80, threaded=True)

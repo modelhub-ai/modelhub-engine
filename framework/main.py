@@ -7,17 +7,17 @@ import os
 import glob
 
 
-def start(startNetron=True):
+def start(model, startNetron=True):
     if startNetron:
-        _startWithNetron()
+        _startWithNetron(model)
     else:
-        _startWebservice()
+        _startWebservice(model)
 
 
-def _startWithNetron():
+def _startWithNetron(model):
     netronProcess = Process(target=_startNetron)
     netronProcess.start()
-    _startWebservice()
+    _startWebservice(model)
     netronProcess.terminate()
 
 
@@ -27,5 +27,5 @@ def _startNetron():
         netron.serve_file(modelFile, port=81, host="0.0.0.0")
 
 
-def _startWebservice():
-    webservice.start()
+def _startWebservice(model):
+    webservice.start(model)
