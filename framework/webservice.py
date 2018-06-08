@@ -1,16 +1,19 @@
-from flask import Flask, render_template, request, send_from_directory, jsonify, send_file
+from flask import Flask, render_template, request, send_from_directory, send_file
 from urllib import unquote
 from redis import Redis, RedisError
-import os
 import socket
 import pprint
 import numpy as np
-import utils
-import json
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
-print os.getcwd()
+
+# new API
+from flask import abort, jsonify
+import os
+import json
+import utils
+
 
 g_model = None
 
@@ -63,7 +66,7 @@ def get_license():
             model_lic=open("license/model",'r').read(),
             sample_data_lic=open("license/sample_data",'r').read()
             )
-        except Exception as e:
+        except Exception as e:# ALLOWED_EXTENSIONS = json.load(open("model/config.json"))['model']['input']['format']
             result = "ERROR: " + str(e)
         return result
 
@@ -126,3 +129,20 @@ def start(model):
     g_model = model
     # app.wsgi_app = LoggingMiddleware(app.wsgi_app)
     app.run(host='0.0.0.0', port=80, threaded=True)
+
+############################
+
+
+
+@app.route('/api/v1.0/get_config', methods=['GET'])
+def get_config():
+    '''
+    The get_config HTTP method returns the model's config file as a json
+    object. #todo: put sample config file here.
+    '''
+    config_path = "model/config.json"
+    if os.path.isfile(config_path):
+        config = json.load(open(config_path))
+    else:
+        return utils.file_not_found(404,'Unable to find %s file.'%(config_path))
+    return jsonify(config=config)
