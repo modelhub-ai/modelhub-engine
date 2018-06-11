@@ -79,25 +79,6 @@ class ModelHubAPI:
 
 
     #
-    # def get_model_files(self):
-    #     '''
-    #     The get_model_files HTTP method allows you to download all the model
-    #     itself and all its associated files in a single zip folder.
-    #
-    #     Todo:
-    #     * This returns a error: [Errno 32] Broken pipe when url is typed into
-    #     chrome and before hitting enter - chrome sends request earlier, and this
-    #     messes up with flask.
-    #     '''
-    #     zip_name = "%s_model"%self.get_txt_file("model/config.json", "config",
-    #     True)["config"]["meta"]["name"].lower()
-    #     destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
-    #     self.make_archive('../contrib_src/model',destination_file)
-    #     return send_file(destination_file, as_attachment=True)
-    #
-    #
-
-    #
     # def get_sample_urls(self):
     #     '''
     #     This HTTP method
