@@ -108,10 +108,10 @@ def predict_sample():
 def sendFigureModel(figureName):
     return send_from_directory("model/figures/", figureName)
 
-# routing for figures that exist in the contrib_src - sample_data
-@app.route('/sample_data/<figureName>')
-def send_figure_sample(figureName):
-    return send_from_directory("../contrib_src/sample_data/", figureName)
+# # routing for figures that exist in the contrib_src - sample_data
+# @app.route('/sample_data/<figureName>')
+# def send_figure_sample(figureName):
+#     return send_from_directory("../contrib_src/sample_data/", figureName)
 
 # routing to get list of files in sample_data
 # @app.route('/get_samples')

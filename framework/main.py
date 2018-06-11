@@ -9,6 +9,7 @@ import glob
 
 
 def start(model, startNetron=True):
+    # temporary
     _testModelHubAPI(model)
     if startNetron:
         _startWithNetron(model)
@@ -39,6 +40,7 @@ def _testModelHubAPI(model):
     _testHelper(API.get_config(), 'get_config')
     _testHelper(API.get_legal(), 'get_legal')
     _testHelper(API.get_model_io(), 'get_model_io')
+    _testHelper(API.get_samples(), 'get_samples')
 
 def _testHelper(func, name):
     print "TESTING ", name
