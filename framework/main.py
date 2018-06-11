@@ -38,6 +38,7 @@ def _testModelHubAPI(model):
     API = ModelHubAPI.ModelHubAPI(model)
     _testHelper(API.get_config(), 'get_config')
     _testHelper(API.get_legal(), 'get_legal')
+    _testHelper(API.get_model_io(), 'get_model_io')
 
 def _testHelper(func, name):
     print "TESTING ", name

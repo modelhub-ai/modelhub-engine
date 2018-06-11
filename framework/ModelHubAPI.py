@@ -68,6 +68,16 @@ class ModelHubAPI:
             legals[3]:self._get_txt_file("license/sample_data", legals[3])
         }
         return {"legal": legal}
+
+    def get_model_io(self):
+        """
+        The get_model_io HTTP method is a convinience method that return the
+        model's input & output size and type in a python dictionary.
+        """
+        return {"model_io": self._get_txt_file("model/config.json",
+        "config", True)["config"]["model"]["io"]}
+
+
     #
     # def get_model_files(self):
     #     '''
@@ -86,14 +96,7 @@ class ModelHubAPI:
     #     return send_file(destination_file, as_attachment=True)
     #
     #
-    # def get_model_io(self):
-    #     '''
-    #     The get_model_io HTTP method is a convinience method that return the
-    #     model's input & output size and type.
-    #
-    #     '''
-    #     return jsonify(model_io = self.get_txt_file("model/config.json",
-    #     "config", True)["config"]["model"]["io"])
+
     #
     # def get_sample_urls(self):
     #     '''

@@ -15,8 +15,8 @@ class ModelHubRESTAPI:
         self.get_config)
         self.app.add_url_rule('/api/v1.0/get_legal', 'get_legal',
         self.get_legal)
-        # self.app.add_url_rule('/api/v1.0/get_model_io', 'get_model_io',
-        # self.get_model_io)
+        self.app.add_url_rule('/api/v1.0/get_model_io', 'get_model_io',
+        self.get_model_io)
         # self.app.add_url_rule('/api/v1.0/get_model_files', 'get_model_files',
         # self.get_model_files)
         # self.app.add_url_rule('/api/v1.0/get_sample_urls', 'get_sample_urls',
@@ -69,6 +69,18 @@ class ModelHubRESTAPI:
         '''
         return self._jsonify(self.api.get_legal())
 
+    def get_model_io(self):
+        '''
+        Calls api.get_model_io().
+        '''
+        return self._jsonify(self.api.get_model_io())
+
+    # def get_sample_urls(self):
+    #     '''
+    #     This HTTP method
+    #     '''
+    #     _, _, sample_urls = next(os.walk("sample_data/"))
+    #     return jsonify(sample_urls=sample_urls)
     #
     # def get_model_files(self):
     #     '''
@@ -86,22 +98,7 @@ class ModelHubRESTAPI:
     #     self.make_archive('../contrib_src/model',destination_file)
     #     return send_file(destination_file, as_attachment=True)
     #
-    #
-    # def get_model_io(self):
-    #     '''
-    #     The get_model_io HTTP method is a convinience method that return the
-    #     model's input & output size and type.
-    #
-    #     '''
-    #     return jsonify(model_io = self.get_txt_file("model/config.json",
-    #     "config", True)["config"]["model"]["io"])
-    #
-    # def get_sample_urls(self):
-    #     '''
-    #     This HTTP method
-    #     '''
-    #     _, _, sample_urls = next(os.walk("sample_data/"))
-    #     return jsonify(sample_urls=sample_urls)
+
 
     def start(self):
         self.app.run(host='0.0.0.0', port=80, threaded=True)
