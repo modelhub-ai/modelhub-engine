@@ -1,4 +1,4 @@
-import webservice
+import ModelHubAPI
 import netron
 import sys
 import time
@@ -28,4 +28,5 @@ def _startNetron():
 
 
 def _startWebservice(model):
-    webservice.start(model)
+    api = ModelHubAPI.ModelHubAPI(model)
+    api.start()

@@ -13,7 +13,7 @@ from flask import abort, jsonify
 import os
 import json
 import utils
-
+import shutil
 
 g_model = None
 
@@ -56,19 +56,19 @@ def index():
     )
 
 # returns all acknowledgemnts and licenses.
-@app.route('/get_license', methods=['GET'])
-def get_license():
-    if request.method == 'GET':
-        try:
-            result =  jsonify(
-            license=open("../framework/LICENSE",'r').read(),
-            acknowledgements=open("../framework/NOTICE",'r').read(),
-            model_lic=open("license/model",'r').read(),
-            sample_data_lic=open("license/sample_data",'r').read()
-            )
-        except Exception as e:# ALLOWED_EXTENSIONS = json.load(open("model/config.json"))['model']['input']['format']
-            result = "ERROR: " + str(e)
-        return result
+# @app.route('/get_license', methods=['GET'])
+# def get_license():
+#     if request.method == 'GET':
+#         try:
+#             result =  jsonify(
+#             license=open("../framework/LICENSE",'r').read(),
+#             acknowledgements=open("../framework/NOTICE",'r').read(),
+#             model_lic=open("license/model",'r').read(),
+#             sample_data_lic=open("license/sample_data",'r').read()
+#             )
+#         except Exception as e:# ALLOWED_EXTENSIONS = json.load(open("model/config.json"))['model']['input']['format']
+#             result = "ERROR: " + str(e)
+#         return result
 
 # route for getting predictions via file upload
 @app.route('/predict', methods=['POST'])
@@ -104,9 +104,9 @@ def predict_sample():
         return result
 
 # routing for figures that exist in the contrib_src - model thumbnail
-# @app.route('/model/figures/<figureName>')
-# def sendFigureModel(figureName):
-#     return send_from_directory("model/figures/", figureName)
+@app.route('/model/figures/<figureName>')
+def sendFigureModel(figureName):
+    return send_from_directory("model/figures/", figureName)
 
 # routing for figures that exist in the contrib_src - sample_data
 @app.route('/sample_data/<figureName>')
@@ -114,10 +114,10 @@ def send_figure_sample(figureName):
     return send_from_directory("../contrib_src/sample_data/", figureName)
 
 # routing to get list of files in sample_data
-@app.route('/get_samples')
-def make_tree():
-    _, _, sample_files = next(os.walk("sample_data/"))
-    return jsonify(samples=sample_files)
+# @app.route('/get_samples')
+# def make_tree():
+#     _, _, sample_files = next(os.walk("sample_data/"))
+#     return jsonify(samples=sample_files)
 
 # routing for figures that exist in the contrib_src - sample_data
 @app.route('/working/<figureName>')
@@ -125,24 +125,7 @@ def send_working_files(figureName):
     return send_from_directory("../working/", figureName)
 
 def start(model):
-    global g_model 
+    global g_model
     g_model = model
     # app.wsgi_app = LoggingMiddleware(app.wsgi_app)
     app.run(host='0.0.0.0', port=80, threaded=True)
-
-############################
-
-
-
-@app.route('/api/v1.0/get_config', methods=['GET'])
-def get_config():
-    '''
-    The get_config HTTP method returns the model's config file as a json
-    object. #todo: put sample config file here.
-    '''
-    config_path = "model/config.json"
-    if os.path.isfile(config_path):
-        config = json.load(open(config_path))
-    else:
-        return utils.file_not_found(404,'Unable to find %s file.'%(config_path))
-    return jsonify(config=config)

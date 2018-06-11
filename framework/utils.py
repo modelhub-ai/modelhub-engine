@@ -1,8 +1,10 @@
 from datetime import datetime
 import json
 import os
+
 from PIL import Image
-from flask import jsonify
+
+
 
 # ALLOWED_EXTENSIONS = json.load(open("model/config.json"))['model']['input']['format']
 
@@ -59,14 +61,3 @@ def sort_result_type(result, folder, input):
     else:
         result = jsonify(type='probabilities',result=result, input=input)
     return result
-
-
-#########################
-#########################
-
-def file_not_found(code, message):
-    """This helper functions allows for custom messages to be included with a
-    HTTP code."""
-    response = jsonify({'error': message})
-    response.status_code = code
-    return response
