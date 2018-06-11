@@ -36,4 +36,9 @@ def _startWebservice(model):
 # temporary tests for ModelHubAPI (python)
 def _testModelHubAPI(model):
     API = ModelHubAPI.ModelHubAPI(model)
-    print API.get_config()
+    _testHelper(API.get_config(), 'get_config')
+    _testHelper(API.get_legal(), 'get_legal')
+
+def _testHelper(func, name):
+    print "TESTING ", name
+    print func

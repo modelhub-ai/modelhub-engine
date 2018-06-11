@@ -13,8 +13,8 @@ class ModelHubRESTAPI:
         self.api = ModelHubAPI.ModelHubAPI(model)
         self.app.add_url_rule('/api/v1.0/get_config', 'get_config',
         self.get_config)
-        # self.app.add_url_rule('/api/v1.0/get_legal', 'get_legal',
-        # self.get_legal)
+        self.app.add_url_rule('/api/v1.0/get_legal', 'get_legal',
+        self.get_legal)
         # self.app.add_url_rule('/api/v1.0/get_model_io', 'get_model_io',
         # self.get_model_io)
         # self.app.add_url_rule('/api/v1.0/get_model_files', 'get_model_files',
@@ -62,27 +62,13 @@ class ModelHubRESTAPI:
         Calls api.get_config().
         '''
         return self._jsonify(self.api.get_config())
-    #
-    # def get_legal(self):
-    #     '''
-    #     The get_legal HTTP method returns the all of modelhub's, the model's,
-    #     and the sample data's legal documents as a json object.
-    #
-    #     These specifically include:
-    #     - modelhub_license
-    #     - modelhub_acknowledgements
-    #     - model_license
-    #     - sample_data_license
-    #     '''
-    #     legals = ["modelhub_license", "modelhub_acknowledgements",
-    #     "model_license", "sample_data_license" ]
-    #     legal = {
-    #         legals[0]:self.get_txt_file("../framework/LICENSE", legals[0]),
-    #         legals[1]:self.get_txt_file("../framework/NOTICE", legals[1]),
-    #         legals[2]:self.get_txt_file("license/model", legals[2]),
-    #         legals[3]:self.get_txt_file("license/sample_data", legals[3])
-    #     }
-    #     return jsonify(legal=legal)
+
+    def get_legal(self):
+        '''
+        Calls api.get_legal().
+        '''
+        return self._jsonify(self.api.get_legal())
+
     #
     # def get_model_files(self):
     #     '''

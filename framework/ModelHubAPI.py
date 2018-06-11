@@ -46,26 +46,28 @@ class ModelHubAPI:
         """
         return self._get_txt_file("model/config.json", "config", True)
 
-    # def get_legal(self):
-    #     '''
-    #     The get_legal HTTP method returns the all of modelhub's, the model's,
-    #     and the sample data's legal documents as a json object.
-    #
-    #     These specifically include:
-    #     - modelhub_license
-    #     - modelhub_acknowledgements
-    #     - model_license
-    #     - sample_data_license
-    #     '''
-    #     legals = ["modelhub_license", "modelhub_acknowledgements",
-    #     "model_license", "sample_data_license" ]
-    #     legal = {
-    #         legals[0]:self.get_txt_file("../framework/LICENSE", legals[0]),
-    #         legals[1]:self.get_txt_file("../framework/NOTICE", legals[1]),
-    #         legals[2]:self.get_txt_file("license/model", legals[2]),
-    #         legals[3]:self.get_txt_file("license/sample_data", legals[3])
-    #     }
-    #     return jsonify(legal=legal)
+    def get_legal(self):
+        """
+        The get_legal HTTP method returns the all of modelhub's, the model's,
+        and the sample data's legal documents as a python dictionary. If one
+        (or more) of the four files listed below returns an error, see its
+        corresponding key - this error will be registered in its value.
+
+        These specifically include:
+            - modelhub_license
+            - modelhub_acknowledgements
+            - model_license
+            - sample_data_license
+        """
+        legals = ["modelhub_license", "modelhub_acknowledgements",
+        "model_license", "sample_data_license" ]
+        legal = {
+            legals[0]:self._get_txt_file("../framework/LICENSE", legals[0]),
+            legals[1]:self._get_txt_file("../framework/NOTICE", legals[1]),
+            legals[2]:self._get_txt_file("license/model", legals[2]),
+            legals[3]:self._get_txt_file("license/sample_data", legals[3])
+        }
+        return {"legal": legal}
     #
     # def get_model_files(self):
     #     '''
