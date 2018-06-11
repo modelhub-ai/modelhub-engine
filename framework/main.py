@@ -1,4 +1,5 @@
 import ModelHubAPI
+import ModelHubRESTAPI
 import netron
 import sys
 import time
@@ -8,6 +9,7 @@ import glob
 
 
 def start(model, startNetron=True):
+    _testModelHubAPI(model)
     if startNetron:
         _startWithNetron(model)
     else:
@@ -28,5 +30,10 @@ def _startNetron():
 
 
 def _startWebservice(model):
-    api = ModelHubAPI.ModelHubAPI(model)
-    api.start()
+    RESTAPI = ModelHubRESTAPI.ModelHubRESTAPI(model)
+    RESTAPI.start()
+
+# temporary tests for ModelHubAPI (python)
+def _testModelHubAPI(model):
+    API = ModelHubAPI.ModelHubAPI(model)
+    print API.get_config()
