@@ -9,7 +9,7 @@ class ImageLoader(object):
         self._config = config
         self._successor = successor
 
-    
+
     def setSuccessor(self, successor):
         self._successor = successor
 
@@ -51,14 +51,14 @@ class ImageLoader(object):
         "_getImageDimensions" to supply the image dims to check against config.
         """
         imageDims = self._getImageDimensions(image)
-        limits = self._config["model"]["input"]["dim_limits"]
+        limits = self._config["model"]["io"]["input"]["dim_limits"]
         for i in range(3):
             if ((("min" in limits[i]) and (limits[i]["min"] > imageDims[i])) or
                 (("max" in limits[i]) and (limits[i]["max"] < imageDims[i]))):
                 raise IOError("Image dimensions %s do not comply with input requirements" % str(tuple(imageDims)))
 
-        
-    
+
+
     def _getImageDimensions(self, image):
         """
         Returns the dimensions of the loaded image, should be a 3 tuple (z, y, x).
@@ -67,4 +67,3 @@ class ImageLoader(object):
         is used by "_checkConfigCompliance".
         """
         raise NotImplementedError("This is a method of an abstract class.")
-
