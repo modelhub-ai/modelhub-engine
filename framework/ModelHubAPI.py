@@ -1,7 +1,7 @@
-from flask import Flask, jsonify, abort, make_response, send_file
 import os
 import json
-import shutil
+import time
+from datetime import datetime
 
 class ModelHubAPI:
 
@@ -85,6 +85,46 @@ class ModelHubAPI:
         together to use the sample files. This separation helps the REST API.
         You can use these to test the model out of the box.
         """
-        _, _, sample_files = next(os.walk("sample_data/"))
-        return {"samples": {"folder": "/contrib_src/sample_data/",
-        "files": sample_files} }
+        try:
+            _, _, sample_files = next(os.walk("sample_data/"))
+            return {"samples": {"folder": "/contrib_src/sample_data/",
+            "files": sample_files} }
+        except Exception as e:
+            return {'error': str(e)}
+
+    def predict(self, file_path):
+        """
+        The predict method preforms an inference on the model using a given
+        input. Returns either a json object or numpy array.
+
+        Args:
+            file_path (string): Path to file tp run inference on.
+
+        Todo:
+            * Output should be a list of outputs - order of which should match
+            whatever is in the config file. The return here should be a list as
+            well. Global keys: model, processing time, timestamp. Local keys
+            specific to each output in the list: output_name, output_type.
+            * what other nice to haves with the predict output?
+                - input url?
+                - input size?
+                - how much has input been resized to work with the model?
+
+        """
+        try:
+            start = time.time()
+            output = self.model.infer(file_path)
+            end = time.time()
+            config = self.get_config()["config"]
+            return {'output': output,
+            'output_type': config["model"]["io"]["output"][0]["type"], #hardcoded
+            'output_name': config["model"]["io"]["output"][0]["name"], #hardcoded
+            'timestamp': datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"),
+            'processing_time': round(end-start, 3),
+            'model':
+                { "id": config["id"],
+                "name": config["meta"]["name"]
+                }
+            }
+        except Exception as e:
+            return {'error': str(e)}
