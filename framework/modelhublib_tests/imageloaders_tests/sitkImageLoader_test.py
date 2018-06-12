@@ -23,8 +23,8 @@ class TestSitkImageLoader(unittest.TestCase):
 
     def test_load_testimage_checkers_64x32_fails_on_config_noncompliance(self):
         imgFileName = os.path.join(self.testDataDir, "testimage_checkers_64x32.nrrd")
-        self.config["model"]["input"]["dim_limits"][0]["min"] = 1
-        self.config["model"]["input"]["dim_limits"][2]["max"] = 1
+        self.config["model"]["io"]["input"]["dim_limits"][0]["min"] = 1
+        self.config["model"]["io"]["input"]["dim_limits"][2]["max"] = 1
         self.assertRaises(IOError, self.imageLoader.load, imgFileName)
     
     def test_getImageDimensions_returns_correct_dims(self):

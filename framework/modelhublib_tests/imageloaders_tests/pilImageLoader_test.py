@@ -23,7 +23,7 @@ class TestPilImageLoader(unittest.TestCase):
 
     def test_load_testimage_ramp_4x2_fails_on_config_noncompliance(self):
         imgFileName = os.path.join(self.testDataDir, "testimage_ramp_4x2.png")
-        self.config["model"]["input"]["dim_limits"][2]["min"] = 5
+        self.config["model"]["io"]["input"]["dim_limits"][2]["min"] = 5
         self.assertRaises(IOError, self.imageLoader.load, imgFileName)
 
     def test_getImageDimensions_returns_correct_dims(self):
