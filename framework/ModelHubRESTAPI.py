@@ -16,6 +16,8 @@ class ModelHubRESTAPI:
         # routes
         self.app.add_url_rule('/api/v1.0/samples/<sample_name>', 'samples',
         self._samples)
+        self.app.add_url_rule('/api/v1.0/thumbnail/<thumbnail_name>',
+        'thumbnail', self._thumbnail)
         # primary REST API calls
         self.app.add_url_rule('/api/v1.0/get_config', 'get_config',
         self.get_config)
@@ -27,12 +29,15 @@ class ModelHubRESTAPI:
         self.get_model_files)
         self.app.add_url_rule('/api/v1.0/get_samples', 'get_samples',
         self.get_samples)
-
+        self.app.add_url_rule('/api/v1.0/get_thumbnail', 'get_thumbnail',
+        self.get_thumbnail)
 
     def _jsonify(self, _dict):
         """
         This helper function wraps the flask jsonify function, and also allows
-        for error checking.
+        for error checking. This is usedfor calls that use the
+        api._get_txt_file() function that returns a dict key "error" in case
+        the file is not found.
 
         Todo:
         * All errors are returned as 400. Would be better to customize the error
@@ -70,6 +75,12 @@ class ModelHubRESTAPI:
         """
         return send_from_directory("/contrib_src/sample_data/", sample_name)
 
+    def _thumbnail(self, thumbnail_name):
+        """
+        Routing function for the thumbnail that exists in contrib_src.
+        """
+        return send_from_directory("/contrib_src/model/", thumbnail_name)
+
     def get_config(self):
         """
         Calls api.get_config().
@@ -94,27 +105,53 @@ class ModelHubRESTAPI:
         itself and all its associated files in a single zip folder.
 
         Todo:
-        * This returns a error: [Errno 32] Broken pipe when url is typed into
-        chrome and before hitting enter - chrome sends request earlier, and this
-        messes up with flask.
+            * This returns a error: [Errno 32] Broken pipe when url is typed
+            into chrome and before hitting enter - chrome sends request earlier,
+            and this messes up with flask.
+            * Currently no mechanism for catching errors (except what flask
+            will catch).
         """
-        zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
-        "config", True)["config"]["meta"]["name"].lower()
-        destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
-        self._make_archive('../contrib_src/model',destination_file)
-        return send_file(destination_file, as_attachment=True)
+        try:
+            zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
+            "config", True)["config"]["meta"]["name"].lower()
+            destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
+            self._make_archive('../contrib_src/model',destination_file)
+            return send_file(destination_file, as_attachment= True)
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
 
     def get_samples(self):
         """
         Calls api.get_samples(). Uses the "files" object and appends the url
         from the request. Returns a list of urls to the sample files. When the
         sample file urls are called, the call goes through _samples which
-        handles the routing.
+        handles the routing. Assumes that there are always at least one sample
+        file, which should always be the case.
         """
-        url = re.sub('\get_samples$', '', request.url) + "samples/"
-        samples = [ url + sample_name
-        for sample_name in self.api.get_samples()["samples"]["files"]]
-        return jsonify(samples = samples)
+        try:
+            url = re.sub('\get_samples$', '', request.url) + "samples/"
+            samples = [ url + sample_name
+            for sample_name in self.api.get_samples()["samples"]["files"]]
+            return jsonify(samples = samples)
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
+
+    def get_thumbnail(self):
+        """
+        The get_thumbnail HTTP method returns a url to the model thumbnail.
+        The thumbnail file must be named "thumbnail", and could either be a jpg
+        or png.
+        """
+        try:
+            url = re.sub('\get_thumbnail$', '', request.url) + "thumbnail/"
+            path = "/contrib_src/model/"
+            if os.path.isfile(path + "thumbnail.jpg"):
+                thumbnail = "thumbnail.jpg"
+            elif os.path.isfile(path + "thumbnail.png"):
+                thumbnail = "thumbnail.png"
+            return jsonify(thumbnail = url + thumbnail)
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
 
     def start(self):
         """

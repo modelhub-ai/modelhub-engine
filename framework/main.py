@@ -41,6 +41,7 @@ def _testModelHubAPI(model):
     _testHelper(API.get_legal(), 'get_legal')
     _testHelper(API.get_model_io(), 'get_model_io')
     _testHelper(API.get_samples(), 'get_samples')
+    _testHelper(API.predict("/contrib_src/sample_data/house.jpg"), 'predict')
 
 def _testHelper(func, name):
     print "TESTING ", name
