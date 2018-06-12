@@ -111,11 +111,14 @@ class ModelHubRESTAPI:
             * Currently no mechanism for catching errors (except what flask
             will catch).
         """
-        zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
-        "config", True)["config"]["meta"]["name"].lower()
-        destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
-        self._make_archive('../contrib_src/model',destination_file)
-        return send_file(destination_file, as_attachment= True)
+        try:
+            zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
+            "config", True)["config"]["meta"]["name"].lower()
+            destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
+            self._make_archive('../contrib_src/model',destination_file)
+            return send_file(destination_file, as_attachment= True)
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
 
     def get_samples(self):
         """
@@ -124,33 +127,31 @@ class ModelHubRESTAPI:
         sample file urls are called, the call goes through _samples which
         handles the routing. Assumes that there are always at least one sample
         file, which should always be the case.
-
-        Todo:
-            * Currently no mechanism for catching errors (except what flask
-            will catch)
         """
-        url = re.sub('\get_samples$', '', request.url) + "samples/"
-        samples = [ url + sample_name
-        for sample_name in self.api.get_samples()["samples"]["files"]]
-        return jsonify(samples = samples)
+        try:
+            url = re.sub('\get_samples$', '', request.url) + "samples/"
+            samples = [ url + sample_name
+            for sample_name in self.api.get_samples()["samples"]["files"]]
+            return jsonify(samples = samples)
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
 
     def get_thumbnail(self):
         """
         The get_thumbnail HTTP method returns a url to the model thumbnail.
         The thumbnail file must be named "thumbnail", and could either be a jpg
         or png.
-
-        Todo:
-            * Currently no mechanism for catching errors (except what flask
-            will catch)
         """
-        url = re.sub('\get_thumbnail$', '', request.url) + "thumbnail/"
-        path = "/contrib_src/model/"
-        if os.path.isfile(path + "thumbnail.jpg"):
-            thumbnail = "thumbnail.jpg"
-        elif os.path.isfile(path + "thumbnail.png"):
-            thumbnail = "thumbnail.png"
-        return jsonify(thumbnail = url + thumbnail)
+        try:
+            url = re.sub('\get_thumbnail$', '', request.url) + "thumbnail/"
+            path = "/contrib_src/model/"
+            if os.path.isfile(path + "thumbnail.jpg"):
+                thumbnail = "thumbnail.jpg"
+            elif os.path.isfile(path + "thumbnail.png"):
+                thumbnail = "thumbnail.png"
+            return jsonify(thumbnail = url + thumbnail)
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
 
     def start(self):
         """
