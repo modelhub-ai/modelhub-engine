@@ -5,8 +5,9 @@ from datetime import datetime
 
 class ModelHubAPI:
 
-    def __init__(self, model):
+    def __init__(self, model, contrib_src_dir):
         self.model = model
+        self.contrib_src_dir = contrib_src_dir
 
     def _get_txt_file(self, file_path, name, is_json=False):
         """
