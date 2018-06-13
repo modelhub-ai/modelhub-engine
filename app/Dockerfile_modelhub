@@ -1,5 +1,7 @@
-# Use our Caffe2 base image as parent
-FROM modelhub/base_caffe2:1.0.0
+# the modelhub dockerfile is the base file for all modelhub models.
+
+# Use ubuntu16.04 as base image
+FROM ubuntu:16.04
 
 # Install requirements
 RUN pip install Flask==0.12.2 \

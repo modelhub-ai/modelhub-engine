@@ -4,7 +4,9 @@ import os
 import json
 import shutil
 import re
-
+from mimetypes import MimeTypes
+import requests
+from datetime import datetime
 
 class ModelHubRESTAPI:
 
@@ -13,6 +15,7 @@ class ModelHubRESTAPI:
         self.model = model
         self.working_folder = '../working/'
         self.api = ModelHubAPI.ModelHubAPI(model)
+        self.allowed_extensions = self.api.get_model_io()["model_io"]["input"]["format"]
         # routes
         self.app.add_url_rule('/api/v1.0/samples/<sample_name>', 'samples',
         self._samples)
@@ -31,6 +34,8 @@ class ModelHubRESTAPI:
         self.get_samples)
         self.app.add_url_rule('/api/v1.0/get_thumbnail', 'get_thumbnail',
         self.get_thumbnail)
+        self.app.add_url_rule('/api/v1.0/predict', 'predict',
+        self.predict)
 
     def _jsonify(self, _dict):
         """
@@ -152,6 +157,39 @@ class ModelHubRESTAPI:
             return jsonify(thumbnail = url + thumbnail)
         except Exception as e:
             return self._jsonify({'error': str(e)})
+
+    def predict(self):
+        """
+        This HTTP method grabs the url from the request arguments and checks if
+        its type is allowed and if it is zipped. If it passes these tests, it is
+        saved in the working folder and inference is carried out on it using
+        api.predict(). Url must not contain any arguments and should end with
+        the file extension.
+        """
+        try:
+            if request.method == 'GET':
+                # get url
+                file_url = request.args.get('fileurl')
+                # get type and check.
+                mime = MimeTypes()
+                mime_type = mime.guess_type(file_url)
+                if str(mime_type[0]) in self.allowed_extensions and \
+                mime_type[1] == None:
+                    # get file and save.
+                    r = requests.get(file_url)
+                    now = datetime.now()
+                    file_name = os.path.join(self.working_folder,
+                    "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+                    mime_type[0].split("/")[1]))
+                    with open(file_name, 'wb') as f:
+                        f.write(r.content)
+                    return jsonify(self.api.predict(file_name))
+                else:
+                    return self._jsonify({'error': 'Incorrect file type.'})
+
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
+
 
     def start(self):
         """
