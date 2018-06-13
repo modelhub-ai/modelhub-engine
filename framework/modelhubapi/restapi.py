@@ -13,6 +13,7 @@ class ModelHubRESTAPI:
     def __init__(self, model, contrib_src_dir):
         self.app = Flask(__name__)
         self.model = model
+        self.contrib_src_dir = contrib_src_dir
         self.working_folder = '../working/'
         self.api = ModelHubAPI(model, contrib_src_dir)
         self.allowed_extensions = self.api.get_model_io()["model_io"]["input"]["format"]
