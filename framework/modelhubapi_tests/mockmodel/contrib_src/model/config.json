@@ -1,0 +1,57 @@
+{
+  "id": "MockId",
+  "meta": {
+    "name": "MockNet",
+    "application_area": "UnitTest",
+    "task": "Mock for Unit Testing",
+    "task_extended":
+      "Simple mock model for unit testing the APIs",
+    "data_type": "Image",
+    "data_source": "None"
+  },
+  "publication": {
+    "title":
+      "Mock Title",
+    "journal": "None",
+    "year": 1111,
+    "authors":
+      "No One",
+    "email": "mock@mock.org",
+    "abstract":
+      "Mock abstract",
+    "url": "https://modelhub.ai",
+    "google_scholar":
+      "",
+    "bibtex":
+      ""
+  },
+  "model": {
+    "description":
+      "Mock description",
+    "architecture": "Empty",
+    "learning_type": "None",
+    "io": {
+      "input": {
+        "format": ["image/png"],
+        "dim_limits": [
+          {
+            "min": 1,
+            "max": 4
+          },
+          {
+            "min": 1
+          },
+          {
+            "min": 1
+          }
+        ]
+      },
+      "output": [
+        {
+          "name": "probabilities",
+          "type": "label_list"
+        }
+      ]
+    }
+  }
+}
