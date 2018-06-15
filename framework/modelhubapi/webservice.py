@@ -9,8 +9,6 @@ import glob
 
 
 def start(model, contribSrcDir, startNetron=True):
-    # temporary
-    _testModelHubAPI(model, contribSrcDir)
     if startNetron:
         _startWithNetron(model, contribSrcDir)
     else:
@@ -34,15 +32,3 @@ def _startWebservice(model, contribSrcDir):
     restApi = ModelHubRESTAPI(model, contribSrcDir)
     restApi.start()
 
-# temporary tests for ModelHubAPI (python)
-def _testModelHubAPI(model, contribSrcDir):
-    api = ModelHubAPI(model, contribSrcDir)
-    _testHelper(api.get_config(), 'get_config')
-    _testHelper(api.get_legal(), 'get_legal')
-    _testHelper(api.get_model_io(), 'get_model_io')
-    _testHelper(api.get_samples(), 'get_samples')
-    _testHelper(api.predict("/contrib_src/sample_data/house.jpg"), 'predict')
-
-def _testHelper(func, name):
-    print "TESTING ", name
-    print func
