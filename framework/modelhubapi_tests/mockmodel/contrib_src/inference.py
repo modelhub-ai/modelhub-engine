@@ -7,7 +7,9 @@ class Model(ModelBase):
         pass    
 
     def infer(self, input):
-        output = None
+        # Return a constant classification result no matter what's the input
+        output = [{"label": "class_0", 'probability': 0.3},
+                  {"label": "class_1", 'probability': 0.7}]
         return output
         
 
