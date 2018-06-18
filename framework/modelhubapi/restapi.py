@@ -16,7 +16,7 @@ class ModelHubRESTAPI:
         self.contrib_src_dir = contrib_src_dir
         self.working_folder = '/working/'
         self.api = ModelHubAPI(model, contrib_src_dir)
-        self.allowed_extensions = self.api.get_model_io()["model_io"]["input"]["format"]
+        self.allowed_extensions = self.api.get_model_io()["input"]["format"]
         # routes
         self.app.add_url_rule('/api/v1.0/samples/<sample_name>', 'samples',
         self._samples)
@@ -130,7 +130,7 @@ class ModelHubRESTAPI:
         """
         try:
             zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
-            "config", True)["config"]["meta"]["name"].lower()
+            True)["meta"]["name"].lower()
             destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
             self._make_archive('/contrib_src/model',destination_file)
             return send_file(destination_file, as_attachment= True)
@@ -148,8 +148,8 @@ class ModelHubRESTAPI:
         try:
             url = re.sub('\get_samples$', '', request.url) + "samples/"
             samples = [ url + sample_name
-            for sample_name in self.api.get_samples()["samples"]["files"]]
-            return jsonify(samples = samples)
+            for sample_name in self.api.get_samples()["files"]]
+            return jsonify(samples)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -166,7 +166,7 @@ class ModelHubRESTAPI:
                 thumbnail = "thumbnail.jpg"
             elif os.path.isfile(path + "thumbnail.png"):
                 thumbnail = "thumbnail.png"
-            return jsonify(thumbnail = url + thumbnail)
+            return jsonify(url + thumbnail)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -184,6 +184,7 @@ class ModelHubRESTAPI:
         curl -i -X POST -F file=@<PATH_TO_FILE> "<URL>"
         """
         try:
+            # through URL
             if request.method == 'GET':
                 file_url = request.args.get('fileurl')
                 mime = MimeTypes()
@@ -198,6 +199,7 @@ class ModelHubRESTAPI:
                     return jsonify(self.api.predict(file_name))
                 else:
                     return self._jsonify({'error': 'Incorrect file type.'})
+            # through file upload
             elif request.method == 'POST':
                 file = request.files.get('file')
                 mime_type = file.content_type
@@ -209,7 +211,6 @@ class ModelHubRESTAPI:
                     return self._jsonify({'error': 'Incorrect file type.'})
         except Exception as e:
             return self._jsonify({'error': str(e)})
-
 
     def start(self):
         """
