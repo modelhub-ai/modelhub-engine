@@ -14,7 +14,7 @@ class ModelHubRESTAPI:
         self.app = Flask(__name__)
         self.model = model
         self.contrib_src_dir = contrib_src_dir
-        self.working_folder = '../working/'
+        self.working_folder = '/working/'
         self.api = ModelHubAPI(model, contrib_src_dir)
         self.allowed_extensions = self.api.get_model_io()["model_io"]["input"]["format"]
         # routes
@@ -87,6 +87,17 @@ class ModelHubRESTAPI:
         """
         return send_from_directory("/contrib_src/model/", thumbnail_name)
 
+    def _get_file_name(self, mime_type):
+        """
+        This utility function get the current date/time and returns a full path
+        to save either an uploaded file or one grabbed through a url.
+        """
+        now = datetime.now()
+        file_name = os.path.join(self.working_folder,
+        "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+        mime_type.split("/")[1]))
+        return file_name
+
     def get_config(self):
         """
         Calls api.get_config().
@@ -121,7 +132,7 @@ class ModelHubRESTAPI:
             zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
             "config", True)["config"]["meta"]["name"].lower()
             destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
-            self._make_archive('../contrib_src/model',destination_file)
+            self._make_archive('/contrib_src/model',destination_file)
             return send_file(destination_file, as_attachment= True)
         except Exception as e:
             return self._jsonify({'error': str(e)})
@@ -158,17 +169,6 @@ class ModelHubRESTAPI:
             return jsonify(thumbnail = url + thumbnail)
         except Exception as e:
             return self._jsonify({'error': str(e)})
-
-    def _get_file_name(self, mime_type):
-        """
-        This utility function get the current date/time and returns a full path
-        to save either an uploaded file or one grabbed through a url.
-        """
-        now = datetime.now()
-        file_name = os.path.join(self.working_folder,
-        "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-        mime_type.split("/")[1]))
-        return file_name
 
     def predict(self):
         """
