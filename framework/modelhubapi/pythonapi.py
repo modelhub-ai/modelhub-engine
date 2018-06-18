@@ -59,13 +59,11 @@ class ModelHubAPI:
             - model_license
             - sample_data_license
         """
-        legals = ["modelhub_license", "modelhub_acknowledgements",
-        "model_license", "sample_data_license"]
         legal = {
-            legals[0]:self._get_txt_file("../framework/LICENSE"),
-            legals[1]:self._get_txt_file("../framework/NOTICE"),
-            legals[2]:self._get_txt_file("license/model"),
-            legals[3]:self._get_txt_file("license/sample_data")
+            "modelhub_license": self._get_txt_file("../framework/LICENSE"),
+            "modelhub_acknowledgements": self._get_txt_file("../framework/NOTICE"),
+            "model_license": self._get_txt_file("license/model"),
+            "sample_data_license": self._get_txt_file("license/sample_data")
         }
         return legal
 
@@ -86,8 +84,7 @@ class ModelHubAPI:
         """
         try:
             _, _, sample_files = next(os.walk("sample_data/"))
-            return {"folder": "/contrib_src/sample_data/",
-            "files": sample_files}
+            return {"folder": "/contrib_src/sample_data/", "files": sample_files}
         except Exception as e:
             return {'error': str(e)}
 
