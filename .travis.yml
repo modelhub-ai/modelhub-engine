@@ -3,9 +3,10 @@ python:
   - "2.7"
 cache: pip
 install:
+  - pip install Flask==0.12.2
   - pip install numpy
-  - pip install Pillow
-  - pip install SimpleITK
+  - pip install Pillow==5.1.0
+  - pip install SimpleITK==1.1.0
 script:
   - cd framework
   - python -m unittest discover -p "*_test.py" -v
