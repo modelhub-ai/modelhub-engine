@@ -11,32 +11,33 @@ from datetime import datetime
 class ModelHubRESTAPI:
 
     def __init__(self, model, contrib_src_dir):
+        self.version = "v1.0"
         self.app = Flask(__name__)
         self.model = model
         self.contrib_src_dir = contrib_src_dir
         self.working_folder = '../working/'
         self.api = ModelHubAPI(model, contrib_src_dir)
-        self.allowed_extensions = self.api.get_model_io()["model_io"]["input"]["format"]
+        self.allowed_extensions = self.api.get_model_io()["input"]["format"]
         # routes
-        self.app.add_url_rule('/api/v1.0/samples/<sample_name>', 'samples',
-        self._samples)
-        self.app.add_url_rule('/api/v1.0/thumbnail/<thumbnail_name>',
-        'thumbnail', self._thumbnail)
+        self.app.add_url_rule('/api/samples/<sample_name>', 'samples',
+                              self._samples)
+        self.app.add_url_rule('/api/thumbnail/<thumbnail_name>',
+                              'thumbnail', self._thumbnail)
         # primary REST API calls
-        self.app.add_url_rule('/api/v1.0/get_config', 'get_config',
-        self.get_config)
-        self.app.add_url_rule('/api/v1.0/get_legal', 'get_legal',
-        self.get_legal)
-        self.app.add_url_rule('/api/v1.0/get_model_io', 'get_model_io',
-        self.get_model_io)
-        self.app.add_url_rule('/api/v1.0/get_model_files', 'get_model_files',
-        self.get_model_files)
-        self.app.add_url_rule('/api/v1.0/get_samples', 'get_samples',
-        self.get_samples)
-        self.app.add_url_rule('/api/v1.0/get_thumbnail', 'get_thumbnail',
-        self.get_thumbnail)
-        self.app.add_url_rule('/api/v1.0/predict', 'predict',
-        self.predict)
+        self.app.add_url_rule('/api/get_config', 'get_config',
+                              self.get_config)
+        self.app.add_url_rule('/api/get_legal', 'get_legal',
+                              self.get_legal)
+        self.app.add_url_rule('/api/get_model_io', 'get_model_io',
+                              self.get_model_io)
+        self.app.add_url_rule('/api/get_model_files', 'get_model_files',
+                              self.get_model_files)
+        self.app.add_url_rule('/api/get_samples', 'get_samples',
+                              self.get_samples)
+        self.app.add_url_rule('/api/get_thumbnail', 'get_thumbnail',
+                              self.get_thumbnail)
+        self.app.add_url_rule('/api/predict', 'predict',
+                              self.predict)
 
     def _jsonify(self, _dict):
         """
@@ -79,7 +80,7 @@ class ModelHubRESTAPI:
         """
         Routing function for sample files that exist in contrib_src.
         """
-        return send_from_directory("/contrib_src/sample_data/", sample_name)
+        return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name)
 
     def _thumbnail(self, thumbnail_name):
         """
@@ -137,8 +138,8 @@ class ModelHubRESTAPI:
         try:
             url = re.sub('\get_samples$', '', request.url) + "samples/"
             samples = [ url + sample_name
-            for sample_name in self.api.get_samples()["samples"]["files"]]
-            return jsonify(samples = samples)
+                        for sample_name in self.api.get_samples()["files"]]
+            return jsonify(samples)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -174,14 +175,13 @@ class ModelHubRESTAPI:
                 # get type and check.
                 mime = MimeTypes()
                 mime_type = mime.guess_type(file_url)
-                if str(mime_type[0]) in self.allowed_extensions and \
-                mime_type[1] == None:
+                if str(mime_type[0]) in self.allowed_extensions and mime_type[1] == None:
                     # get file and save.
                     r = requests.get(file_url)
                     now = datetime.now()
                     file_name = os.path.join(self.working_folder,
-                    "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-                    mime_type[0].split("/")[1]))
+                                             "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+                                             mime_type[0].split("/")[1]))
                     with open(file_name, 'wb') as f:
                         f.write(r.content)
                     return jsonify(self.api.predict(file_name))
