@@ -36,7 +36,7 @@ class ModelHubRESTAPI:
         self.app.add_url_rule('/api/v1.0/get_thumbnail', 'get_thumbnail',
         self.get_thumbnail)
         self.app.add_url_rule('/api/v1.0/predict', 'predict',
-        self.predict)
+        self.predict, methods= ['GET', 'POST'])
 
     def _jsonify(self, _dict):
         """
@@ -159,35 +159,54 @@ class ModelHubRESTAPI:
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
+    def _get_file_name(self, mime_type):
+        """
+        This utility function get the current date/time and returns a full path
+        to save either an uploaded file or one grabbed through a url.
+        """
+        now = datetime.now()
+        file_name = os.path.join(self.working_folder,
+        "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+        mime_type.split("/")[1]))
+        return file_name
+
     def predict(self):
         """
-        This HTTP method grabs the url from the request arguments and checks if
-        its type is allowed and if it is zipped. If it passes these tests, it is
-        saved in the working folder and inference is carried out on it using
-        api.predict(). Url must not contain any arguments and should end with
-        the file extension.
+        GET: This HTTP method grabs the url from the request arguments and
+        checks if its type is allowed and if it is zipped. If it passes these
+        tests, it is saved in the working folder and inference is carried out
+        on it using api.predict(). Url must not contain any arguments and should
+        end with the file extension.
+
+        POST: Similar to GET but based on uploaded files.
+
+        Testing POST with curl
+        curl -i -X POST -F file=@<PATH_TO_FILE> "<URL>"
         """
         try:
             if request.method == 'GET':
-                # get url
                 file_url = request.args.get('fileurl')
-                # get type and check.
                 mime = MimeTypes()
                 mime_type = mime.guess_type(file_url)
                 if str(mime_type[0]) in self.allowed_extensions and \
                 mime_type[1] == None:
                     # get file and save.
                     r = requests.get(file_url)
-                    now = datetime.now()
-                    file_name = os.path.join(self.working_folder,
-                    "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-                    mime_type[0].split("/")[1]))
+                    file_name = self._get_file_name(mime_type[0])
                     with open(file_name, 'wb') as f:
                         f.write(r.content)
                     return jsonify(self.api.predict(file_name))
                 else:
                     return self._jsonify({'error': 'Incorrect file type.'})
-
+            elif request.method == 'POST':
+                file = request.files.get('file')
+                mime_type = file.content_type
+                if str(mime_type) in self.allowed_extensions:
+                    file_name = self._get_file_name(mime_type)
+                    file.save(file_name)
+                    return jsonify(self.api.predict(file_name))
+                else:
+                    return self._jsonify({'error': 'Incorrect file type.'})
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
