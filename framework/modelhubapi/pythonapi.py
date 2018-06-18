@@ -9,7 +9,7 @@ class ModelHubAPI:
         self.model = model
         self.contrib_src_dir = contrib_src_dir
 
-    def _get_txt_file(self, file_path, name, is_json=False):
+    def _get_txt_file(self, file_path, is_json=False):
         """
         This helper function returns a json or txt file if it finds it.
         Otherwise, it returns an error message. It will always return a python
@@ -17,7 +17,6 @@ class ModelHubAPI:
 
         Args:
             file_path (string): Path to requested file.
-            name (string): Key to be included in the returned dictionary.
             is_json (bool): If the requested file is a json. False by default.
 
         """
@@ -26,7 +25,7 @@ class ModelHubAPI:
                 _file = json.load(open(file_path))
             else:
                 _file = open(file_path,'r').read()
-            return {name: _file}
+            return _file
         except Exception as e:
             return {'error': str(e)}
 
@@ -45,7 +44,7 @@ class ModelHubAPI:
             * Put sample config file here.
             * Put link to config.json schema when we have it.
         """
-        return self._get_txt_file("model/config.json", "config", True)
+        return self._get_txt_file("model/config.json", True)
 
     def get_legal(self):
         """
@@ -60,23 +59,20 @@ class ModelHubAPI:
             - model_license
             - sample_data_license
         """
-        legals = ["modelhub_license", "modelhub_acknowledgements",
-        "model_license", "sample_data_license"]
         legal = {
-            legals[0]:self._get_txt_file("../framework/LICENSE", legals[0]),
-            legals[1]:self._get_txt_file("../framework/NOTICE", legals[1]),
-            legals[2]:self._get_txt_file("license/model", legals[2]),
-            legals[3]:self._get_txt_file("license/sample_data", legals[3])
+            "modelhub_license": self._get_txt_file("../framework/LICENSE"),
+            "modelhub_acknowledgements": self._get_txt_file("../framework/NOTICE"),
+            "model_license": self._get_txt_file("license/model"),
+            "sample_data_license": self._get_txt_file("license/sample_data")
         }
-        return {"legal": legal}
+        return legal
 
     def get_model_io(self):
         """
         The get_model_io method is a convinience method that return the
         model's input & output size and type in a python dictionary.
         """
-        return {"model_io": self._get_txt_file("model/config.json",
-        "config", True)["config"]["model"]["io"]}
+        return self._get_txt_file("model/config.json", True)["model"]["io"]
 
     def get_samples(self):
         """
@@ -88,8 +84,7 @@ class ModelHubAPI:
         """
         try:
             _, _, sample_files = next(os.walk("sample_data/"))
-            return {"samples": {"folder": "/contrib_src/sample_data/",
-            "files": sample_files} }
+            return {"folder": "/contrib_src/sample_data/", "files": sample_files}
         except Exception as e:
             return {'error': str(e)}
 
@@ -116,7 +111,7 @@ class ModelHubAPI:
             start = time.time()
             output = self.model.infer(file_path)
             end = time.time()
-            config = self.get_config()["config"]
+            config = self.get_config()
             return {'output': output,
             'output_type': config["model"]["io"]["output"][0]["type"], #hardcoded
             'output_name': config["model"]["io"]["output"][0]["name"], #hardcoded
