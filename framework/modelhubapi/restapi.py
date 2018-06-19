@@ -36,7 +36,7 @@ class ModelHubRESTAPI:
         self.app.add_url_rule('/api/get_thumbnail', 'get_thumbnail',
                               self.get_thumbnail)
         self.app.add_url_rule('/api/predict', 'predict',
-                              self.predict)
+                              self.predict, methods= ['GET', 'POST'])
 
     def _jsonify(self, _dict):
         """
