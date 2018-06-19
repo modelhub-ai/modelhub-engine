@@ -11,7 +11,6 @@ from datetime import datetime
 class ModelHubRESTAPI:
 
     def __init__(self, model, contrib_src_dir):
-        self.version = "v1.0"
         self.app = Flask(__name__)
         self.model = model
         self.contrib_src_dir = contrib_src_dir
@@ -62,20 +61,6 @@ class ModelHubRESTAPI:
         """
         return abort(make_response(jsonify(error=message), code))
 
-    def _make_archive(self, source, destination):
-        """
-        Utility function to archive a given folder.
-        http://www.seanbehan.com/how-to-use-python-shutil-make_archive-to-zip-up-
-        a-directory-recursively-including-the-root-folder/
-        """
-        base = os.path.basename(destination)
-        name = base.split('.')[0]
-        format = base.split('.')[1]
-        archive_from = os.path.dirname(source)
-        archive_to = os.path.basename(source.strip(os.sep))
-        shutil.make_archive(name, format, archive_from, archive_to)
-        shutil.move('%s.%s'%(name,format), destination)
-
     def _samples(self, sample_name):
         """
         Routing function for sample files that exist in contrib_src.
@@ -86,7 +71,7 @@ class ModelHubRESTAPI:
         """
         Routing function for the thumbnail that exists in contrib_src.
         """
-        return send_from_directory("/contrib_src/model/", thumbnail_name)
+        return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name)
 
     def get_config(self):
         """
@@ -119,11 +104,10 @@ class ModelHubRESTAPI:
             will catch).
         """
         try:
-            zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
-            "config", True)["config"]["meta"]["name"].lower()
-            destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
-            self._make_archive('../contrib_src/model',destination_file)
-            return send_file(destination_file, as_attachment= True)
+            model_name = self.api.get_config()["meta"]["name"].lower()
+            archive_name = str("%s/%s_model"%(self.working_folder, model_name))
+            shutil.make_archive(archive_name, "zip", self.contrib_src_dir, "model")            
+            return send_file(archive_name + ".zip", as_attachment= True)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -151,12 +135,14 @@ class ModelHubRESTAPI:
         """
         try:
             url = re.sub('\get_thumbnail$', '', request.url) + "thumbnail/"
-            path = "/contrib_src/model/"
+            path = self.contrib_src_dir + "/model/"
             if os.path.isfile(path + "thumbnail.jpg"):
                 thumbnail = "thumbnail.jpg"
             elif os.path.isfile(path + "thumbnail.png"):
                 thumbnail = "thumbnail.png"
-            return jsonify(thumbnail = url + thumbnail)
+            else:
+                return self._jsonify({'error': 'Thumbnail not found'})
+            return jsonify(url + thumbnail)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
