@@ -8,26 +8,8 @@ class ModelHubAPI:
     def __init__(self, model, contrib_src_dir):
         self.model = model
         self.contrib_src_dir = contrib_src_dir
-
-    def _get_txt_file(self, file_path, is_json=False):
-        """
-        This helper function returns a json or txt file if it finds it.
-        Otherwise, it returns an error message. It will always return a python
-        dictionary.
-
-        Args:
-            file_path (string): Path to requested file.
-            is_json (bool): If the requested file is a json. False by default.
-
-        """
-        try:
-            if is_json:
-                _file = json.load(open(file_path))
-            else:
-                _file = open(file_path,'r').read()
-            return _file
-        except Exception as e:
-            return {'error': str(e)}
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        self.framework_dir = os.path.normpath(os.path.join(this_dir, ".."))
 
     def get_config(self):
         """
@@ -44,7 +26,8 @@ class ModelHubAPI:
             * Put sample config file here.
             * Put link to config.json schema when we have it.
         """
-        return self._get_txt_file("model/config.json", True)
+        config_file_path = self.contrib_src_dir + "/model/config.json"
+        return self._load_json(config_file_path)
 
     def get_legal(self):
         """
@@ -59,12 +42,11 @@ class ModelHubAPI:
             - model_license
             - sample_data_license
         """
-        legal = {
-            "modelhub_license": self._get_txt_file("../framework/LICENSE"),
-            "modelhub_acknowledgements": self._get_txt_file("../framework/NOTICE"),
-            "model_license": self._get_txt_file("license/model"),
-            "sample_data_license": self._get_txt_file("license/sample_data")
-        }
+        contrib_license_dir = self.contrib_src_dir + "/license"
+        legal = self._load_txt_as_dict(self.framework_dir + "/LICENSE", "modelhub_license")
+        legal.update(self._load_txt_as_dict(self.framework_dir + "/NOTICE", "modelhub_acknowledgements"))
+        legal.update(self._load_txt_as_dict(contrib_license_dir + "/model", "model_license"))
+        legal.update(self._load_txt_as_dict(contrib_license_dir + "/sample_data", "sample_data_license"))
         return legal
 
     def get_model_io(self):
@@ -72,7 +54,8 @@ class ModelHubAPI:
         The get_model_io method is a convinience method that return the
         model's input & output size and type in a python dictionary.
         """
-        return self._get_txt_file("model/config.json", True)["model"]["io"]
+        config_file_path = self.contrib_src_dir + "/model/config.json"
+        return self._load_json(config_file_path)["model"]["io"]
 
     def get_samples(self):
         """
@@ -83,8 +66,10 @@ class ModelHubAPI:
         You can use these to test the model out of the box.
         """
         try:
-            _, _, sample_files = next(os.walk("sample_data/"))
-            return {"folder": "/contrib_src/sample_data/", "files": sample_files}
+            sample_data_dir = self.contrib_src_dir + "/sample_data"
+            _, _, sample_files = next(os.walk(sample_data_dir))
+            return  {"folder": sample_data_dir,
+                     "files": sample_files} 
         except Exception as e:
             return {'error': str(e)}
 
@@ -113,14 +98,36 @@ class ModelHubAPI:
             end = time.time()
             config = self.get_config()
             return {'output': output,
-            'output_type': config["model"]["io"]["output"][0]["type"], #hardcoded
-            'output_name': config["model"]["io"]["output"][0]["name"], #hardcoded
-            'timestamp': datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"),
-            'processing_time': round(end-start, 3),
-            'model':
-                { "id": config["id"],
-                "name": config["meta"]["name"]
-                }
-            }
+                    'output_type': config["model"]["io"]["output"][0]["type"], #hardcoded
+                    'output_name': config["model"]["io"]["output"][0]["name"], #hardcoded
+                    'timestamp': datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"),
+                    'processing_time': round(end-start, 3),
+                    'model':
+                        { "id": config["id"],
+                          "name": config["meta"]["name"]
+                        }
+                    }
         except Exception as e:
             return {'error': str(e)}
+
+
+    # -------------------------------------------------------------------------
+    # Private helper functions
+    # -------------------------------------------------------------------------
+    def _load_txt_as_dict(self, file_path, return_key):
+        try:
+            with open(file_path,'r') as f:
+                txt = f.read()
+                return {return_key: txt}
+        except Exception as e:
+            return {'error': str(e)}
+    
+    def _load_json(self, file_path):
+        try:
+            with open(file_path) as f:
+                loaded_dict = json.load(f)
+                return loaded_dict
+        except Exception as e:
+            return {'error': str(e)}
+
+

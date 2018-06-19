@@ -18,25 +18,25 @@ class ModelHubRESTAPI:
         self.api = ModelHubAPI(model, contrib_src_dir)
         self.allowed_extensions = self.api.get_model_io()["input"]["format"]
         # routes
-        self.app.add_url_rule('/api/v1.0/samples/<sample_name>', 'samples',
-        self._samples)
-        self.app.add_url_rule('/api/v1.0/thumbnail/<thumbnail_name>',
-        'thumbnail', self._thumbnail)
+        self.app.add_url_rule('/api/samples/<sample_name>', 'samples',
+                              self._samples)
+        self.app.add_url_rule('/api/thumbnail/<thumbnail_name>',
+                              'thumbnail', self._thumbnail)
         # primary REST API calls
-        self.app.add_url_rule('/api/v1.0/get_config', 'get_config',
-        self.get_config)
-        self.app.add_url_rule('/api/v1.0/get_legal', 'get_legal',
-        self.get_legal)
-        self.app.add_url_rule('/api/v1.0/get_model_io', 'get_model_io',
-        self.get_model_io)
-        self.app.add_url_rule('/api/v1.0/get_model_files', 'get_model_files',
-        self.get_model_files)
-        self.app.add_url_rule('/api/v1.0/get_samples', 'get_samples',
-        self.get_samples)
-        self.app.add_url_rule('/api/v1.0/get_thumbnail', 'get_thumbnail',
-        self.get_thumbnail)
-        self.app.add_url_rule('/api/v1.0/predict', 'predict',
-        self.predict, methods= ['GET', 'POST'])
+        self.app.add_url_rule('/api/get_config', 'get_config',
+                              self.get_config)
+        self.app.add_url_rule('/api/get_legal', 'get_legal',
+                              self.get_legal)
+        self.app.add_url_rule('/api/get_model_io', 'get_model_io',
+                              self.get_model_io)
+        self.app.add_url_rule('/api/get_model_files', 'get_model_files',
+                              self.get_model_files)
+        self.app.add_url_rule('/api/get_samples', 'get_samples',
+                              self.get_samples)
+        self.app.add_url_rule('/api/get_thumbnail', 'get_thumbnail',
+                              self.get_thumbnail)
+        self.app.add_url_rule('/api/predict', 'predict',
+                              self.predict)
 
     def _jsonify(self, _dict):
         """
@@ -61,31 +61,17 @@ class ModelHubRESTAPI:
         """
         return abort(make_response(jsonify(error=message), code))
 
-    def _make_archive(self, source, destination):
-        """
-        Utility function to archive a given folder.
-        http://www.seanbehan.com/how-to-use-python-shutil-make_archive-to-zip-up-
-        a-directory-recursively-including-the-root-folder/
-        """
-        base = os.path.basename(destination)
-        name = base.split('.')[0]
-        format = base.split('.')[1]
-        archive_from = os.path.dirname(source)
-        archive_to = os.path.basename(source.strip(os.sep))
-        shutil.make_archive(name, format, archive_from, archive_to)
-        shutil.move('%s.%s'%(name,format), destination)
-
     def _samples(self, sample_name):
         """
         Routing function for sample files that exist in contrib_src.
         """
-        return send_from_directory("/contrib_src/sample_data/", sample_name)
+        return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name)
 
     def _thumbnail(self, thumbnail_name):
         """
         Routing function for the thumbnail that exists in contrib_src.
         """
-        return send_from_directory("/contrib_src/model/", thumbnail_name)
+        return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name)
 
     def _get_file_name(self, mime_type):
         """
@@ -129,11 +115,10 @@ class ModelHubRESTAPI:
             will catch).
         """
         try:
-            zip_name = "%s_model"%self.api._get_txt_file("model/config.json",
-            True)["meta"]["name"].lower()
-            destination_file =  str("%s%s.zip"%(self.working_folder, zip_name))
-            self._make_archive('/contrib_src/model',destination_file)
-            return send_file(destination_file, as_attachment= True)
+            model_name = self.api.get_config()["meta"]["name"].lower()
+            archive_name = str("%s/%s_model"%(self.working_folder, model_name))
+            shutil.make_archive(archive_name, "zip", self.contrib_src_dir, "model")            
+            return send_file(archive_name + ".zip", as_attachment= True)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -148,7 +133,7 @@ class ModelHubRESTAPI:
         try:
             url = re.sub('\get_samples$', '', request.url) + "samples/"
             samples = [ url + sample_name
-            for sample_name in self.api.get_samples()["files"]]
+                        for sample_name in self.api.get_samples()["files"]]
             return jsonify(samples)
         except Exception as e:
             return self._jsonify({'error': str(e)})
@@ -161,11 +146,13 @@ class ModelHubRESTAPI:
         """
         try:
             url = re.sub('\get_thumbnail$', '', request.url) + "thumbnail/"
-            path = "/contrib_src/model/"
+            path = self.contrib_src_dir + "/model/"
             if os.path.isfile(path + "thumbnail.jpg"):
                 thumbnail = "thumbnail.jpg"
             elif os.path.isfile(path + "thumbnail.png"):
                 thumbnail = "thumbnail.png"
+            else:
+                return self._jsonify({'error': 'Thumbnail not found'})
             return jsonify(url + thumbnail)
         except Exception as e:
             return self._jsonify({'error': str(e)})
@@ -189,8 +176,7 @@ class ModelHubRESTAPI:
                 file_url = request.args.get('fileurl')
                 mime = MimeTypes()
                 mime_type = mime.guess_type(file_url)
-                if str(mime_type[0]) in self.allowed_extensions and \
-                mime_type[1] == None:
+                if str(mime_type[0]) in self.allowed_extensions and mime_type[1] == None:
                     # get file and save.
                     r = requests.get(file_url)
                     file_name = self._get_file_name(mime_type[0])
