@@ -95,7 +95,10 @@ class TestModelHubRESTAPI(TestAPIBase):
                                  "model/model.txt",
                                  "model/config.json",
                                  "model/thumbnail.jpg"]
-            self.assertListEqual(reference_content, test_zip.namelist())
+            reference_content.sort()
+            zip_content = test_zip.namelist()
+            zip_content.sort()
+            self.assertListEqual(reference_content, zip_content)
             self.assertEqual("EMPTY MOCK MODEL FOR UNIT TESTING", 
                              test_zip.read("model/model.txt"))
 
