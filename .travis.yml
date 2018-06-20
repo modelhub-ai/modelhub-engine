@@ -8,9 +8,13 @@ install:
   - pip install Pillow==5.1.0
   - pip install SimpleITK==1.1.0
   - pip install requests==2.18.4
+  - pip install coverage
+  - pip install coveralls
 script:
   - cd framework
-  - python -m unittest discover -p "*_test.py" -v
+  - coverage run --source modelhublib,modelhubapi -m unittest discover -p "*_test.py" -v
+after_success:
+  - coveralls
 notifications:
   email:
     on_success: change # default: change
