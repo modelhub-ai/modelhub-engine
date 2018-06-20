@@ -15,7 +15,12 @@ class TestImageLoader(unittest.TestCase):
         self.assertRaises(NotImplementedError, self.imageLoader._load, None)
         self.assertRaises(NotImplementedError, self.imageLoader._getImageDimensions, None)
         self.assertRaises(NotImplementedError, self.imageLoader._checkConfigCompliance, None)
+    
+    def test_load_returns_IOError_on_string_input(self):
+        self.assertRaises(IOError, self.imageLoader.load, "nonexistent.png")
 
+    def test_load_returns_IOError_on_non_string_input(self):
+        self.assertRaises(IOError, self.imageLoader.load, None)
 
 
 if __name__ == '__main__':
