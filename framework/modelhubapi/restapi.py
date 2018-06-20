@@ -14,7 +14,7 @@ class ModelHubRESTAPI:
         self.app = Flask(__name__)
         self.model = model
         self.contrib_src_dir = contrib_src_dir
-        self.working_folder = '/working/'
+        self.working_folder = '/working'
         self.api = ModelHubAPI(model, contrib_src_dir)
         self.allowed_extensions = self.api.get_model_io()["input"]["format"]
         # routes
@@ -80,8 +80,8 @@ class ModelHubRESTAPI:
         """
         now = datetime.now()
         file_name = os.path.join(self.working_folder,
-        "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-        mime_type.split("/")[1]))
+                                 "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+                                 mime_type.split("/")[1]))
         return file_name
 
     def get_config(self):
@@ -116,7 +116,7 @@ class ModelHubRESTAPI:
         """
         try:
             model_name = self.api.get_config()["meta"]["name"].lower()
-            archive_name = str("%s/%s_model"%(self.working_folder, model_name))
+            archive_name = os.path.join(self.working_folder, model_name + "_model")
             shutil.make_archive(archive_name, "zip", self.contrib_src_dir, "model")            
             return send_file(archive_name + ".zip", as_attachment= True)
         except Exception as e:
