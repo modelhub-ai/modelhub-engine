@@ -1,5 +1,6 @@
 from apitestbase import TestAPIBase
 import os
+import io
 from zipfile import ZipFile
 import shutil
 import json
@@ -12,8 +13,8 @@ class TestModelHubRESTAPI(TestAPIBase):
     def setUp(self):
         model = Model()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
-        rest_api = ModelHubRESTAPI(model, contrib_src_dir)
+        self.contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
+        rest_api = ModelHubRESTAPI(model, self.contrib_src_dir)
         self.temp_workdir = os.path.join(self.this_dir, "temp_workdir")
         if not os.path.exists(self.temp_workdir):
             os.makedirs(self.temp_workdir)
@@ -103,9 +104,21 @@ class TestModelHubRESTAPI(TestAPIBase):
                              test_zip.read("model/model.txt"))
 
     
+    def test_predict_by_post_returns_expected_mock_prediction(self):
+        response = self._post_predict_request_on_test_image()
+        result = json.loads(response.get_data())
+        self.assert_predict_contains_expected_mock_prediction(result)
+    
+
+    def test_predict_by_post_returns_expected_mock_meta_info(self):
+        response = self._post_predict_request_on_test_image()
+        result = json.loads(response.get_data())
+        self.assert_predict_contains_expected_mock_meta_info(result)
+
+    
     # TODO this is not so nice yet, test should not require a download from the inet
     # should probably use a mock server for this
-    def test_predict_returns_expected_mock_prediction(self):
+    def test_predict_by_url_returns_expected_mock_prediction(self):
         response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.png")
         result = json.loads(response.get_data())
         self.assert_predict_contains_expected_mock_prediction(result)
@@ -113,10 +126,24 @@ class TestModelHubRESTAPI(TestAPIBase):
 
     # TODO this is not so nice yet, test should not require a download from the inet
     # should probably use a mock server for this
-    def test_predict_returns_expected_mock_meta_info(self):
+    def test_predict_by_url_returns_expected_mock_meta_info(self):
         response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.png")
         result = json.loads(response.get_data())
         self.assert_predict_contains_expected_mock_meta_info(result)
+
+
+    #--------------------------------------------------------------------------
+    # Private helper/convenience functions
+    #--------------------------------------------------------------------------
+    def _post_predict_request_on_test_image(self):
+        test_filename = self.contrib_src_dir + "/sample_data/testimage_ramp_4x2.png"
+        with open(test_filename, "rb") as f:
+            image_data = io.BytesIO(f.read())
+        response = self.client.post("/api/predict",
+                                    data = {'file': (image_data, 'test_image.png')},
+                                    content_type = 'multipart/form-data')
+        return response
+
 
 
 if __name__ == '__main__':
