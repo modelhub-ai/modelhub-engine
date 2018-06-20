@@ -1,6 +1,6 @@
 | Build/Test Status | Code Coverage |
 | :---: | :---: |
-| [![](https://travis-ci.org/modelhub-ai/modelhub-docker.svg?branch=master)](https://travis-ci.org/modelhub-ai/modelhub-docker) | [![Coverage Status](https://coveralls.io/repos/github/modelhub-ai/modelhub-docker/badge.svg?branch=master)](https://coveralls.io/github/modelhub-ai/modelhub-docker?branch=master) |
+| [![](https://travis-ci.org/modelhub-ai/modelhub-docker.svg?branch=master)](https://travis-ci.org/modelhub-ai/modelhub-docker) | [![Coverage Status](https://coveralls.io/repos/github/modelhub-ai/modelhub-docker/badge.svg?branch=master&service=github)](https://coveralls.io/github/modelhub-ai/modelhub-docker?branch=master) |
 
 
 # modelhub-docker
