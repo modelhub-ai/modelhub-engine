@@ -2,5 +2,6 @@
 /contrib_src/.ipynb_checkpoints
 /docs/build
 *.pyc
+.coverage
 .vscode
 *.code-workspace
