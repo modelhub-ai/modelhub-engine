@@ -55,7 +55,14 @@ class ModelHubAPI:
         model's input & output size and type in a python dictionary.
         """
         config_file_path = self.contrib_src_dir + "/model/config.json"
-        return self._load_json(config_file_path)["model"]["io"]
+        config = self._load_json(config_file_path)
+        if "error" in config:
+            return config
+        if ("model" in config) and ("io" in config["model"]):
+            return config["model"]["io"]
+        else:
+            return {'error': 'Config file is malformed.'}
+        
 
     def get_samples(self):
         """
@@ -71,7 +78,7 @@ class ModelHubAPI:
             return  {"folder": sample_data_dir,
                      "files": sample_files} 
         except Exception as e:
-            return {'error': str(e)}
+            return {'error': repr(e)}
 
     def predict(self, file_path):
         """
@@ -108,7 +115,7 @@ class ModelHubAPI:
                         }
                     }
         except Exception as e:
-            return {'error': str(e)}
+            return {'error': repr(e)}
 
 
     # -------------------------------------------------------------------------

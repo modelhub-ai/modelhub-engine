@@ -13,3 +13,11 @@ class Model(ModelBase):
         return output
         
 
+class ModelThrowingError(ModelBase):
+
+    def __init__(self):
+        pass    
+
+    def infer(self, input):
+        raise NotImplementedError
+
