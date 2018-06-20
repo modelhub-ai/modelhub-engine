@@ -1,10 +1,9 @@
 | Build/Test Status | [![](https://travis-ci.org/modelhub-ai/modelhub-docker.svg?branch=master)](https://travis-ci.org/modelhub-ai/modelhub-docker) |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| --- | --- |
 
+| Code Coverage | [![Coverage Status](https://coveralls.io/repos/github/modelhub-ai/modelhub-docker/badge.svg?branch=master)](https://coveralls.io/github/modelhub-ai/modelhub-docker?branch=master) |
+| --- | --- |
 
-| Docker Status | [![](https://images.microbadger.com/badges/image/modelhub/onnx-docker.svg)](https://microbadger.com/images/modelhub/onnx-docker "Get your own image badge on microbadger.com") |
-[![](https://images.microbadger.com/badges/version/modelhub/onnx-docker.svg)](https://microbadger.com/images/modelhub/onnx-docker "Get your own version badge on microbadger.com") |
-| --- | --- | --- |
 
 # modelhub-docker
 
