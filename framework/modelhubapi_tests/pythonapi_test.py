@@ -19,7 +19,7 @@ class TestModelHubAPI(TestAPIBase):
 
     def test_get_config_returns_no_error(self):
         config = self.api.get_config()
-        self.assertTrue("error" not in config)
+        self.assertNotIn("error", config)
 
 
     def test_get_config_returns_correct_dict(self):
