@@ -58,10 +58,8 @@ class ModelHubAPI:
         config = self._load_json(config_file_path)
         if "error" in config:
             return config
-        if ("model" in config) and ("io" in config["model"]):
-            return config["model"]["io"]
         else:
-            return {'error': 'Config file is malformed.'}
+            return config["model"]["io"]
         
 
     def get_samples(self):
