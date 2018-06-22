@@ -29,7 +29,6 @@ class TestModelHubAPIErrorHandling(unittest.TestCase):
 
     def test_get_model_io_returns_error(self):
         result = self.api.get_model_io()
-        print result
         self.assertIn("error", result)
 
 
