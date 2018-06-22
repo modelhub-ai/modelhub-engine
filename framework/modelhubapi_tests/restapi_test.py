@@ -69,12 +69,6 @@ class TestModelHubRESTAPI(TestAPIBase):
         self.assertEqual("image/png", response.content_type)
     
 
-    def test_get_thumbnail_returns_path_to_mock_thumbnail(self):
-        response = self.client.get("/api/get_thumbnail")
-        thumbnail = json.loads(response.get_data())
-        self.assertEqual("http://localhost/api/thumbnail/thumbnail.jpg", thumbnail)
-    
-    
     def test_thumbnail_routes_correct(self):
         response = self.client.get("/api/thumbnail/thumbnail.jpg")
         self.assertEqual("image/jpeg", response.content_type)
