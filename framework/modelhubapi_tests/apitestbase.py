@@ -1,4 +1,7 @@
 import unittest
+import os
+from modelhubapi import ModelHubRESTAPI
+
 
 
 class TestAPIBase(unittest.TestCase):
@@ -53,5 +56,24 @@ class TestAPIBase(unittest.TestCase):
         self.assertEqual("probabilities", result["output_name"])
         self.assertEqual("MockId", result["model"]["id"])
         self.assertEqual("MockNet", result["model"]["name"])
+
+
+
+class TestRESTAPIBase(TestAPIBase):
+    """
+    Defines common functionality for rest api test cases
+    """
+
+    def setup_self_temp_workdir(self):
+        self.temp_workdir = os.path.join(self.this_dir, "temp_workdir")
+        if not os.path.exists(self.temp_workdir):
+            os.makedirs(self.temp_workdir)
+    
+    def setup_self_test_client(self, model, contrib_src_dir):
+        rest_api = ModelHubRESTAPI(model, self.contrib_src_dir)
+        rest_api.working_folder = self.temp_workdir
+        app = rest_api.app
+        app.config["TESTING"] = True
+        self.client = app.test_client()
 
 

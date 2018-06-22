@@ -1,28 +1,20 @@
-from apitestbase import TestAPIBase
+from apitestbase import TestRESTAPIBase
 import os
 import io
 from zipfile import ZipFile
 import shutil
 import json
-from modelhubapi import ModelHubRESTAPI
 from modelhubapi_tests.mockmodel.contrib_src.inference import Model
 
 
-class TestModelHubRESTAPI(TestAPIBase):
+class TestModelHubRESTAPI(TestRESTAPIBase):
 
     def setUp(self):
-        model = Model()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
         self.contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
-        rest_api = ModelHubRESTAPI(model, self.contrib_src_dir)
-        self.temp_workdir = os.path.join(self.this_dir, "temp_workdir")
-        if not os.path.exists(self.temp_workdir):
-            os.makedirs(self.temp_workdir)
-        rest_api.working_folder = self.temp_workdir
-        app = rest_api.app
-        app.config["TESTING"] = True
-        self.client = app.test_client()
- 
+        self.setup_self_temp_workdir()
+        self.setup_self_test_client(Model(), self.contrib_src_dir)
+     
 
     def tearDown(self):
         shutil.rmtree(self.temp_workdir, ignore_errors=True)
