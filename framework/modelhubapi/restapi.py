@@ -33,8 +33,6 @@ class ModelHubRESTAPI:
                               self.get_model_files)
         self.app.add_url_rule('/api/get_samples', 'get_samples',
                               self.get_samples)
-        self.app.add_url_rule('/api/get_thumbnail', 'get_thumbnail',
-                              self.get_thumbnail)
         self.app.add_url_rule('/api/predict', 'predict',
                               self.predict, methods= ['GET', 'POST'])
 
