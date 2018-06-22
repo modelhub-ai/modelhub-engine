@@ -16,7 +16,6 @@ class ModelHubRESTAPI:
         self.contrib_src_dir = contrib_src_dir
         self.working_folder = '/working'
         self.api = ModelHubAPI(model, contrib_src_dir)
-        self.allowed_extensions = self.api.get_model_io()["input"]["format"]
         # routes
         self.app.add_url_rule('/api/samples/<sample_name>', 'samples',
                               self._samples)
@@ -82,6 +81,9 @@ class ModelHubRESTAPI:
                                  "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
                                  mime_type.split("/")[1]))
         return file_name
+    
+    def _get_allowed_extensions(self):
+        return self.api.get_model_io()["input"]["format"]
 
     def get_config(self):
         """
@@ -156,7 +158,7 @@ class ModelHubRESTAPI:
                 file_url = request.args.get('fileurl')
                 mime = MimeTypes()
                 mime_type = mime.guess_type(file_url)
-                if str(mime_type[0]) in self.allowed_extensions and mime_type[1] == None:
+                if str(mime_type[0]) in self._get_allowed_extensions() and mime_type[1] == None:
                     # get file and save.
                     r = requests.get(file_url)
                     file_name = self._get_file_name(mime_type[0])
@@ -169,7 +171,7 @@ class ModelHubRESTAPI:
             elif request.method == 'POST':
                 file = request.files.get('file')
                 mime_type = file.content_type
-                if str(mime_type) in self.allowed_extensions:
+                if str(mime_type) in self._get_allowed_extensions():
                     file_name = self._get_file_name(mime_type)
                     file.save(file_name)
                     return jsonify(self.api.predict(file_name))
