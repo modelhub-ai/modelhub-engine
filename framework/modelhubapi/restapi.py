@@ -69,7 +69,8 @@ class ModelHubRESTAPI:
 
     def _thumbnail(self, thumbnail_name):
         """
-        Routing function for the thumbnail that exists in contrib_src.
+        Routing function for the thumbnail that exists in contrib_src. The
+        thumbnail must be named "thumbnail.jpg".
         """
         return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name)
 
@@ -117,7 +118,7 @@ class ModelHubRESTAPI:
         try:
             model_name = self.api.get_config()["meta"]["name"].lower()
             archive_name = os.path.join(self.working_folder, model_name + "_model")
-            shutil.make_archive(archive_name, "zip", self.contrib_src_dir, "model")            
+            shutil.make_archive(archive_name, "zip", self.contrib_src_dir, "model")
             return send_file(archive_name + ".zip", as_attachment= True)
         except Exception as e:
             return self._jsonify({'error': str(e)})
@@ -135,25 +136,6 @@ class ModelHubRESTAPI:
             samples = [ url + sample_name
                         for sample_name in self.api.get_samples()["files"]]
             return jsonify(samples)
-        except Exception as e:
-            return self._jsonify({'error': str(e)})
-
-    def get_thumbnail(self):
-        """
-        The get_thumbnail HTTP method returns a url to the model thumbnail.
-        The thumbnail file must be named "thumbnail", and could either be a jpg
-        or png.
-        """
-        try:
-            url = re.sub('\get_thumbnail$', '', request.url) + "thumbnail/"
-            path = self.contrib_src_dir + "/model/"
-            if os.path.isfile(path + "thumbnail.jpg"):
-                thumbnail = "thumbnail.jpg"
-            elif os.path.isfile(path + "thumbnail.png"):
-                thumbnail = "thumbnail.png"
-            else:
-                return self._jsonify({'error': 'Thumbnail not found'})
-            return jsonify(url + thumbnail)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
