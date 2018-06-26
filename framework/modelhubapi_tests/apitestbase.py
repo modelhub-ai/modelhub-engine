@@ -80,12 +80,13 @@ class TestRESTAPIBase(TestAPIBase):
     #--------------------------------------------------------------------------
     # Private helper/convenience functions
     #--------------------------------------------------------------------------
-    def _post_predict_request_on_test_image(self):
-        test_filename = self.contrib_src_dir + "/sample_data/testimage_ramp_4x2.png"
+    def _post_predict_request_on_sample_image(self, sample_image_name):
+        test_filename = self.contrib_src_dir + "/sample_data/" + sample_image_name
+        extension = os.path.splitext(test_filename)[1]
         with open(test_filename, "rb") as f:
             image_data = io.BytesIO(f.read())
         response = self.client.post("/api/predict",
-                                    data = {'file': (image_data, 'test_image.png')},
+                                    data = {'file': (image_data, 'test_image' + extension)},
                                     content_type = 'multipart/form-data')
         return response
 
