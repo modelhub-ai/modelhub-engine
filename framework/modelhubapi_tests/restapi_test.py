@@ -118,18 +118,6 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         self.assert_predict_contains_expected_mock_meta_info(result)
 
 
-    #--------------------------------------------------------------------------
-    # Private helper/convenience functions
-    #--------------------------------------------------------------------------
-    def _post_predict_request_on_test_image(self):
-        test_filename = self.contrib_src_dir + "/sample_data/testimage_ramp_4x2.png"
-        with open(test_filename, "rb") as f:
-            image_data = io.BytesIO(f.read())
-        response = self.client.post("/api/predict",
-                                    data = {'file': (image_data, 'test_image.png')},
-                                    content_type = 'multipart/form-data')
-        return response
-
 
 
 if __name__ == '__main__':

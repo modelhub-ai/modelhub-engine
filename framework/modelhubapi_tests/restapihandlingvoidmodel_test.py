@@ -12,7 +12,7 @@ basicTestGetCalls = ["/api/get_config",
                      "/api/get_model_io",
                      "/api/get_samples",
                      "/api/get_model_files"]
-class MetaTestModelHubRESTAPIErrorHandling(type):
+class MetaTestModelHubRESTAPIHandlingVoidModel(type):
     
     def __new__(mcs, name, bases, dictionary):
         def test_get_call_returns_error(call):
@@ -30,8 +30,8 @@ class MetaTestModelHubRESTAPIErrorHandling(type):
 
 
 
-class TestModelHubRESTAPIErrorHandling(TestRESTAPIBase):
-    __metaclass__ = MetaTestModelHubRESTAPIErrorHandling
+class TestModelHubRESTAPIHandlingVoidModel(TestRESTAPIBase):
+    __metaclass__ = MetaTestModelHubRESTAPIHandlingVoidModel
 
     def setUp(self):
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -42,5 +42,9 @@ class TestModelHubRESTAPIErrorHandling(TestRESTAPIBase):
 
     def tearDown(self):
         shutil.rmtree(self.temp_workdir, ignore_errors=True)
+        pass
+    
+
+    def test_predict_by_post_returns_error(self):
         pass
     

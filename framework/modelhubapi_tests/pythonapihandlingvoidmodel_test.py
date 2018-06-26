@@ -4,7 +4,7 @@ from modelhubapi import ModelHubAPI
 from modelhubapi_tests.mockmodel.contrib_src.inference import ModelThrowingError
 
 
-class TestModelHubAPIErrorHandling(unittest.TestCase):
+class TestModelHubAPIHandlingVoidModel(unittest.TestCase):
 
     def setUp(self):
         model = ModelThrowingError()

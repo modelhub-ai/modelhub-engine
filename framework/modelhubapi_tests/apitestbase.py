@@ -1,4 +1,5 @@
 import unittest
+import io
 import os
 from modelhubapi import ModelHubRESTAPI
 
@@ -75,5 +76,17 @@ class TestRESTAPIBase(TestAPIBase):
         app = rest_api.app
         app.config["TESTING"] = True
         self.client = app.test_client()
+
+    #--------------------------------------------------------------------------
+    # Private helper/convenience functions
+    #--------------------------------------------------------------------------
+    def _post_predict_request_on_test_image(self):
+        test_filename = self.contrib_src_dir + "/sample_data/testimage_ramp_4x2.png"
+        with open(test_filename, "rb") as f:
+            image_data = io.BytesIO(f.read())
+        response = self.client.post("/api/predict",
+                                    data = {'file': (image_data, 'test_image.png')},
+                                    content_type = 'multipart/form-data')
+        return response
 
 
