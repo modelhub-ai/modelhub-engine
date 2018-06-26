@@ -45,6 +45,8 @@ class TestModelHubRESTAPIHandlingVoidModel(TestRESTAPIBase):
         pass
     
 
-    def test_predict_by_post_returns_error(self):
-        pass
+    def test_predict_by_get_returns_error(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.png")
+        result = json.loads(response.get_data())
+        self.assertIn("error", result)
     
