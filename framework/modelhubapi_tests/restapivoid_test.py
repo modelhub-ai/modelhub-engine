@@ -12,7 +12,7 @@ basicTestGetCalls = ["/api/get_config",
                      "/api/get_model_io",
                      "/api/get_samples",
                      "/api/get_model_files"]
-class MetaTestModelHubRESTAPIHandlingVoidModel(type):
+class MetaTestModelHubRESTAPIVoidModel(type):
     
     def __new__(mcs, name, bases, dictionary):
         def test_get_call_returns_error(call):
@@ -30,8 +30,8 @@ class MetaTestModelHubRESTAPIHandlingVoidModel(type):
 
 
 
-class TestModelHubRESTAPIHandlingVoidModel(TestRESTAPIBase):
-    __metaclass__ = MetaTestModelHubRESTAPIHandlingVoidModel
+class TestModelHubRESTAPIVoidModel(TestRESTAPIBase):
+    __metaclass__ = MetaTestModelHubRESTAPIVoidModel
 
     def setUp(self):
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
