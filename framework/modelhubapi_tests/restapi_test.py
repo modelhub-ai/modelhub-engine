@@ -21,48 +21,53 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         pass
     
 
-    def test_get_config_responds_ok(self):
-        response = self.client.get("/api/get_config")
-        self.assertEqual(200, response.status_code)
-
-
     def test_get_config_returns_correct_dict(self):
         response = self.client.get("/api/get_config")
+        self.assertEqual(200, response.status_code)
         config = json.loads(response.get_data())
         self.assert_config_contains_correct_dict(config)
 
     
     def test_get_legal_returns_expected_keys(self):
         response = self.client.get("/api/get_legal")
+        self.assertEqual(200, response.status_code)
         legal = json.loads(response.get_data())
         self.assert_legal_contains_expected_keys(legal)
     
 
     def test_get_legal_returns_expected_mock_values(self):
         response = self.client.get("/api/get_legal")
+        self.assertEqual(200, response.status_code)
         legal = json.loads(response.get_data())
         self.assert_legal_contains_expected_mock_values(legal)
     
 
     def test_get_model_io_returns_expected_mock_values(self):
         response = self.client.get("/api/get_model_io")
+        self.assertEqual(200, response.status_code)
         model_io = json.loads(response.get_data())
         self.assert_model_io_contains_expected_mock_values(model_io)
 
 
     def test_get_samples_returns_path_to_mock_samples(self):
         response = self.client.get("/api/get_samples")
+        self.assertEqual(200, response.status_code)
         samples = json.loads(response.get_data())
-        self.assertListEqual(["http://localhost/api/samples/testimage_ramp_4x2.png"], samples)
+        samples.sort()
+        self.assertListEqual(["http://localhost/api/samples/testimage_ramp_4x2.jpg",
+                              "http://localhost/api/samples/testimage_ramp_4x2.png"], 
+                             samples)
     
 
     def test_samples_routes_correct(self):
         response = self.client.get("/api/samples/testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
         self.assertEqual("image/png", response.content_type)
     
 
     def test_thumbnail_routes_correct(self):
         response = self.client.get("/api/thumbnail/thumbnail.jpg")
+        self.assertEqual(200, response.status_code)
         self.assertEqual("image/jpeg", response.content_type)
     
 
@@ -74,6 +79,7 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
 
     def test_get_model_files_returned_zip_has_mock_content(self):
         response = self.client.get("/api/get_model_files")
+        self.assertEqual(200, response.status_code)
         test_zip_name = self.temp_workdir + "/test_response.zip"
         with open(test_zip_name, "wb") as test_file:
             test_file.write(response.get_data())
@@ -91,21 +97,32 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
 
     
     def test_predict_by_post_returns_expected_mock_prediction(self):
-        response = self._post_predict_request_on_test_image()
+        response = self._post_predict_request_on_sample_image("testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
         result = json.loads(response.get_data())
         self.assert_predict_contains_expected_mock_prediction(result)
     
 
     def test_predict_by_post_returns_expected_mock_meta_info(self):
-        response = self._post_predict_request_on_test_image()
+        response = self._post_predict_request_on_sample_image("testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
         result = json.loads(response.get_data())
         self.assert_predict_contains_expected_mock_meta_info(result)
+
+
+    def test_predict_by_post_returns_error_on_unsupported_file_type(self):
+        response = self._post_predict_request_on_sample_image("testimage_ramp_4x2.jpg")
+        self.assertEqual(400, response.status_code)
+        result = json.loads(response.get_data())
+        self.assertIn("error", result)
+        self.assertIn("Incorrect file type.", result["error"])
 
     
     # TODO this is not so nice yet, test should not require a download from the inet
     # should probably use a mock server for this
     def test_predict_by_url_returns_expected_mock_prediction(self):
         response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
         result = json.loads(response.get_data())
         self.assert_predict_contains_expected_mock_prediction(result)
     
@@ -114,8 +131,19 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
     # should probably use a mock server for this
     def test_predict_by_url_returns_expected_mock_meta_info(self):
         response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
         result = json.loads(response.get_data())
         self.assert_predict_contains_expected_mock_meta_info(result)
+
+
+    # TODO this is not so nice yet, test should not require a download from the inet
+    # should probably use a mock server for this
+    def test_predict_by_url_returns_error_on_unsupported_file_type(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.jpg")
+        self.assertEqual(400, response.status_code)
+        result = json.loads(response.get_data())
+        self.assertIn("error", result)
+        self.assertIn("Incorrect file type.", result["error"])
 
 
 

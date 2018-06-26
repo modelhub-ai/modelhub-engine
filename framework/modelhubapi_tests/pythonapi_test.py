@@ -45,7 +45,10 @@ class TestModelHubAPI(TestAPIBase):
     def test_get_samples_returns_path_to_mock_samples(self):
         samples = self.api.get_samples()
         self.assertEqual(self.this_dir + "/mockmodel/contrib_src/sample_data", samples["folder"])
-        self.assertListEqual(["testimage_ramp_4x2.png"], samples["files"])
+        samples["files"].sort()
+        self.assertListEqual(["testimage_ramp_4x2.jpg",
+                              "testimage_ramp_4x2.png"], 
+                             samples["files"])
 
     
     def test_predict_returns_expected_mock_prediction(self):

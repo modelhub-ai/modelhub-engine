@@ -1,3 +1,5 @@
+"""Implements test cases in which smth is wrong with the model setup"""
+
 import unittest
 import os
 from modelhubapi import ModelHubAPI
