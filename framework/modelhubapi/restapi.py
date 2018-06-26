@@ -35,7 +35,7 @@ class ModelHubRESTAPI:
         self.app.add_url_rule('/api/predict', 'predict',
                               self.predict, methods= ['GET', 'POST'])
 
-    def _jsonify(self, _dict):
+    def _jsonify(self, content):
         """
         This helper function wraps the flask jsonify function, and also allows
         for error checking. This is usedfor calls that use the
@@ -46,17 +46,12 @@ class ModelHubRESTAPI:
         * All errors are returned as 400. Would be better to customize the error
         code based on the actual error.
         """
-        if "error" in _dict.keys():
-            return jsonify(self._api_error(400, _dict["error"]))
+        if (type(content) is dict) and ("error" in content.keys()):
+            response = jsonify(content)
+            response.status_code = 400
+            return response
         else:
-            return jsonify(_dict)
-
-    def _api_error(self, code, message):
-        """
-        This helper functions allows for custom messages to be included with a
-        HTTP code.
-        """
-        return abort(make_response(jsonify(error=message), code))
+            return jsonify(content)
 
     def _samples(self, sample_name):
         """
@@ -135,7 +130,7 @@ class ModelHubRESTAPI:
             url = re.sub('\get_samples$', '', request.url) + "samples/"
             samples = [ url + sample_name
                         for sample_name in self.api.get_samples()["files"]]
-            return jsonify(samples)
+            return self._jsonify(samples)
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -164,7 +159,7 @@ class ModelHubRESTAPI:
                     file_name = self._get_file_name(mime_type[0])
                     with open(file_name, 'wb') as f:
                         f.write(r.content)
-                    return jsonify(self.api.predict(file_name))
+                    return self._jsonify(self.api.predict(file_name))
                 else:
                     return self._jsonify({'error': 'Incorrect file type.'})
             # through file upload
@@ -174,7 +169,7 @@ class ModelHubRESTAPI:
                 if str(mime_type) in self._get_allowed_extensions():
                     file_name = self._get_file_name(mime_type)
                     file.save(file_name)
-                    return jsonify(self.api.predict(file_name))
+                    return self._jsonify(self.api.predict(file_name))
                 else:
                     return self._jsonify({'error': 'Incorrect file type.'})
         except Exception as e:
