@@ -76,7 +76,7 @@ class ModelHubRESTAPI:
                                  "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
                                  mime_type.split("/")[1]))
         return file_name
-    
+
     def _get_allowed_extensions(self):
         return self.api.get_model_io()["input"]["format"]
 
@@ -123,8 +123,9 @@ class ModelHubRESTAPI:
         Calls api.get_samples(). Uses the "files" object and appends the url
         from the request. Returns a list of urls to the sample files. When the
         sample file urls are called, the call goes through _samples which
-        handles the routing. Assumes that there are always at least one sample
-        file, which should always be the case.
+        handles the routing. If the returned array is empty, then there are no
+        sample files for this model i.e. the "sample/data" folder should always
+        exist regardless if empty or not.
         """
         try:
             url = re.sub('\get_samples$', '', request.url) + "samples/"
