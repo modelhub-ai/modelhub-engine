@@ -1,9 +1,9 @@
 | Build/Test Status | Code Coverage |
 | :---: | :---: |
-| [![](https://travis-ci.org/modelhub-ai/modelhub-docker.svg?branch=master)](https://travis-ci.org/modelhub-ai/modelhub-docker) | [![Coverage Status](https://coveralls.io/repos/github/modelhub-ai/modelhub-docker/badge.svg?branch=master&service=github)](https://coveralls.io/github/modelhub-ai/modelhub-docker?branch=master) |
+| [![](https://travis-ci.org/modelhub-ai/modelhub-engine.svg?branch=master)](https://travis-ci.org/modelhub-ai/modelhub-engine) | [![Coverage Status](https://coveralls.io/repos/github/modelhub-ai/modelhub-engine/badge.svg?branch=master&service=github)](https://coveralls.io/github/modelhub-ai/modelhub-engine?branch=master) |
 
 
-# modelhub-docker
+# modelhub-engine
 
 Files for creating a base modelhub docker image
 
@@ -17,9 +17,9 @@ Files for creating a base modelhub docker image
 
 ```
 # clone this repo
-git clone https://github.com/modelhub-ai/modelhub-docker.git
+git clone https://github.com/modelhub-ai/modelhub-engine.git
 # change directories
-cd modelhub-docker/app/
+cd modelhub-engine/app/
 # build docker image from /app folder
 docker build -f Dockerfile.dev -t <name_your_image> .
 # check size ~1.5GB
