@@ -5,7 +5,7 @@
 
 # modelhub-engine
 
-Files for creating a base modelhub docker image
+Backend framework for running models in modelhub.
 
 ## Development
 
