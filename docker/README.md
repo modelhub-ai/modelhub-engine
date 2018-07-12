@@ -4,7 +4,7 @@ Execute the docker build command **from the parent directory** of this one,
 with the following command:
 
 ```
-docker build -t <name+tag> -f app/<docker-file-name> .
+docker build -t <name+tag> -f docker/<docker-file-name> .
 ```
 
 # How to push an image to DockerHub
