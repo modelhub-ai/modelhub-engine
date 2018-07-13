@@ -128,7 +128,9 @@ class ModelHubRESTAPI:
         exist regardless if empty or not.
         """
         try:
-            url = re.sub('\get_samples$', '', request.url) + "samples/"
+            url = request.url
+            print url
+            url = url.replace("api/get_samples", "api/samples/")
             print url
             samples = [ url + sample_name
                         for sample_name in self.api.get_samples()["files"]]
