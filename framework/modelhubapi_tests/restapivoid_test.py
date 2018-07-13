@@ -5,6 +5,7 @@ import io
 from zipfile import ZipFile
 import shutil
 import json
+import six
 from modelhubapi_tests.mockmodel.contrib_src.inference import ModelThrowingError
 from .apitestbase import TestRESTAPIBase
 
@@ -33,8 +34,8 @@ class MetaTestModelHubRESTAPIVoidModel(type):
 
 
 
+@six.add_metaclass(MetaTestModelHubRESTAPIVoidModel)
 class TestModelHubRESTAPIVoidModel(TestRESTAPIBase):
-    __metaclass__ = MetaTestModelHubRESTAPIVoidModel
 
     def setUp(self):
         self.this_dir = os.path.dirname(os.path.realpath(__file__))

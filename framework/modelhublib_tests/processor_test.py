@@ -2,6 +2,7 @@ import unittest
 import os
 import PIL
 import json
+import six
 
 from modelhublib.processor import ImageProcessorBase
 
@@ -40,9 +41,8 @@ class MetaTestImageProcessorBase(type):
             
         return type.__new__(mcs, name, bases, dictionary)
 
-
+@six.add_metaclass(MetaTestImageProcessorBase)
 class TestImageProcessorBase(unittest.TestCase):
-    __metaclass__ = MetaTestImageProcessorBase
 
     def setUp(self):
         self.testDataDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "testdata"))
