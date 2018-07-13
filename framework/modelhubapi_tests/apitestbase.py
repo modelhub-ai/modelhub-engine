@@ -21,8 +21,7 @@ class TestAPIBase(unittest.TestCase):
 
     def assert_legal_contains_expected_keys(self, legal):
         self.assertNotIn("error", legal)
-        keys = legal.keys()
-        keys.sort()
+        keys = sorted(legal)
         referenceKeys = ["model_license", 
                          "modelhub_acknowledgements", 
                          "modelhub_license", 
