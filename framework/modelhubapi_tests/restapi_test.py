@@ -51,8 +51,6 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
 
     def test_get_samples_returns_path_to_mock_samples(self):
         response = self.client.get("/api/get_samples")
-        print(response)
-        print(response.get_data())
         self.assertEqual(200, response.status_code)
         samples = json.loads(response.get_data())
         samples.sort()
