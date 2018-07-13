@@ -3,7 +3,7 @@
 import unittest
 import os
 from modelhubapi import ModelHubAPI
-from modelhubapi_tests.mockmodel.contrib_src.inference import ModelThrowingError
+from .mockmodel.contrib_src.inference import ModelThrowingError
 
 
 class TestModelHubAPIVoidModel(unittest.TestCase):

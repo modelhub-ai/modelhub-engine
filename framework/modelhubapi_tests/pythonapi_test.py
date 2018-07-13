@@ -1,7 +1,7 @@
-from apitestbase import TestAPIBase
 import os
 from modelhubapi import ModelHubAPI
-from modelhubapi_tests.mockmodel.contrib_src.inference import Model
+from .apitestbase import TestAPIBase
+from .mockmodel.contrib_src.inference import Model
 
 
 class TestModelHubAPI(TestAPIBase):
