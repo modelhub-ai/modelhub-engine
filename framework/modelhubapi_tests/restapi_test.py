@@ -1,10 +1,10 @@
-from apitestbase import TestRESTAPIBase
 import os
 import io
 from zipfile import ZipFile
 import shutil
 import json
 from modelhubapi_tests.mockmodel.contrib_src.inference import Model
+from .apitestbase import TestRESTAPIBase
 
 
 class TestModelHubRESTAPI(TestRESTAPIBase):

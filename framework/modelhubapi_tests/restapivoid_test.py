@@ -1,12 +1,12 @@
 """Implements test cases in which smth is wrong with the model setup"""
 
-from apitestbase import TestRESTAPIBase
 import os
 import io
 from zipfile import ZipFile
 import shutil
 import json
 from modelhubapi_tests.mockmodel.contrib_src.inference import ModelThrowingError
+from .apitestbase import TestRESTAPIBase
 
 
 basicTestGetCalls = [("/api/get_config", 400),
