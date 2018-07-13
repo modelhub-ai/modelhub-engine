@@ -1,2 +1,2 @@
-from pythonapi import ModelHubAPI
-from restapi import ModelHubRESTAPI
+from .pythonapi import ModelHubAPI
+from .restapi import ModelHubRESTAPI

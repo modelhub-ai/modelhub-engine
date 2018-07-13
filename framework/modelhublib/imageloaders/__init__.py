@@ -1,4 +1,4 @@
 # Defining convenience import shortcuts
-from imageLoader import ImageLoader
-from pilImageLoader import PilImageLoader
-from sitkImageLoader import SitkImageLoader
+from .imageLoader import ImageLoader
+from .pilImageLoader import PilImageLoader
+from .sitkImageLoader import SitkImageLoader
