@@ -44,7 +44,6 @@ class ImageProcessorBase(object):
         image = self._preprocessBeforeConversionToNumpy(image)
         npArr = self._convertToNumpy(image)
         npArr = self._preprocessAfterConversionToNumpy(npArr)
-        print ('preprocessing done.')
         return npArr
 
 
