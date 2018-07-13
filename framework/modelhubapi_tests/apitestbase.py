@@ -90,3 +90,7 @@ class TestRESTAPIBase(TestAPIBase):
         return response
 
 
+
+if __name__ == '__main__':
+    unittest.main()
+

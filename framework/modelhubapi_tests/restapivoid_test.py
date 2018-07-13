@@ -84,3 +84,9 @@ class TestModelHubRESTAPIModelThrowingError(TestRESTAPIBase):
         result = json.loads(response.get_data())
         self.assertIn("error", result)
         self.assertIn("NotImplementedError", result["error"])
+
+
+
+if __name__ == '__main__':
+    unittest.main()
+
