@@ -129,6 +129,7 @@ class ModelHubRESTAPI:
         """
         try:
             url = re.sub('\get_samples$', '', request.url) + "samples/"
+            print url
             samples = [ url + sample_name
                         for sample_name in self.api.get_samples()["files"]]
             return self._jsonify(samples)
