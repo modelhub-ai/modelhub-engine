@@ -1,7 +1,7 @@
 import numpy as np
 
-from modelhublib.imageloaders import PilImageLoader, SitkImageLoader
-from modelhublib.imageconverters import PilToNumpyConverter, SitkToNumpyConverter
+from .imageloaders import PilImageLoader, SitkImageLoader
+from .imageconverters import PilToNumpyConverter, SitkToNumpyConverter
 
 
 class ImageProcessorBase(object):

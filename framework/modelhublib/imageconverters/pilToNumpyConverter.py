@@ -1,7 +1,7 @@
 import PIL
 import numpy as np
 
-from modelhublib.imageconverters import ImageConverter
+from .imageConverter import ImageConverter
 
 
 class PilToNumpyConverter(ImageConverter):

@@ -1,5 +1,5 @@
-from pythonapi import ModelHubAPI
-from restapi import ModelHubRESTAPI
+from .pythonapi import ModelHubAPI
+from .restapi import ModelHubRESTAPI
 import netron
 import sys
 import time

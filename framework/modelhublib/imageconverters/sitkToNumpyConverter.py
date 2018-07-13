@@ -1,7 +1,7 @@
 import SimpleITK
 import numpy as np
 
-from modelhublib.imageconverters import ImageConverter
+from .imageConverter import ImageConverter
 
 
 class SitkToNumpyConverter(ImageConverter):

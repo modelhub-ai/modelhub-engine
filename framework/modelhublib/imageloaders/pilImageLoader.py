@@ -1,6 +1,6 @@
 from PIL import Image
 
-from modelhublib.imageloaders import ImageLoader
+from .imageLoader import ImageLoader
 
 
 class PilImageLoader(ImageLoader):

@@ -1,6 +1,6 @@
 import SimpleITK as sitk
 
-from modelhublib.imageloaders import ImageLoader
+from .imageLoader import ImageLoader
 
 
 class SitkImageLoader(ImageLoader):

@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, abort, make_response, send_file, url_for, send_from_directory, request
-from pythonapi import ModelHubAPI
+from .pythonapi import ModelHubAPI
 import os
 import json
 import shutil
