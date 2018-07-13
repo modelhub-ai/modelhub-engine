@@ -3,7 +3,6 @@ from .pythonapi import ModelHubAPI
 import os
 import json
 import shutil
-import re
 from mimetypes import MimeTypes
 import requests
 from datetime import datetime
