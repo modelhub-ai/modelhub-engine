@@ -33,6 +33,8 @@ class ModelHubRESTAPI:
                               self.get_samples)
         self.app.add_url_rule('/api/predict', 'predict',
                               self.predict, methods= ['GET', 'POST'])
+        self.app.add_url_rule('/api/predict_sample', 'predict_sample',
+                              self.predict_sample)
 
     def _jsonify(self, content):
         """
@@ -173,6 +175,19 @@ class ModelHubRESTAPI:
                     return self._jsonify(self.api.predict(file_name))
                 else:
                     return self._jsonify({'error': 'Incorrect file type.'})
+        except Exception as e:
+            return self._jsonify({'error': str(e)})
+
+    def predict_sample(self):
+        """
+        TEMP SOLUTION
+        """
+        try:
+            if request.method == 'GET':
+                file_name = request.args.get('filename')
+                mime = MimeTypes()
+                return self._jsonify(self.api.predict(self.contrib_src_dir +
+                "/sample_data/" + file_name))
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
