@@ -60,7 +60,7 @@ class ModelHubAPI:
             return config
         else:
             return config["model"]["io"]
-        
+
 
     def get_samples(self):
         """
@@ -74,7 +74,7 @@ class ModelHubAPI:
             sample_data_dir = self.contrib_src_dir + "/sample_data"
             _, _, sample_files = next(os.walk(sample_data_dir))
             return  {"folder": sample_data_dir,
-                     "files": sample_files} 
+                     "files": sample_files}
         except Exception as e:
             return {'error': repr(e)}
 
@@ -87,6 +87,8 @@ class ModelHubAPI:
             file_path (string): Path to file tp run inference on.
 
         Todo:
+            * if output is not json serializable (like a numpy array), this will
+            throw an error.
             * Output should be a list of outputs - order of which should match
             whatever is in the config file. The return here should be a list as
             well. Global keys: model, processing time, timestamp. Local keys
@@ -102,6 +104,8 @@ class ModelHubAPI:
             output = self.model.infer(file_path)
             end = time.time()
             config = self.get_config()
+            # if output is not json serializable, save it and include a url to
+            # it, instead of sending the actual thing.
             return {'output': output,
                     'output_type': config["model"]["io"]["output"][0]["type"], #hardcoded
                     'output_name': config["model"]["io"]["output"][0]["name"], #hardcoded
@@ -126,7 +130,7 @@ class ModelHubAPI:
                 return {return_key: txt}
         except Exception as e:
             return {'error': str(e)}
-    
+
     def _load_json(self, file_path):
         try:
             with open(file_path) as f:
@@ -134,5 +138,3 @@ class ModelHubAPI:
                 return loaded_dict
         except Exception as e:
             return {'error': str(e)}
-
-
