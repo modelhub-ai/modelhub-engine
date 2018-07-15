@@ -125,7 +125,7 @@ class ModelHubAPI:
     # -------------------------------------------------------------------------
     def _load_txt_as_dict(self, file_path, return_key):
         try:
-            with open(file_path,'r') as f:
+            with open(file_path, mode='r', encoding='utf-8') as f:
                 txt = f.read()
                 return {return_key: txt}
         except Exception as e:

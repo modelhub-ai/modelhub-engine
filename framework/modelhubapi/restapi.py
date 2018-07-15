@@ -36,51 +36,6 @@ class ModelHubRESTAPI:
         self.app.add_url_rule('/api/predict_sample', 'predict_sample',
                               self.predict_sample)
 
-    def _jsonify(self, content):
-        """
-        This helper function wraps the flask jsonify function, and also allows
-        for error checking. This is usedfor calls that use the
-        api._get_txt_file() function that returns a dict key "error" in case
-        the file is not found.
-
-        Todo:
-        * All errors are returned as 400. Would be better to customize the error
-        code based on the actual error.
-        """
-        if (type(content) is dict) and ("error" in content.keys()):
-            response = jsonify(content)
-            response.status_code = 400
-            return response
-        else:
-            return jsonify(content)
-
-    def _samples(self, sample_name):
-        """
-        Routing function for sample files that exist in contrib_src.
-        """
-        return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name)
-
-    def _thumbnail(self, thumbnail_name):
-        """
-        Routing function for the thumbnail that exists in contrib_src. The
-        thumbnail must be named "thumbnail.jpg".
-        """
-        return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name)
-
-    def _get_file_name(self, mime_type):
-        """
-        This utility function get the current date/time and returns a full path
-        to save either an uploaded file or one grabbed through a url.
-        """
-        now = datetime.now()
-        file_name = os.path.join(self.working_folder,
-                                 "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-                                 mime_type.split("/")[1]))
-        return file_name
-
-    def _get_allowed_extensions(self):
-        return self.api.get_model_io()["input"]["format"]
-
     def get_config(self):
         """
         Calls api.get_config().
@@ -196,3 +151,52 @@ class ModelHubRESTAPI:
         Starts the flask app.
         """
         self.app.run(host='0.0.0.0', port=80, threaded=True)
+
+    # -------------------------------------------------------------------------
+    # Private helper functions
+    # -------------------------------------------------------------------------
+
+    def _jsonify(self, content):
+        """
+        This helper function wraps the flask jsonify function, and also allows
+        for error checking. This is usedfor calls that use the
+        api._get_txt_file() function that returns a dict key "error" in case
+        the file is not found.
+
+        Todo:
+        * All errors are returned as 400. Would be better to customize the error
+        code based on the actual error.
+        """
+        if (type(content) is dict) and ("error" in content.keys()):
+            response = jsonify(content)
+            response.status_code = 400
+            return response
+        else:
+            return jsonify(content)
+
+    def _samples(self, sample_name):
+        """
+        Routing function for sample files that exist in contrib_src.
+        """
+        return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name)
+
+    def _thumbnail(self, thumbnail_name):
+        """
+        Routing function for the thumbnail that exists in contrib_src. The
+        thumbnail must be named "thumbnail.jpg".
+        """
+        return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name)
+
+    def _get_file_name(self, mime_type):
+        """
+        This utility function get the current date/time and returns a full path
+        to save either an uploaded file or one grabbed through a url.
+        """
+        now = datetime.now()
+        file_name = os.path.join(self.working_folder,
+                                 "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+                                 mime_type.split("/")[1]))
+        return file_name
+
+    def _get_allowed_extensions(self):
+        return self.api.get_model_io()["input"]["format"]
