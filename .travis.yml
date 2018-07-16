@@ -18,5 +18,7 @@ after_success:
   - coveralls
 notifications:
   email:
+    recipients:
+      - info@modelhub.ai
     on_success: change # default: change
     on_failure: always # default: always
