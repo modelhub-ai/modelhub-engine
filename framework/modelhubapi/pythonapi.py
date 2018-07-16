@@ -1,4 +1,5 @@
 import os
+import io
 import json
 import time
 from datetime import datetime
@@ -125,7 +126,7 @@ class ModelHubAPI:
     # -------------------------------------------------------------------------
     def _load_txt_as_dict(self, file_path, return_key):
         try:
-            with open(file_path, mode='r', encoding='utf-8') as f:
+            with io.open(file_path, mode='r', encoding='utf-8') as f:
                 txt = f.read()
                 return {return_key: txt}
         except Exception as e:
@@ -133,7 +134,7 @@ class ModelHubAPI:
 
     def _load_json(self, file_path):
         try:
-            with open(file_path) as f:
+            with io.open(file_path) as f:
                 loaded_dict = json.load(f)
                 return loaded_dict
         except Exception as e:
