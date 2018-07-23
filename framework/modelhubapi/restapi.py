@@ -6,13 +6,14 @@ import shutil
 from mimetypes import MimeTypes
 import requests
 from datetime import datetime
-# from flask_cors import CORS
+from flask_cors import CORS
 
 class ModelHubRESTAPI:
 
     def __init__(self, model, contrib_src_dir):
+        print ("sikoooooo")
         self.app = Flask(__name__)
-        # CORS(self.app)
+        CORS(self.app)
         self.model = model
         self.contrib_src_dir = contrib_src_dir
         self.working_folder = '/working'
@@ -226,33 +227,34 @@ class ModelHubRESTAPI:
         * All errors are returned as 400. Would be better to customize the error
           code based on the actual error.
         """
-        response = self._addCORS(jsonify(content))
-        # response = jsonify(content)
+        # response = self._addCORS(jsonify(content))
+        response = jsonify(content)
         if (type(content) is dict) and ("error" in content.keys()):
             response.status_code = 400
         return response
 
-    def _addCORS(self, response):
-        """
-        Adds CORS rules to a given reponse. Should change to specific IP's later.
-        """
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-        return response
+    # def _addCORS(self, response):
+    #     """
+    #     Adds CORS rules to a given reponse. Should change to specific IP's later.
+    #     """
+    #     response.headers.add('Access-Control-Allow-Origin', '*')
+    #     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    #     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    #     return response
 
     def _samples(self, sample_name):
         """
         Routing function for sample files that exist in contrib_src.
         """
-        return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name)
+
+        return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name, cache_timeout=-1)
 
     def _thumbnail(self, thumbnail_name):
         """
         Routing function for the thumbnail that exists in contrib_src. The
         thumbnail must be named "thumbnail.jpg".
         """
-        return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name)
+        return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name, cache_timeout=-1)
 
     def _get_file_name(self, mime_type):
         """
