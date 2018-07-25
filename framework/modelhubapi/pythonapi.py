@@ -3,6 +3,7 @@ import io
 import json
 import time
 from datetime import datetime
+import numpy
 
 class ModelHubAPI:
 
@@ -79,37 +80,37 @@ class ModelHubAPI:
         except Exception as e:
             return {'error': repr(e)}
 
-    def predict(self, file_path):
+    def predict(self, file_path, numpyToList = False):
         """
         The predict method preforms an inference on the model using a given
-        input. Returns either a json object or numpy array.
+        input. 
 
         Args:
             file_path (string): Path to file tp run inference on.
-
-        Todo:
-            * if output is not json serializable (like a numpy array), this will
-            throw an error.
-            * Output should be a list of outputs - order of which should match
-            whatever is in the config file. The return here should be a list as
-            well. Global keys: model, processing time, timestamp. Local keys
-            specific to each output in the list: output_name, output_type.
-            * what other nice to haves with the predict output?
-                - input url?
-                - input size?
-                - how much has input been resized to work with the model?
-
+            numpyToArray: Indicates if numpy outputs should be converted to
+                          standard python lists.
+        
+        Returns:
+            A dictionary with a list of prediction outputs plus some meta 
+            information about the prediction processing.
         """
         try:
             start = time.time()
             output = self.model.infer(file_path)
+            output = self._correct_output_list_wrapping(output)
             end = time.time()
             config = self.get_config()
-            # if output is not json serializable, save it and include a url to
-            # it, instead of sending the actual thing.
-            return {'output': output,
-                    'output_type': config["model"]["io"]["output"][0]["type"], #hardcoded
-                    'output_name': config["model"]["io"]["output"][0]["name"], #hardcoded
+            output_list = []
+            for i, o in enumerate(output):
+                shape = list(o.shape) if isinstance(o, numpy.ndarray) else [len(o)]
+                o = o.tolist() if numpyToList and isinstance(o, numpy.ndarray) else o
+                output_list.append({
+                    'prediction': o,
+                    'shape': shape,
+                    'type': config["model"]["io"]["output"][i]["type"],
+                    'name': config["model"]["io"]["output"][i]["name"],
+                })
+            return {'output': output_list,
                     'timestamp': datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"),
                     'processing_time': round(end-start, 3),
                     'model':
@@ -139,3 +140,12 @@ class ModelHubAPI:
                 return loaded_dict
         except Exception as e:
             return {'error': str(e)}
+    
+    def _correct_output_list_wrapping(self, output):
+        if not isinstance(output, list):
+            return [output]
+        elif isinstance(output[0], dict):
+            return [output]
+        else:
+            return output
+
