@@ -134,7 +134,7 @@ class ModelHubAPI:
 
     def _load_json(self, file_path):
         try:
-            with io.open(file_path) as f:
+            with io.open(file_path, mode='r', encoding='utf-8') as f:
                 loaded_dict = json.load(f)
                 return loaded_dict
         except Exception as e:
