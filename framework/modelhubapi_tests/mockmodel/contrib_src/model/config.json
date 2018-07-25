@@ -50,6 +50,10 @@
         {
           "name": "probabilities",
           "type": "label_list"
+        },
+        {
+          "name": "mask",
+          "type": "mask_image"
         }
       ]
     }
