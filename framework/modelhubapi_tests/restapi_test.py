@@ -7,6 +7,7 @@ from modelhubapi_tests.mockmodel.contrib_src.inference import Model
 from .apitestbase import TestRESTAPIBase
 
 
+
 class TestModelHubRESTAPI(TestRESTAPIBase):
 
     def setUp(self):
@@ -144,7 +145,18 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         result = json.loads(response.get_data())
         self.assertIn("error", result)
         self.assertIn("Incorrect file type.", result["error"])
+    
 
+    def test_predict_sample_returns_expected_mock_prediction(self):
+        response = self.client.get("/api/predict_sample?filename=testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
+        result = json.loads(response.get_data())
+        self.assert_predict_contains_expected_mock_prediction(result)
+
+
+    def test_predict_sample_on_invalid_file_returns_error(self):
+        response = self.client.get("/api/predict_sample?filename=NON_EXISTENT.png")
+        self.assertEqual(400, response.status_code)
 
 
 
