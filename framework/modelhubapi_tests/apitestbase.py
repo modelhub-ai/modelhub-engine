@@ -42,18 +42,27 @@ class TestAPIBase(unittest.TestCase):
         self.assertEqual(1, model_io["input"]["dim_limits"][2]["min"])
         self.assertEqual("probabilities", model_io["output"][0]["name"])
         self.assertEqual("label_list", model_io["output"][0]["type"])
+        self.assertEqual("mask", model_io["output"][1]["name"])
+        self.assertEqual("mask_image", model_io["output"][1]["type"])
 
 
-    def assert_predict_contains_expected_mock_prediction(self, result):
-        self.assertEqual("class_0", result["output"][0]["label"])
-        self.assertEqual(0.3, result["output"][0]["probability"])
-        self.assertEqual("class_1", result["output"][1]["label"])
-        self.assertEqual(0.7, result["output"][1]["probability"])
+    def assert_predict_contains_expected_mock_prediction(self, result, expectNumpy = False):
+        self.assertEqual("class_0", result["output"][0]["prediction"][0]["label"])
+        self.assertEqual(0.3, result["output"][0]["prediction"][0]["probability"])
+        self.assertEqual("class_1", result["output"][0]["prediction"][1]["label"])
+        self.assertEqual(0.7, result["output"][0]["prediction"][1]["probability"])
+        if expectNumpy:
+            result["output"][1]["prediction"] = result["output"][1]["prediction"].tolist()
+        self.assertListEqual([[0,1,1,0],[0,2,2,0]], result["output"][1]["prediction"])
     
 
     def assert_predict_contains_expected_mock_meta_info(self, result):
-        self.assertEqual("label_list", result["output_type"])
-        self.assertEqual("probabilities", result["output_name"])
+        self.assertEqual("label_list", result["output"][0]["type"])
+        self.assertEqual("probabilities", result["output"][0]["name"])
+        self.assertListEqual([2], result["output"][0]["shape"])
+        self.assertEqual("mask_image", result["output"][1]["type"])
+        self.assertEqual("mask", result["output"][1]["name"])
+        self.assertListEqual([2,4], result["output"][1]["shape"])
         self.assertEqual("MockId", result["model"]["id"])
         self.assertEqual("MockNet", result["model"]["name"])
 
