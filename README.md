@@ -14,7 +14,7 @@ Library and common framework on which model contributors must base their model c
 * “slots” for preprocessing, postprocessing, and inference, which have to be populated by the contributor with the model specific code
 
 
-## Development info
+## Developer info
 
 **/docker** contains files for building the specific docker images for a model.
 
