@@ -1,1 +1,16 @@
-## How to build the documentation
+This folder contains the Modelhub documentation files. We are using Sphinx to build our documentation and include code documentation. The Modelhub documentation is hosted at [modelhub.readthedocs.io](http://modelhub.readthedocs.io). _Read the Docs_ builds the documentation automatically. Nevertheless, if you want to build the docs locally, read on.
+
+### How to build the docs locally
+
+#### Prerequisites
+```
+pip install Sphinx
+pip install 
+```
+
+#### Build
+Open a terminal and navigate to this folder (_modelhub-engine/docs_) in your local clone of this repository. Then execute:
+```
+make html
+```
+The documentation will be generated into the subfolder _build_
