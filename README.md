@@ -13,6 +13,8 @@ Library and common framework on which model contributors must base their model c
 * generic API for accessing and working with the model
 * “slots” for preprocessing, postprocessing, and inference, which have to be populated by the contributor with the model specific code
 
+For a detailed documentation of the whole Modelhub project and infrastructure see [modelhub.readthedocs.io](http://modelhub.readthedocs.io).
+
 
 ## Developer info
 
