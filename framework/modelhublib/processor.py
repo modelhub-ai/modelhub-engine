@@ -10,6 +10,7 @@ class ImageProcessorBase(object):
     processing before and after the inference.
     
     An image processor handles:
+    
     1. Loading of the input image(s).
     2. Converting the loaded images to the appropriate numpy array format required 
        by the model, and optionally modifying the image. After this step the data
