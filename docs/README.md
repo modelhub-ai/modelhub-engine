@@ -5,7 +5,7 @@ This folder contains the Modelhub documentation files. We are using Sphinx to bu
 #### Prerequisites
 ```
 pip install Sphinx
-pip install 
+pip install sphinx_rtd_theme
 ```
 
 #### Build
