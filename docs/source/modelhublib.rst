@@ -1,20 +1,23 @@
-Framework
-=========
+Modelhub Library
+================
 
-Overview of the classes of the modelhub framework.
+Overview of the classes of the Modelhub library.
 
 
-Pre- and Postprocessing
------------------------
-
-.. automodule:: modelhublib.preprocessor
+Model
+-----
+.. automodule:: modelhublib.model
    :members:
    :private-members:
    :special-members: __init__
    :undoc-members:
    :member-order: bysource
 
-.. automodule:: modelhublib.postprocessor
+
+Pre- and Postprocessing
+-----------------------
+
+.. automodule:: modelhublib.processor
    :members:
    :private-members:
    :special-members: __init__
@@ -45,6 +48,7 @@ Image Loading
    :special-members: __init__
    :undoc-members:
    :member-order: bysource
+
 
 Image Conversion
 ----------------
