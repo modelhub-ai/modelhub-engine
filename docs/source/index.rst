@@ -13,7 +13,7 @@ applications, enables transfer learning approaches and promotes reproducible sci
 
 This documentation is still work-in-progress, bear with us while we are working to
 finish the implementation and documentation for a first official release.
-However, if you are a little patient and presistent, there should alreadt be enough
+However, if you are a little patient and persistent, there should already be enough
 information here to run models and to contribute your own models to Modelhub.
 So feel free to explore the current status of modelhub contact us with questions 
 and suggestions :)
@@ -29,6 +29,9 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   quickstart
+   overview
+   contribute
    modelhubapi
    modelhublib
 
