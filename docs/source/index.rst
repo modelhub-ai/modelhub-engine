@@ -22,6 +22,11 @@ Contents:
 ---------
 
 .. toctree::
+   :hidden:
+
+   Home <self>
+
+.. toctree::
    :maxdepth: 2
 
    modelhubapi
