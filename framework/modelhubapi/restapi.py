@@ -61,12 +61,12 @@ class ModelHubRESTAPI:
         The get_model_files HTTP method allows you to download all the model
         itself and all its associated files in a single zip folder.
 
-        Todo:
+        TODO
             * This returns a error: [Errno 32] Broken pipe when url is typed
-            into chrome and before hitting enter - chrome sends request earlier,
-            and this messes up with flask.
+              into chrome and before hitting enter - chrome sends request earlier,
+              and this messes up with flask.
             * Currently no mechanism for catching errors (except what flask
-            will catch).
+              will catch).
         """
         try:
             model_name = self.api.get_config()["meta"]["name"].lower()
@@ -166,9 +166,9 @@ class ModelHubRESTAPI:
         api._get_txt_file() function that returns a dict key "error" in case
         the file is not found.
 
-        Todo:
+        TODO
         * All errors are returned as 400. Would be better to customize the error
-        code based on the actual error.
+          code based on the actual error.
         """
         response = self._addCORS(jsonify(content))
         # response = jsonify(content)

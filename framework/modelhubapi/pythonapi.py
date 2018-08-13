@@ -24,7 +24,7 @@ class ModelHubAPI:
             - model: Model specifics.
             - publication: Publication specifics.
 
-        Todo:
+        TODO
             * Put sample config file here.
             * Put link to config.json schema when we have it.
         """
@@ -87,8 +87,8 @@ class ModelHubAPI:
 
         Args:
             file_path (string): Path to file tp run inference on.
-            numpyToArray: Indicates if numpy outputs should be converted to
-                          standard python lists.
+            numpyToList: Indicates if numpy outputs should be converted to
+                         standard python lists.
         
         Returns:
             A dictionary with a list of prediction outputs plus some meta 
