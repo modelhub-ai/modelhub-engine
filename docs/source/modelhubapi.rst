@@ -10,7 +10,8 @@ REST API
 The REST API is the main interface to a model packaged with the Modelhub framework.
 The REST API of a running model can be called under \http::/IP_OF_MODEL:PORT/api/
 
-TODO
+TODO List and explain REST API in a nicer way. For now, please refer to the REST
+API Class documentation.
 
 
 REST API Class
