@@ -24,7 +24,7 @@ For a detailed technical documentation of the whole Modelhub project and infrast
 
 **/framework** contains the modelhub framework code.
 
-Template files for the contributer source (integrating the actual net plus required pre- and postprocessing) are locateded [here](https://github.com/modelhub-ai/model-template). Instructions on how to prepare a new contribution can be found [here](https://github.com/modelhub-ai/modelhub).
+Template files for the contributer source (integrating the actual net plus required pre- and postprocessing) are locateded [here](https://github.com/modelhub-ai/model-template). Instructions on how to prepare a new contribution can be found [here](http://modelhub.readthedocs.io/en/latest/contribute.html).
 
 ### Running a model with a development version of the framework
 For deployment of a model the framework is part of the runtime docker. However, when developing on the framework you would not want to re-build a docker to test each change. Hence the start script [here](https://github.com/modelhub-ai/modelhub) has the option to mount a framework folder, temporarily replacing the internal framwork:
