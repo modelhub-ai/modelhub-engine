@@ -20,7 +20,7 @@ For a detailed technical documentation of the whole Modelhub project and infrast
 
 **/docker** contains files for building the specific docker images for a model.
 
-**/docs** documentation of classes and functions of the framework.
+**/docs** contains Sphinx documentation sources for the modelhub project.
 
 **/framework** contains the modelhub framework code.
 
