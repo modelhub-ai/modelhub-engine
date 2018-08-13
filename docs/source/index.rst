@@ -11,12 +11,12 @@ modelhub is a repository of deep learning models pretrained for a wide variety
 of medical applications. Modelhub highlights recent trends in deep learning 
 applications, enables transfer learning approaches and promotes reproducible science.
 
-This documentation is still work-in-progress, bear with us while we are working to
-finish the implementation and documentation for a first official release.
-However, if you are a little patient and persistent, there should already be enough
-information here to run models and to contribute your own models to Modelhub.
-So feel free to explore the current status of modelhub contact us with questions 
-and suggestions :)
+.. note::  This documentation should contain all essential technical information 
+           about the Modelhub project and how to contribute models. It is, however,
+           still work-in-progress, so possibly you need to be a little patient
+           and persistent. If you find anything unclear, need help, or have
+           suggestions, please feel free to contact us at "info at modelhub.ai"
+
 
 Contents:
 ---------
