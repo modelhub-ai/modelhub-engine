@@ -1,17 +1,24 @@
 ## Contribute Your Model to Modelhub
 
-To package a model with our framework you need to have the following **prerequisites** installed:
-- Python 2.7 or Python 3.6 (or higher)
-- [Docker](https://docs.docker.com/install/)
-- Clone of the [modelhub-engine repository](https://github.com/modelhub-ai/modelhub-engine.git) (`git clone https://github.com/modelhub-ai/modelhub-engine.git`)
+The following figure gives an overview of the necessary steps to packaging your model 
+with the Modelhub framework and eventually contributing it to the Modelhub collection.
+Read further for detailed explanations of all steps.
 
-Packaging your model with our framework and eventually contributing it to the Modelhub collection requires the following steps (read further for details).
-
-<img width="500" alt="modelhub contribution steps" src="https://raw.githubusercontent.com/modelhub-ai/modelhub/master/docs/images/contribution_process.png">
+<img width="75%" alt="modelhub contribution steps" src="https://raw.githubusercontent.com/modelhub-ai/modelhub/master/docs/images/contribution_process.png">
 
 **_HINT_** Take a look at an already integrated model to understand how it looks when finished ([AlexNet](https://github.com/modelhub-ai/AlexNet) is a good and simple example).
 
-1. **Prepare Docker image**
+
+### Prerequisites
+
+To package a model with our framework you need to have the following prerequisites installed:
+- Python 2.7 or Python 3.6 (or higher)
+- [Docker](https://docs.docker.com/install/)
+- Clone of the [modelhub-engine repository](https://github.com/modelhub-ai/modelhub-engine.git) (`git clone https://github.com/modelhub-ai/modelhub-engine.git`)
+<br/><br/>
+
+
+### 1. Prepare Docker image
 
    1. Write a dockerfile preparing/installing all third party dependencies your model needs 
       (e.g. the deep learning library you are using). Use the `ubuntu:16.04` Docker image as base.
@@ -24,16 +31,17 @@ Packaging your model with our framework and eventually contributing it to the Mo
       <br/><br/>
    
    3. Adapt the [_Dockerfile_modelhub_](https://github.com/modelhub-ai/modelhub-engine/blob/master/Dockerfile_modelhub) 
-      located in the modelhub-engine repository to use your docker image as base (change the first line in the file).
+      located in the modelhub-engine repository to use your docker image as base
+      (i.e. change the `FROM XXXXXXXX` line to `FROM <your docker image>`). No other 
+      changes should be necessary.
       <br/><br/>
       
-   4. Build the image from the modified Dockerfile_modelhub. This will include the modelhub engine into your docker.
+   4. Build the image from the modified _Dockerfile_modelhub_. This will include the modelhub engine into your docker.
       <br/><br/>
    
    5. Push the image from the previous step to [DockerHub](https://hub.docker.com/) 
       (required if you want to publish your model on Modelhub, so the image can 
       be found when starting a model for the first time. If you don't plan to publish on Modelhub, this step is optional).
-      <br/><br/>
    
    -  **_NOTE_** We are planning to provide a few pre-build Docker images for the most common deep learning 
       frameworks, so you do not have to build them yourself. For now what we have is not really consolidated yet.
@@ -43,16 +51,16 @@ Packaging your model with our framework and eventually contributing it to the Mo
       [pre-build images on DockerHub](https://hub.docker.com/u/modelhub/) - use the ones that start with _modelhub/main__.
       <br/><br/>
       
-2. **Prepare your model based on the modelhub template**
+### 2. Prepare your model based on the modelhub template
 
-   1. Fork the model template https://github.com/modelhub-ai/model-template.git.
+   1. Fork the [model template](https://github.com/modelhub-ai/model-template).
       <br/><br/>
    
    2. Change the name of your model-template fork to your model's name. For this open your fork on GitHub, 
       go to _Settings_, change the _Repository name_, and press _Rename_.
       <br/><br/>
       
-   3. Clone your renamed fork to your local computer.
+   3. Clone your renamed fork to your local computer and open the cloned folder.
       <br/><br/>
    
    4. Populate the configuration file _contrib_src/model/config.json_ with the relevant information about your model. 
@@ -93,20 +101,19 @@ Packaging your model with our framework and eventually contributing it to the Mo
       specific pre- and post-processing has to be implemented, to make the _ImageProcessor_ work. There are two 
       pre-processing functions and one post-processing function to be filled in. We'll go through each of these 
       functions individually:
-      <br/><br/>
       
       1. **\_preprocessBeforeConversionToNumpy(self, image)**
       
          The _ImageProcessorBase_ takes care of loading the input image and then calls this function to let you
          perform pre-processing on the image. The image comming into this function is either a 
          [PIL](https://pillow.readthedocs.io/en/latest/) or a [SimpleITK](http://www.simpleitk.org/) object.
-         So this __preprocessBeforeConversionToNumpy_ gives you the option to perform pre-processing using PIL
+         So *\_preprocessBeforeConversionToNumpy* gives you the option to perform pre-processing using PIL
          or SimpleITK, which might be more convenient than performing pre-processing on the image in numpy format
          (see next step). If you decide to implement pre-porcessing here, you should implement it for both, PIL and 
          SimpleITK objects. Make sure this function returns the same type of object as it received (PIL in => PIL out, 
          SimpleITK in => SimpleITK out).
          
-         You do not have to implement this, alternatively you can just pass the image through unaltered and perform
+         You do not have to implement this. You can delete this function and implement
          all your pre-processing using the image converted to numpy (see next step).
          <br/><br/>
       
@@ -133,7 +140,7 @@ Packaging your model with our framework and eventually contributing it to the Mo
                     'probability': float(inferenceResults[i])}
              result.append(obj)
          ```
-         For this you have to specifiy output type "label_list" in your model's _config.json_.
+         For this you have to specifiy the output type "label_list" in your model's _config.json_.
          
          Or you can output a numpy array. The output type specified in model's _config.json_ will help
          users (and Modelhub) to interpret the meaning result array:
@@ -141,40 +148,39 @@ Packaging your model with our framework and eventually contributing it to the Mo
          <table>
          <thead>
             <tr>
-            <th>Type
+            <th>Type&emsp;
             <th>Description
          </thead>
          <tr>
-            <td>vector
+            <td>vector&emsp;
             <td>1d
          <tr>
-            <td>mask_image
+            <td>mask_image&emsp;
             <td>2d or 3d, discrete values, 0 is always background, 1,2... are the regions
          <tr>
-            <td>heatmap
+            <td>heatmap&emsp;
             <td>2d grayscale, 2d multi, 3d grayscale, 3d multi, if normalized, 1 is highest, 0 is lowest
          <tr>
-            <td>image
+            <td>image&emsp;
             <td>2d grayscale, 2d multi, 3d grayscale, 3d multi
          <tr>
-            <td>custom
+            <td>custom&emsp;
             <td>none of the above 
          </table>         
-         <br/><br/>
    
    9. Edit _init/init.json_ and add the id of your Docker, so when starting your model, Modelhub knows 
       which Docker to use (and download from DockerHub).
       
       Optionally also list any additional files that are hosted externally (i.e. not in your model's GitHub repository).
       Specify origin and the destination within your model's folder structure. This is particularly useful for 
-      pre-trained model files, since they can easily be larger than the maximum file size allowed by GitHub.
+      pre-trained model files, since they can easily be larger than the maximum file size allowed in a GitHub repository.
       
       When starting a model, Modelhub will first download the model's repository, then download any external files, 
       and then start the Docker specified in this init file.
       <br/><br/>
    
-   10. Add your licenses for the model (i.e. everything in the repsoitory except the sample data) and the sample data to
-       _contrib_src/license/model_ and _contrib_src/license/sample_data_ respectively.
+   10. Add your licenses for the model (i.e. everything in the repsoitory except the sample data) and the license 
+       for the sample data to _contrib_src/license/model_ and _contrib_src/license/sample_data_ respectively.
        
        If you want to publish your model via Modelhub, make sure the licenses allow us to use your code, model, and 
        sample data (most of the popular open source licenses should be fine, for proprietary licenses you might need 
@@ -186,12 +192,12 @@ Packaging your model with our framework and eventually contributing it to the Mo
        notebook is very basic and generic. Usually it is much more informative to a user of your model if the
        example code is tailored to your model.
        
-       You can access and run the Sandbox notebook by starting your model via `python start.py YOUR_MODEL_FOLDER_NAME`. 
+       You can access and run the Sandbox notebook by starting your model via `python start.py YOUR_MODEL_FOLDER_NAME -e`. 
        For this, copy _start.py_ from the [modelhub repository](https://github.com/modelhub-ai/modelhub) to the 
        parent folder of your model folder.
        <br/><br/>
 
-3. **Run tests**
+### 3. Test your model
 
    1. Manually check if your model works. 
       
@@ -199,16 +205,15 @@ Packaging your model with our framework and eventually contributing it to the Mo
          [modelhub repository](https://github.com/modelhub-ai/modelhub) to the parent folder of your model folder.
          <br/><br/>
       
-      2. Run `python start.py YOUR_MODEL_FOLDER_NAME` and check if the wep app for your model looks and works as expected.
+      2. Run `python start.py YOUR_MODEL_FOLDER_NAME` and check if the web app for your model looks and works as expected.
          <br/><br/>
       
       3. Run `python start.py YOUR_MODEL_FOLDER_NAME -e` and check if the jupyter notebook _contrib_src/sandbox.ipynb_ 
          works as expected.
-         <br/><br/>
    
    2. Run automatic integration test. This test will perform a few sanity checks to verify that all the basics
-      seem to be working properly. Passing this test does not mean your model performs correctly (hence the manual
-      checks).
+      seem to be working properly. However, passing this test does not mean your model performs correctly 
+      (hence the manual checks).
       
       1. Copy _test_integration.py_ from the 
          [modelhub repository](https://github.com/modelhub-ai/modelhub) to the parent folder of your model folder.
@@ -218,7 +223,8 @@ Packaging your model with our framework and eventually contributing it to the Mo
       
          On some platforms (Windows, Mac) communication to the model's Docker container might fail if the
          Docker is started implicitly by the integration test. If you get obscure errors during test, try
-         starting your model in a different terminal and running the test with the "-m" option.
+         starting your model idependently in a different terminal via `python start.py YOUR_MODEL_FOLDER_NAME` 
+         and running the test with the "-m" option (`python test_integration.py YOUR_MODEL_FOLDER_NAME -m`).
          
          If your model needs particularly long to start up, you need to tell the integration test how long
          to wait before attempting to communicate with the model. Use the "-t" option.
@@ -226,7 +232,7 @@ Packaging your model with our framework and eventually contributing it to the Mo
          Check out the documentation of the integration test by calling `python test_integration.py -h`
          <br/><br/>
       
-4. **Publish**
+### 4. Publish
 
    1. `git clone https://github.com/modelhub-ai/modelhub.git` (or update if you cloned already).
       <br/><br/>
