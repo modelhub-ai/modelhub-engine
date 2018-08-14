@@ -8,10 +8,12 @@ REST API
 --------
 
 The REST API is the main interface to a model packaged with the Modelhub framework.
-The REST API of a running model can be called under \http::/IP_OF_MODEL:PORT/api/
+The REST API of a running model can be reached under \http://<ip of model>:<port>/api/<call>.
+For example :code:`http://localhost:80/api/get_config` to retrieve a JSON string with the model
+configuration
 
-TODO List and explain REST API in a nicer way. For now, please refer to the REST
-API Class documentation.
+See the following documentation of the REST API Class for a documentation of 
+all available functions.
 
 
 REST API Class
@@ -22,7 +24,7 @@ Implements the REST API
    :members:
    :undoc-members:
    :member-order: bysource
-
+   :exclude-members: start
 
 Python API
 ----------
