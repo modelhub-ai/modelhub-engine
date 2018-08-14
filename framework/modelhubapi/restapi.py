@@ -40,34 +40,58 @@ class ModelHubRESTAPI:
 
     def get_config(self):
         """
-        Calls api.get_config().
+        GET method
+
+        Returns:
+            application/json: Model configuration dictionary.
         """
         return self._jsonify(self.api.get_config())
 
     def get_legal(self):
         """
-        Calls api.get_legal().
+        GET method
+
+        Returns:
+            application/json: 
+                All of modelhub's, the model's, and the sample data's 
+                legal documents as dictionary. If one (or more) of the legal 
+                files don't exist, the error  will be logged with the above 
+                key. Dictionary keys are:
+                    
+                - modelhub_license
+                - modelhub_acknowledgements
+                - model_license
+                - sample_data_license
         """
         return self._jsonify(self.api.get_legal())
 
     def get_model_io(self):
         """
-        Calls api.get_model_io().
+        GET method
+
+        Returns:
+            application/json: 
+                The model's input/output sizes and types as dictionary.
+                Convenience function, as this is a subset of what 
+                :func:`~get_config` returns
         """
         return self._jsonify(self.api.get_model_io())
 
     def get_model_files(self):
         """
-        The get_model_files HTTP method allows you to download all the model
-        itself and all its associated files in a single zip folder.
+        GET method
 
-        TODO
-            * This returns a error: [Errno 32] Broken pipe when url is typed
-              into chrome and before hitting enter - chrome sends request earlier,
-              and this messes up with flask.
-            * Currently no mechanism for catching errors (except what flask
-              will catch).
+        Returns:
+            application/zip:
+                The trained deep learning model in its native format and 
+                all its asscociated files in a single zip folder.
         """
+        # TODO
+        #    * This returns a error: [Errno 32] Broken pipe when url is typed
+        #      into chrome and before hitting enter - chrome sends request earlier,
+        #      and this messes up with flask.
+        #    * Currently no mechanism for catching errors (except what flask
+        #      will catch).
         try:
             model_name = self.api.get_config()["meta"]["name"].lower()
             archive_name = os.path.join(self.working_folder, model_name + "_model")
@@ -78,12 +102,11 @@ class ModelHubRESTAPI:
 
     def get_samples(self):
         """
-        Calls api.get_samples(). Uses the "files" object and appends the url
-        from the request. Returns a list of urls to the sample files. When the
-        sample file urls are called, the call goes through _samples which
-        handles the routing. If the returned array is empty, then there are no
-        sample files for this model i.e. the "sample/data" folder should always
-        exist regardless if empty or not.
+        GET method
+
+        Returns:
+            application/json:
+                List of URLs to all sample files associated with the model. 
         """
         try:
             url = request.url
@@ -96,16 +119,30 @@ class ModelHubRESTAPI:
 
     def predict(self):
         """
-        GET: This HTTP method grabs the url from the request arguments and
-        checks if its type is allowed and if it is zipped. If it passes these
-        tests, it is saved in the working folder and inference is carried out
-        on it using api.predict(). Url must not contain any arguments and should
-        end with the file extension.
+        GET/POST method
 
-        POST: Similar to GET but based on uploaded files.
+        Returns:
+            application/json:
+                Prediciton result on input data. Return type as specified
+                in the model configuration (see :func:`~get_model_io`), and
+                wrapped in json. In case of an error, returns a dictionary
+                with error info.
+        
+        GET method
 
-        Testing POST with curl
-        curl -i -X POST -F file=@<PATH_TO_FILE> "<URL>"
+        Args:
+            fileurl: URL to input data for prediciton. Input type must match
+                     specification in the model configuration (see :func:`~get_model_io`)
+                     URL must not contain any arguments and should end with the file 
+                     extension.
+
+        POST method
+
+        Args:
+            file: Input file with data for prediction. Input type must match
+                  specification in the model configuration (see :func:`~get_model_io`)
+
+        POST Example: :code:`curl -i -X POST -F file=@<PATH_TO_FILE> "<URL>"`
         """
         try:
             # through URL
@@ -137,7 +174,24 @@ class ModelHubRESTAPI:
 
     def predict_sample(self):
         """
-        TEMP SOLUTION
+        GET method
+
+        Performs prediction on sample data.
+        
+        .. note:: Currently you cannot use :func:`~predict` for inference 
+                  on sample data hosted under the same IP as the model api.
+                  This function is a temporary workaround. To be removed 
+                  in the future.
+
+        Returns:
+            application/json:
+                Prediciton result on input data. Return type as specified
+                in the model configuration (see :func:`~get_model_io`), and
+                wrapped in json. In case of an error, returns a dictionary
+                with error info.
+
+        Args:
+            filename: File name of the sample data. No folders or URLs.
         """
         try:
             if request.method == 'GET':
