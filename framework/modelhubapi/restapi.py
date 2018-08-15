@@ -135,6 +135,8 @@ class ModelHubRESTAPI:
                      specification in the model configuration (see :func:`~get_model_io`)
                      URL must not contain any arguments and should end with the file 
                      extension.
+        
+        GET Example: :code:`curl -X GET http://localhost:80/api/predict?fileurl=<URL_OF_FILE>`
 
         POST method
 
@@ -142,7 +144,7 @@ class ModelHubRESTAPI:
             file: Input file with data for prediction. Input type must match
                   specification in the model configuration (see :func:`~get_model_io`)
 
-        POST Example: :code:`curl -i -X POST -F file=@<PATH_TO_FILE> "<URL>"`
+        POST Example: :code:`curl -i -X POST -F file=@<PATH_TO_FILE> http://localhost:80/api/predict`
         """
         try:
             # through URL
