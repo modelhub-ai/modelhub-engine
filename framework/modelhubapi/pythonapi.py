@@ -6,6 +6,9 @@ from datetime import datetime
 import numpy
 
 class ModelHubAPI:
+    """
+    Generic interface to access a model.
+    """
 
     def __init__(self, model, contrib_src_dir):
         self.model = model
@@ -15,34 +18,25 @@ class ModelHubAPI:
 
     def get_config(self):
         """
-        The get_config method returns the model's config file as a python
-        dictionary.
-
-        The config files includes 4 main keys:
-            - id: Model uuid.
-            - meta: High level information about the model.
-            - model: Model specifics.
-            - publication: Publication specifics.
-
-        TODO
-            * Put sample config file here.
-            * Put link to config.json schema when we have it.
+        Returns:
+            dict: Model configuration.
         """
         config_file_path = self.contrib_src_dir + "/model/config.json"
         return self._load_json(config_file_path)
 
     def get_legal(self):
         """
-        The get_legal method returns the all of modelhub's, the model's,
-        and the sample data's legal documents as a python dictionary. If one
-        (or more) of the four files listed below returns an error, see its
-        corresponding key - this error will be registered in its value.
-
-        These specifically include:
-            - modelhub_license
-            - modelhub_acknowledgements
-            - model_license
-            - sample_data_license
+        Returns:
+            dict: 
+                All of modelhub's, the model's, and the sample data's 
+                legal documents as dictionary. If one (or more) of the legal 
+                files don't exist, the error  will be logged with the 
+                corresponding key. Dictionary keys are:
+                    
+                - modelhub_license
+                - modelhub_acknowledgements
+                - model_license
+                - sample_data_license
         """
         contrib_license_dir = self.contrib_src_dir + "/license"
         legal = self._load_txt_as_dict(self.framework_dir + "/LICENSE", "modelhub_license")
@@ -53,8 +47,11 @@ class ModelHubAPI:
 
     def get_model_io(self):
         """
-        The get_model_io method is a convinience method that return the
-        model's input & output size and type in a python dictionary.
+        Returns:
+            dict: 
+                The model's input/output sizes and types as dictionary.
+                Convenience function, as this is a subset of what 
+                :func:`~get_config` returns
         """
         config_file_path = self.contrib_src_dir + "/model/config.json"
         config = self._load_json(config_file_path)
@@ -66,11 +63,13 @@ class ModelHubAPI:
 
     def get_samples(self):
         """
-        This get_sample_urls method returns a dictionary of sample files. The
-        "folder" key contains the absolute folder path in the container and the
-        "files" key contains the file names with extensions. Join these
-        together to use the sample files. This separation helps the REST API.
-        You can use these to test the model out of the box.
+        Returns:
+            dict:
+                Folder and file names of sample data bundled with this model.
+                The diconary key "folder" holds the absolute path to the 
+                sample data folder in the model container. The key "files"
+                contains a list of all file names in that folder. Join these
+                together to get the full path to the sample files.
         """
         try:
             sample_data_dir = self.contrib_src_dir + "/sample_data"
@@ -80,23 +79,25 @@ class ModelHubAPI:
         except Exception as e:
             return {'error': repr(e)}
 
-    def predict(self, file_path, numpyToList = False):
+    def predict(self, input_file_path, numpyToList = False):
         """
-        The predict method preforms an inference on the model using a given
-        input. 
+        Preforms the model's inference on the given input. 
 
         Args:
-            file_path (string): Path to file tp run inference on.
-            numpyToList: Indicates if numpy outputs should be converted to
-                         standard python lists.
+            input_file_path (str): Path to input file to run inference on.
+            numpyToList (bool): Indicates if numpy outputs should be converted to
+                                standard python lists.
         
         Returns:
-            A dictionary with a list of prediction outputs plus some meta 
-            information about the prediction processing.
+            dict, list, or numpy array:
+                Prediction result on input data. Return type/foramt as 
+                specified in the model configuration (see :func:`~get_model_io`). 
+                In case of an error, returns a dictionary
+                with error info.
         """
         try:
             start = time.time()
-            output = self.model.infer(file_path)
+            output = self.model.infer(input_file_path)
             output = self._correct_output_list_wrapping(output)
             end = time.time()
             config = self.get_config()
