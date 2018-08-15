@@ -55,8 +55,8 @@ class ModelHubRESTAPI:
             application/json: 
                 All of modelhub's, the model's, and the sample data's 
                 legal documents as dictionary. If one (or more) of the legal 
-                files don't exist, the error  will be logged with the above 
-                key. Dictionary keys are:
+                files don't exist, the error  will be logged with the 
+                corresponding key. Dictionary keys are:
                     
                 - modelhub_license
                 - modelhub_acknowledgements
@@ -123,7 +123,7 @@ class ModelHubRESTAPI:
 
         Returns:
             application/json:
-                Prediciton result on input data. Return type as specified
+                Prediction result on input data. Return type/format as specified
                 in the model configuration (see :func:`~get_model_io`), and
                 wrapped in json. In case of an error, returns a dictionary
                 with error info.
@@ -179,7 +179,7 @@ class ModelHubRESTAPI:
         Performs prediction on sample data.
         
         .. note:: Currently you cannot use :func:`~predict` for inference 
-                  on sample data hosted under the same IP as the model api.
+                  on sample data hosted under the same IP as the model API.
                   This function is a temporary workaround. To be removed 
                   in the future.
 
