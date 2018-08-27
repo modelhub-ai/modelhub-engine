@@ -2,7 +2,7 @@
 
 ### Framework
 
-Modelhub provides a framework into which contributors can plug-in their model and model specific code pre- and post-processing code. The framework provides a standalone runtime environment, convience functionality (e.g. image loading and conversion), programming interfaces to access the model, and a user friendly web-interface to try a model. See the following figure for an overview of the architecture.
+Modelhub provides a framework into which contributors can plug-in their model, and model specific pre- and post-processing code. The framework provides a standalone runtime environment, convience functionality (e.g. image loading and conversion), programming interfaces to access the model, and a user friendly web-interface to try a model. See the following figure for an overview of the architecture.
 
 <img width="75%" alt="modelhub framework overview" src="https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/docs/source/images/framework_overview.png">
 
