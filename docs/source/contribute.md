@@ -4,7 +4,7 @@ The following figure gives an overview of the necessary steps to packaging your 
 with the Modelhub framework and eventually contributing it to the Modelhub collection.
 Read further for detailed explanations of all steps.
 
-<img width="75%" alt="modelhub contribution steps" src="https://raw.githubusercontent.com/modelhub-ai/modelhub/master/docs/images/contribution_process.png">
+<img width="75%" alt="modelhub contribution steps" src="https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/docs/source/images/contribution_process.png">
 
 **_HINT_** Take a look at an already integrated model to understand how it looks when finished ([AlexNet](https://github.com/modelhub-ai/AlexNet) is a good and simple example).
 
