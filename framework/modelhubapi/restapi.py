@@ -158,17 +158,22 @@ class ModelHubRESTAPI:
                     file_name = self._get_file_name(mime_type[0])
                     with open(file_name, 'wb') as f:
                         f.write(r.content)
-                    return self._jsonify(self.api.predict(file_name, numpyToList=True))
+                    result = self._jsonify(self.api.predict(file_name, numpyToList=True))
+                    os.remove(file_name)
+                    return result
                 else:
                     return self._jsonify({'error': 'Incorrect file type.'})
             # through file upload
             elif request.method == 'POST':
                 file = request.files.get('file')
                 mime_type = file.content_type
+                print (mime_type)
                 if str(mime_type) in self._get_allowed_extensions():
                     file_name = self._get_file_name(mime_type)
                     file.save(file_name)
-                    return self._jsonify(self.api.predict(file_name, numpyToList=True))
+                    result = self._jsonify(self.api.predict(file_name, numpyToList=True))
+                    os.remove(file_name)
+                    return result
                 else:
                     return self._jsonify({'error': 'Incorrect file type.'})
         except Exception as e:
