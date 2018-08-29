@@ -118,7 +118,13 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         self.assertIn("error", result)
         self.assertIn("Incorrect file type.", result["error"])
 
-    
+
+    def test_working_folder_empty_after_predict_by_post(self):
+        response = self._post_predict_request_on_sample_image("testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(len(os.listdir(self.temp_workdir) ), 0)
+
+
     # TODO this is not so nice yet, test should not require a download from the inet
     # should probably use a mock server for this
     def test_predict_by_url_returns_expected_mock_prediction(self):
@@ -145,7 +151,13 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         result = json.loads(response.get_data())
         self.assertIn("error", result)
         self.assertIn("Incorrect file type.", result["error"])
-    
+
+
+    def test_working_folder_empty_after_predict_by_url(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.png")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(len(os.listdir(self.temp_workdir) ), 0)
+
 
     def test_predict_sample_returns_expected_mock_prediction(self):
         response = self.client.get("/api/predict_sample?filename=testimage_ramp_4x2.png")
