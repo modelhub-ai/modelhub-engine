@@ -15,7 +15,7 @@ RUN pip install Flask==0.12.2 \
 EXPOSE 80 81 8888
 
 # Define environment variable
-ENV PYTHONPATH /usr/local:/framework/:/contrib_src/
+ENV PYTHONPATH /usr/local:/framework/:/contrib_src/:$PYTHONPATH
 
 # Netron fixes
 # change header line in netron
