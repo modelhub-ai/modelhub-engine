@@ -167,7 +167,6 @@ class ModelHubRESTAPI:
             elif request.method == 'POST':
                 file = request.files.get('file')
                 mime_type = file.content_type
-                print (mime_type)
                 if str(mime_type) in self._get_allowed_extensions():
                     file_name = self._get_file_name(mime_type)
                     file.save(file_name)
