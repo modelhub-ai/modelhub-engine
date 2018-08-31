@@ -33,6 +33,26 @@ For deployment of a model the framework is part of the runtime docker. However, 
 python start.py MODEL_NAME -mf PATH_TO_FRAMEWORK
 ```
 
+### Python Package Instructions
+
+To build a new version:
+
+```
+python setup.py sdist bdist_wheel
+```
+
+To upload to test PyPi:
+
+```
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+```
+
+To upload to PyPi:
+
+```
+twine upload dist/*
+```
+
 ## Acknowledgements
 
 See NOTICE file in **/framework** for acknowledgements of third party technologies used.
