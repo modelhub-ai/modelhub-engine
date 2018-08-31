@@ -23,11 +23,11 @@ To package a model with our framework you need to have the following prerequisit
    1. Write a dockerfile preparing/installing all third party dependencies your model needs 
       (e.g. the deep learning library you are using). Use the `ubuntu:16.04` Docker image as base.
       
-      You can check out examples of environments that we prepared 
-      [here](https://github.com/modelhub-ai/modelhub-engine/tree/master/docker).
+      You can find examples of dockerfiles for DL environments in the model repositories of
+      [modelhub-ai on github](https://github.com/modelhub-ai) (e.g. for [squeezenet](https://github.com/modelhub-ai/squeezenet/blob/master/dockerfiles/caffe2)).
       <br/><br/>
    
-   2. Build your docker image.
+   2. Build the docker image.
       <br/><br/>
    
    3. Adapt the [_Dockerfile_modelhub_](https://github.com/modelhub-ai/modelhub-engine/blob/master/Dockerfile_modelhub) 
@@ -36,19 +36,23 @@ To package a model with our framework you need to have the following prerequisit
       changes should be necessary.
       <br/><br/>
       
-   4. Build the image from the modified _Dockerfile_modelhub_. This will include the modelhub engine into your docker.
+   4. Build the image from the modified _Dockerfile_modelhub_. This will include the modelhub engine into your docker. Make sure to build it from within the modelhub-engine repository so it finds the modelhub
+   framework which it will include in the Docker.
       <br/><br/>
    
    5. Push the image from the previous step to [DockerHub](https://hub.docker.com/) 
       (required if you want to publish your model on Modelhub, so the image can 
       be found when starting a model for the first time. If you don't plan to publish on Modelhub, this step is optional).
    
-   -  **_NOTE_** We are planning to provide a few pre-build Docker images for the most common deep learning 
-      frameworks, so you do not have to build them yourself. For now what we have is not really consolidated yet.
-      Nevertheless, you can check out the Docker install scripts we are using 
-      [here](https://github.com/modelhub-ai/modelhub-engine/tree/master/docker), they also serve as examples to 
-      prepare your own. You can also try any of the existing 
-      [pre-build images on DockerHub](https://hub.docker.com/u/modelhub/) - use the ones that start with _modelhub/main__.
+   -  **_NOTE_** We are planning to provide a few pre-build Docker images for the most common deep
+      learning frameworks, so you do not have to build them yourself. For now we only have a small set.
+      You can find the existing 
+      [pre-build images on DockerHub](https://hub.docker.com/u/modelhub/) - use the ones that end with '-modelhub' (the ones that don't end with '-modelhub' have only the pure DL environment without
+      the modelhub framework on top.
+
+      If the DL environment, the exact version of the DL environment, or third party dependencies 
+      you require are not available in the pre-build dockers, you have to build it yourself,
+      following the above steps.
       <br/><br/>
       
 ### 2. Prepare your model based on the modelhub template
@@ -196,6 +200,12 @@ To package a model with our framework you need to have the following prerequisit
        For this, copy _start.py_ from the [modelhub repository](https://github.com/modelhub-ai/modelhub) to the 
        parent folder of your model folder.
        <br/><br/>
+    
+   12. It is good practice to include the Dockerfiles your used to build the Docker for your model
+       so other users can comprehend what the Docker contains. Create a folder _dockerfiles/_ in your
+       local model clone (next to _contrib_src/_ and _init/_) and copy the files from steps 1.1. and
+       1.3. into this folder.
+       <br/><br/>
 
 ### 3. Test your model
 
@@ -205,7 +215,9 @@ To package a model with our framework you need to have the following prerequisit
          [modelhub repository](https://github.com/modelhub-ai/modelhub) to the parent folder of your model folder.
          <br/><br/>
       
-      2. Run `python start.py YOUR_MODEL_FOLDER_NAME` and check if the web app for your model looks and works as expected.
+      2. Run `python start.py YOUR_MODEL_FOLDER_NAME` and check if the web app for your model looks and
+         works as expected. **TODO:** Add info on how to use the web app, because the command just 
+         starts the REST API, which the web frontend is accessing.
          <br/><br/>
       
       3. Run `python start.py YOUR_MODEL_FOLDER_NAME -e` and check if the jupyter notebook _contrib_src/sandbox.ipynb_ 
@@ -221,10 +233,11 @@ To package a model with our framework you need to have the following prerequisit
       
       2. Run `python test_integration.py YOUR_MODEL_FOLDER_NAME`. If all tests pass you are good to publish.
       
-         On some platforms (Windows, Mac) communication to the model's Docker container might fail if the
-         Docker is started implicitly by the integration test. If you get obscure errors during test, try
-         starting your model idependently in a different terminal via `python start.py YOUR_MODEL_FOLDER_NAME` 
-         and running the test with the "-m" option (`python test_integration.py YOUR_MODEL_FOLDER_NAME -m`).
+         On some platforms and Docker daemon versions communication to the model's Docker container might 
+         fail if the Docker is started implicitly by the integration test. If you get obscure errors 
+         during test, try starting your model idependently in a different terminal via `python start.py 
+         YOUR_MODEL_FOLDER_NAME` and running the test with the "-m" option: `python test_integration.py 
+         YOUR_MODEL_FOLDER_NAME -m`.
          
          If your model needs particularly long to start up, you need to tell the integration test how long
          to wait before attempting to communicate with the model. Use the "-t" option.
