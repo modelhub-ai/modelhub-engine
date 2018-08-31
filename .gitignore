@@ -1,6 +1,9 @@
 /tests
 /contrib_src/.ipynb_checkpoints
 /docs/build
+/modelhub/build
+/modelhub/dist
+/modelhub/modelhub_ai.egg-info
 *.pyc
 .coverage
 .vscode
