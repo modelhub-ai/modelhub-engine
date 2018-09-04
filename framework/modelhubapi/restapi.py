@@ -38,6 +38,7 @@ class ModelHubRESTAPI:
         self.app.add_url_rule('/api/predict_sample', 'predict_sample',
                               self.predict_sample)
 
+
     def get_config(self):
         """
         GET method
@@ -46,6 +47,7 @@ class ModelHubRESTAPI:
             application/json: Model configuration dictionary.
         """
         return self._jsonify(self.api.get_config())
+
 
     def get_legal(self):
         """
@@ -65,6 +67,7 @@ class ModelHubRESTAPI:
         """
         return self._jsonify(self.api.get_legal())
 
+
     def get_model_io(self):
         """
         GET method
@@ -76,6 +79,7 @@ class ModelHubRESTAPI:
                 :func:`~get_config` returns
         """
         return self._jsonify(self.api.get_model_io())
+
 
     def get_model_files(self):
         """
@@ -100,6 +104,7 @@ class ModelHubRESTAPI:
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
+
     def get_samples(self):
         """
         GET method
@@ -116,6 +121,7 @@ class ModelHubRESTAPI:
             return self._jsonify(samples)
         except Exception as e:
             return self._jsonify({'error': str(e)})
+
 
     def predict(self):
         """
@@ -178,6 +184,7 @@ class ModelHubRESTAPI:
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
+
     def predict_sample(self):
         """
         GET method
@@ -209,11 +216,13 @@ class ModelHubRESTAPI:
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
+
     def start(self):
         """
         Starts the flask app.
         """
         self.app.run(host='0.0.0.0', port=80, threaded=True)
+
 
     # -------------------------------------------------------------------------
     # Private helper functions
@@ -240,8 +249,8 @@ class ModelHubRESTAPI:
         """
         Routing function for sample files that exist in contrib_src.
         """
-
         return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name, cache_timeout=-1)
+
 
     def _thumbnail(self, thumbnail_name):
         """
@@ -249,6 +258,7 @@ class ModelHubRESTAPI:
         thumbnail must be named "thumbnail.jpg".
         """
         return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name, cache_timeout=-1)
+
 
     def _get_file_name(self, mime_type):
         """
@@ -261,5 +271,7 @@ class ModelHubRESTAPI:
                                  mime_type.split("/")[1]))
         return file_name
 
+
     def _get_allowed_extensions(self):
         return self.api.get_model_io()["input"]["format"]
+

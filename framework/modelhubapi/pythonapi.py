@@ -16,6 +16,7 @@ class ModelHubAPI:
         this_dir = os.path.dirname(os.path.realpath(__file__))
         self.framework_dir = os.path.normpath(os.path.join(this_dir, ".."))
 
+
     def get_config(self):
         """
         Returns:
@@ -23,6 +24,7 @@ class ModelHubAPI:
         """
         config_file_path = self.contrib_src_dir + "/model/config.json"
         return self._load_json(config_file_path)
+
 
     def get_legal(self):
         """
@@ -44,6 +46,7 @@ class ModelHubAPI:
         legal.update(self._load_txt_as_dict(contrib_license_dir + "/model", "model_license"))
         legal.update(self._load_txt_as_dict(contrib_license_dir + "/sample_data", "sample_data_license"))
         return legal
+
 
     def get_model_io(self):
         """
@@ -78,6 +81,7 @@ class ModelHubAPI:
                      "files": sample_files}
         except Exception as e:
             return {'error': repr(e)}
+
 
     def predict(self, input_file_path, numpyToList = False):
         """
@@ -134,6 +138,7 @@ class ModelHubAPI:
         except Exception as e:
             return {'error': str(e)}
 
+
     def _load_json(self, file_path):
         try:
             with io.open(file_path, mode='r', encoding='utf-8') as f:
@@ -141,6 +146,7 @@ class ModelHubAPI:
                 return loaded_dict
         except Exception as e:
             return {'error': str(e)}
+    
     
     def _correct_output_list_wrapping(self, output):
         if not isinstance(output, list):
