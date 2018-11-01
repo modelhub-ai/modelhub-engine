@@ -1,6 +1,8 @@
 # Use your environment image as base image
 FROM XXXXXXXX
 
+RUN apt-get update && apt-get install -y libmagic1
+
 # Install requirements
 RUN pip install Flask==0.12.2 \
     flask-cors==3.0.6 \
@@ -9,7 +11,8 @@ RUN pip install Flask==0.12.2 \
     SimpleITK==1.1.0 \
     jupyter==1.0.0 \
     netron==1.7.4 \
-    requests==2.18.4
+    requests==2.20.0 \
+    python-magic==0.4.15
 
 # Make port 80 available to the world outside this container
 EXPOSE 80 81 8888
@@ -35,6 +38,9 @@ ADD /framework /framework
 
 # Create dir where working files go (e.g. from the webservice)
 WORKDIR /working
+
+# Create dir where output files go (e.g. from the webservice)
+WORKDIR /output
 
 # Switch to the dir that holds the usr sources
 WORKDIR /contrib_src
