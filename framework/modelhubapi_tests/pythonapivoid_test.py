@@ -17,7 +17,7 @@ class TestModelHubAPIVoidModel(unittest.TestCase):
 
     def tearDown(self):
         pass
-    
+
 
     def test_get_config_returns_error(self):
         result = self.api.get_config()
@@ -49,4 +49,3 @@ class TestModelHubAPIVoidModel(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
