@@ -12,6 +12,7 @@ class ModelHubAPI:
 
     def __init__(self, model, contrib_src_dir):
         self.model = model
+        self.output_folder = '/output'
         self.contrib_src_dir = contrib_src_dir
         this_dir = os.path.dirname(os.path.realpath(__file__))
         self.framework_dir = os.path.normpath(os.path.join(this_dir, ".."))
@@ -29,12 +30,12 @@ class ModelHubAPI:
     def get_legal(self):
         """
         Returns:
-            dict: 
-                All of modelhub's, the model's, and the sample data's 
-                legal documents as dictionary. If one (or more) of the legal 
-                files don't exist, the error  will be logged with the 
+            dict:
+                All of modelhub's, the model's, and the sample data's
+                legal documents as dictionary. If one (or more) of the legal
+                files don't exist, the error  will be logged with the
                 corresponding key. Dictionary keys are:
-                    
+
                 - modelhub_license
                 - modelhub_acknowledgements
                 - model_license
@@ -51,9 +52,9 @@ class ModelHubAPI:
     def get_model_io(self):
         """
         Returns:
-            dict: 
+            dict:
                 The model's input/output sizes and types as dictionary.
-                Convenience function, as this is a subset of what 
+                Convenience function, as this is a subset of what
                 :func:`~get_config` returns
         """
         config_file_path = self.contrib_src_dir + "/model/config.json"
@@ -69,7 +70,7 @@ class ModelHubAPI:
         Returns:
             dict:
                 Folder and file names of sample data bundled with this model.
-                The diconary key "folder" holds the absolute path to the 
+                The diconary key "folder" holds the absolute path to the
                 sample data folder in the model container. The key "files"
                 contains a list of all file names in that folder. Join these
                 together to get the full path to the sample files.
@@ -83,19 +84,23 @@ class ModelHubAPI:
             return {'error': repr(e)}
 
 
-    def predict(self, input_file_path, numpyToList = False):
+    def predict(self, input_file_path, numpyToFile=True, url_root=""):
         """
-        Preforms the model's inference on the given input. 
+        Preforms the model's inference on the given input.
 
         Args:
             input_file_path (str): Path to input file to run inference on.
-            numpyToList (bool): Indicates if numpy outputs should be converted to
-                                standard python lists.
-        
+            numpyToFile (bool): Only effective if prediction is a numpy array.
+                Indicates if numpy outputs should be saved and a path to it is
+                returned. If false, a json-serializable list representation of
+                the numpy array is returned instead. List representations is
+                very slow with large numpy arrays.
+            url_root (str): Url root added by the rest api.
+
         Returns:
             dict, list, or numpy array:
-                Prediction result on input data. Return type/foramt as 
-                specified in the model configuration (see :func:`~get_model_io`). 
+                Prediction result on input data. Return type/foramt as
+                specified in the model configuration (see :func:`~get_model_io`).
                 In case of an error, returns a dictionary
                 with error info.
         """
@@ -108,7 +113,8 @@ class ModelHubAPI:
             output_list = []
             for i, o in enumerate(output):
                 shape = list(o.shape) if isinstance(o, numpy.ndarray) else [len(o)]
-                o = o.tolist() if numpyToList and isinstance(o, numpy.ndarray) else o
+                if isinstance(o, numpy.ndarray):
+                    o = url_root + "api" + self._save_output(o) if numpyToFile else o.tolist()
                 output_list.append({
                     'prediction': o,
                     'shape': shape,
@@ -146,8 +152,8 @@ class ModelHubAPI:
                 return loaded_dict
         except Exception as e:
             return {'error': str(e)}
-    
-    
+
+
     def _correct_output_list_wrapping(self, output):
         if not isinstance(output, list):
             return [output]
@@ -156,3 +162,10 @@ class ModelHubAPI:
         else:
             return output
 
+    def _save_output(self, output):
+        now = datetime.now()
+        path = os.path.join(self.output_folder,
+                                 "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+                                 "npy"))
+        numpy.save(path, output, allow_pickle=False)
+        return path

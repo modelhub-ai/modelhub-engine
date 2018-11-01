@@ -7,6 +7,8 @@ from mimetypes import MimeTypes
 import requests
 from datetime import datetime
 from flask_cors import CORS
+import magic
+
 
 class ModelHubRESTAPI:
 
@@ -22,6 +24,8 @@ class ModelHubRESTAPI:
                               self._samples)
         self.app.add_url_rule('/api/thumbnail/<thumbnail_name>',
                               'thumbnail', self._thumbnail)
+        self.app.add_url_rule('/api/output/<output_name>', 'output',
+                              self._output)
         # primary REST API calls
         self.app.add_url_rule('/api/get_config', 'get_config',
                               self.get_config)
@@ -54,12 +58,12 @@ class ModelHubRESTAPI:
         GET method
 
         Returns:
-            application/json: 
-                All of modelhub's, the model's, and the sample data's 
-                legal documents as dictionary. If one (or more) of the legal 
-                files don't exist, the error  will be logged with the 
+            application/json:
+                All of modelhub's, the model's, and the sample data's
+                legal documents as dictionary. If one (or more) of the legal
+                files don't exist, the error  will be logged with the
                 corresponding key. Dictionary keys are:
-                    
+
                 - modelhub_license
                 - modelhub_acknowledgements
                 - model_license
@@ -73,9 +77,9 @@ class ModelHubRESTAPI:
         GET method
 
         Returns:
-            application/json: 
+            application/json:
                 The model's input/output sizes and types as dictionary.
-                Convenience function, as this is a subset of what 
+                Convenience function, as this is a subset of what
                 :func:`~get_config` returns
         """
         return self._jsonify(self.api.get_model_io())
@@ -87,7 +91,7 @@ class ModelHubRESTAPI:
 
         Returns:
             application/zip:
-                The trained deep learning model in its native format and 
+                The trained deep learning model in its native format and
                 all its asscociated files in a single zip folder.
         """
         # TODO
@@ -111,7 +115,7 @@ class ModelHubRESTAPI:
 
         Returns:
             application/json:
-                List of URLs to all sample files associated with the model. 
+                List of URLs to all sample files associated with the model.
         """
         try:
             url = request.url
@@ -133,15 +137,15 @@ class ModelHubRESTAPI:
                 in the model configuration (see :func:`~get_model_io`), and
                 wrapped in json. In case of an error, returns a dictionary
                 with error info.
-        
+
         GET method
 
         Args:
             fileurl: URL to input data for prediciton. Input type must match
                      specification in the model configuration (see :func:`~get_model_io`)
-                     URL must not contain any arguments and should end with the file 
+                     URL must not contain any arguments and should end with the file
                      extension.
-        
+
         GET Example: :code:`curl -X GET http://localhost:80/api/predict?fileurl=<URL_OF_FILE>`
 
         POST method
@@ -153,34 +157,13 @@ class ModelHubRESTAPI:
         POST Example: :code:`curl -i -X POST -F file=@<PATH_TO_FILE> http://localhost:80/api/predict`
         """
         try:
-            # through URL
-            if request.method == 'GET':
-                file_url = request.args.get('fileurl')
-                mime = MimeTypes()
-                mime_type = mime.guess_type(file_url)
-                if str(mime_type[0]) in self._get_allowed_extensions() and mime_type[1] == None:
-                    # get file and save.
-                    r = requests.get(file_url)
-                    file_name = self._get_file_name(mime_type[0])
-                    with open(file_name, 'wb') as f:
-                        f.write(r.content)
-                    result = self._jsonify(self.api.predict(file_name, numpyToList=True))
-                    os.remove(file_name)
-                    return result
-                else:
-                    return self._jsonify({'error': 'Incorrect file type.'})
-            # through file upload
-            elif request.method == 'POST':
-                file = request.files.get('file')
-                mime_type = file.content_type
-                if str(mime_type) in self._get_allowed_extensions():
-                    file_name = self._get_file_name(mime_type)
-                    file.save(file_name)
-                    result = self._jsonify(self.api.predict(file_name, numpyToList=True))
-                    os.remove(file_name)
-                    return result
-                else:
-                    return self._jsonify({'error': 'Incorrect file type.'})
+            file_name, mime_type = self._save_file_get_mime_type(request)
+            if str(mime_type) in self._get_allowed_extensions():
+                result = self._jsonify(self.api.predict(file_name, url_root=request.url_root))
+                os.remove(file_name)
+                return result
+            else:
+                return self._jsonify({'error': 'Incorrect file type.' })
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -190,10 +173,10 @@ class ModelHubRESTAPI:
         GET method
 
         Performs prediction on sample data.
-        
-        .. note:: Currently you cannot use :func:`~predict` for inference 
+
+        .. note:: Currently you cannot use :func:`~predict` for inference
                   on sample data hosted under the same IP as the model API.
-                  This function is a temporary workaround. To be removed 
+                  This function is a temporary workaround. To be removed
                   in the future.
 
         Returns:
@@ -210,9 +193,11 @@ class ModelHubRESTAPI:
             if request.method == 'GET':
                 file_name = request.args.get('filename')
                 file_name = self.contrib_src_dir + "/sample_data/" + file_name
-                mime = MimeTypes()
-                result = self.api.predict(file_name, numpyToList=True)
-                return self._jsonify(result)
+                if os.path.isfile(file_name):
+                    result = self.api.predict(str(file_name), url_root=request.url_root)
+                    return self._jsonify(result)
+                else:
+                    return self._jsonify({'error': 'The given sample file does not exist.' })
         except Exception as e:
             return self._jsonify({'error': str(e)})
 
@@ -251,6 +236,11 @@ class ModelHubRESTAPI:
         """
         return send_from_directory(self.contrib_src_dir + "/sample_data/", sample_name, cache_timeout=-1)
 
+    def _output(self, output_name):
+        """
+        Routing function for output files that may exist in the output folder.
+        """
+        return send_from_directory(self.api.output_folder, output_name, cache_timeout=-1)
 
     def _thumbnail(self, thumbnail_name):
         """
@@ -259,19 +249,44 @@ class ModelHubRESTAPI:
         """
         return send_from_directory(self.contrib_src_dir + "/model/", thumbnail_name, cache_timeout=-1)
 
+    def _get_allowed_extensions(self):
+        return self.api.get_model_io()["input"]["format"]
 
-    def _get_file_name(self, mime_type):
+    def _get_file_name(self, mime_type=""):
         """
         This utility function get the current date/time and returns a full path
         to save either an uploaded file or one grabbed through a url.
         """
         now = datetime.now()
+        mime = MimeTypes()
+        extension = mime.types_map_inv[1][mime_type][0] if mime_type != "" else mime_type
         file_name = os.path.join(self.working_folder,
-                                 "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-                                 mime_type.split("/")[1]))
+                                 "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+                                 extension))
         return file_name
 
-
-    def _get_allowed_extensions(self):
-        return self.api.get_model_io()["input"]["format"]
-
+    def _save_file_get_mime_type(self, request):
+        """
+        This utility checks first if the request method is POST or GET. It then
+        saves the file with a unique date/time name but without an extension.
+        Finally it uses magic to identify the mime type and change the filename
+        to one with the correct extension. Returns both full path file name and
+        mime type.
+        """
+        if request.method == 'GET':
+            file_url = request.args.get('fileurl')
+            r = requests.get(file_url)
+            file_name = self._get_file_name()
+            with open(file_name, 'wb') as f:
+                f.write(r.content)
+        elif request.method == 'POST':
+            file = request.files.get('file')
+            file_name = self._get_file_name()
+            file.save(file_name)
+        #
+        _magic = magic.Magic(mime=True)
+        mime_type = _magic.from_file(file_name)
+        #
+        file_name_with_extension = self._get_file_name(mime_type)
+        os.rename(file_name, file_name_with_extension)
+        return file_name_with_extension, mime_type
