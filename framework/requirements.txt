@@ -6,4 +6,5 @@ Pillow==5.1.0
 SimpleITK==1.1.0
 jupyter==1.0.0
 netron==1.7.4
-requests==2.18.4
+requests==2.20.0
+python-magic==0.4.15
