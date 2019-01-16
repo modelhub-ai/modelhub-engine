@@ -4,6 +4,7 @@ import json
 import time
 from datetime import datetime
 import numpy
+import h5py
 
 class ModelHubAPI:
     """
@@ -120,6 +121,8 @@ class ModelHubAPI:
                     'shape': shape,
                     'type': config["model"]["io"]["output"][i]["type"],
                     'name': config["model"]["io"]["output"][i]["name"],
+                    'description': config["model"]["io"]["output"][i]["description"]
+                    if "description" in config["model"]["io"]["output"][i].keys() else ""
                 })
             return {'output': output_list,
                     'timestamp': datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"),
@@ -157,8 +160,6 @@ class ModelHubAPI:
     def _correct_output_list_wrapping(self, output):
         if not isinstance(output, list):
             return [output]
-        elif isinstance(output[0], dict):
-            return [output]
         else:
             return output
 
@@ -166,6 +167,9 @@ class ModelHubAPI:
         now = datetime.now()
         path = os.path.join(self.output_folder,
                                  "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-                                 "npy"))
-        numpy.save(path, output, allow_pickle=False)
+                                 "h5"))
+        h5f = h5py.File(path, 'w')
+        dataset = h5f.create_dataset('output', data=output)
+        dataset.attrs["type"] = numpy.string_(str(output.dtype))
+        h5f.close()
         return path
