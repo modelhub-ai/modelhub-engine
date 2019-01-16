@@ -255,11 +255,12 @@ class ModelHubRESTAPI:
     def _get_file_name(self, mime_type=""):
         """
         This utility function get the current date/time and returns a full path
-        to save either an uploaded file or one grabbed through a url.
+        to save either an uploaded file or one grabbed through a url. If
+        mimetype is provided, it will grab the appropriate extension, If no
+        mimetype is provided, it will return the file without an extension.
         """
         now = datetime.now()
-        mime = MimeTypes()
-        extension = mime.types_map_inv[1][mime_type][0] if mime_type != "" else mime_type
+        extension = self._modify_mime_types()[mime_type][0] if mime_type != "" else mime_type
         file_name = os.path.join(self.working_folder,
                                  "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
                                  extension))
@@ -290,3 +291,14 @@ class ModelHubRESTAPI:
         file_name_with_extension = self._get_file_name(mime_type)
         os.rename(file_name, file_name_with_extension)
         return file_name_with_extension, mime_type
+
+    def _modify_mime_types(self):
+        """
+        Because some file extensions are not available in the MimeTypes library,
+        this helper function modeifies it on the fly. This houses all the edge
+        conditions.
+        """
+        mime = MimeTypes()
+        original_mime_types = mime.types_map_inv[1]
+        original_mime_types['application/octet-stream'] = [".npy"]
+        return original_mime_types
