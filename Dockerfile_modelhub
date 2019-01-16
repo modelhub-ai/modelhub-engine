@@ -10,25 +10,16 @@ RUN pip install Flask==0.12.2 \
     Pillow==5.1.0 \
     SimpleITK==1.1.0 \
     jupyter==1.0.0 \
-    netron==1.7.4 \
+    netron==2.8.2 \
     requests==2.20.0 \
-    python-magic==0.4.15
+    python-magic==0.4.15 \
+    h5py==2.8.0
 
 # Make port 80 available to the world outside this container
 EXPOSE 80 81 8888
 
 # Define environment variable
 ENV PYTHONPATH /usr/local:/framework/:/contrib_src/:$PYTHONPATH
-
-# Netron fixes
-# change header line in netron
-RUN sed -i '1s:.*:#!/usr/bin/python:' /usr/local/bin/netron
-# copy bugfix sources, fixing netron hanging on multiple requests
-# this should not be necessary anymore when netron > 1.7.4 is available (which should contain the fix)
-WORKDIR /usr/local/lib/python2.7/dist-packages/netron
-RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/netron
-RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/netron.py
-RUN curl -O https://raw.githubusercontent.com/lutzroeder/Netron/9ad8d0ea9bd67f306f8d3bc5559859cf37517534/src/onnx-operator.json
 
 # Set the working directory to /framework
 WORKDIR /framework
