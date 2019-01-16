@@ -16,16 +16,14 @@ def start(model, contribSrcDir, startNetron=True):
 
 
 def _startWithNetron(model, contribSrcDir):
-    netronProcess = Process(target=_startNetron)
-    netronProcess.start()
+    _startNetron()
     _startWebservice(model, contribSrcDir)
-    netronProcess.terminate()
 
 
 def _startNetron():
     path = '/contrib_src/model/'
     for modelFile in glob.glob( os.path.join(path, 'model.*') ):
-        netron.serve_file(modelFile, port=81, host="0.0.0.0")
+        netron.start(modelFile, port=81, host="0.0.0.0")
 
 
 def _startWebservice(model, contribSrcDir):
