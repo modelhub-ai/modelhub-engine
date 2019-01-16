@@ -1,6 +1,6 @@
 import numpy as np
 
-from .imageloaders import PilImageLoader, SitkImageLoader
+from .imageloaders import PilImageLoader, SitkImageLoader, NumpyImageLoader
 from .imageconverters import PilToNumpyConverter, SitkToNumpyConverter
 
 
@@ -37,6 +37,7 @@ class ImageProcessorBase(object):
         self._config = config
         self._imageLoader = PilImageLoader(self._config)
         self._imageLoader.setSuccessor(SitkImageLoader(self._config))
+        self._imageLoader.setSuccessor(NumpyImageLoader(self._config))
         self._imageToNumpyConverter = PilToNumpyConverter()
         self._imageToNumpyConverter.setSuccessor(SitkToNumpyConverter())
     

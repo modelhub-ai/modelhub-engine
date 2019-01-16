@@ -2,3 +2,4 @@
 from .imageLoader import ImageLoader
 from .pilImageLoader import PilImageLoader
 from .sitkImageLoader import SitkImageLoader
+from .numpyImageLoader import NumpyImageLoader
