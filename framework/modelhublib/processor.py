@@ -1,7 +1,7 @@
 import numpy as np
 
 from .imageloaders import PilImageLoader, SitkImageLoader, NumpyImageLoader
-from .imageconverters import PilToNumpyConverter, SitkToNumpyConverter
+from .imageconverters import PilToNumpyConverter, SitkToNumpyConverter, NumpyToNumpyConverter
 
 
 class ImageProcessorBase(object):
@@ -40,7 +40,7 @@ class ImageProcessorBase(object):
         self._imageLoader.setSuccessor(NumpyImageLoader(self._config))
         self._imageToNumpyConverter = PilToNumpyConverter()
         self._imageToNumpyConverter.setSuccessor(SitkToNumpyConverter())
-    
+        self._imageToNumpyConverter.setSuccessor(NumpyToNumpyConverter())
 
     def loadAndPreprocess(self, input):
         """
