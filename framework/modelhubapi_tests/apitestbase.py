@@ -3,7 +3,11 @@ import io
 import os
 from modelhubapi import ModelHubRESTAPI
 
-
+# Python 2/3 compatibility
+try:
+  basestring
+except NameError:
+  basestring = str
 
 class TestAPIBase(unittest.TestCase):
     """
