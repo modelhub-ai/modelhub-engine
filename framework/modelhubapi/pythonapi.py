@@ -106,11 +106,11 @@ class ModelHubAPI:
                 with error info.
         """
         try:
+            config = self.get_config()
             start = time.time()
             output = self.model.infer(input_file_path)
-            output = self._correct_output_list_wrapping(output)
+            output = self._correct_output_list_wrapping(output, config)
             end = time.time()
-            config = self.get_config()
             output_list = []
             for i, o in enumerate(output):
                 shape = list(o.shape) if isinstance(o, numpy.ndarray) else [len(o)]
@@ -157,11 +157,15 @@ class ModelHubAPI:
             return {'error': str(e)}
 
 
-    def _correct_output_list_wrapping(self, output):
+    def _correct_output_list_wrapping(self, output, config):
         if not isinstance(output, list):
             return [output]
-        else:
+        elif isinstance(output, list) and len(config["model"]["io"]["output"])==1:
+            return [output]
+        elif isinstance(output, list) and len(config["model"]["io"]["output"])>1:
             return output
+        else:
+            return [{'error': "output formatting does not match output specs in config file"}]
 
     def _save_output(self, output):
         now = datetime.now()
