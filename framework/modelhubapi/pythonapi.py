@@ -113,14 +113,15 @@ class ModelHubAPI:
             end = time.time()
             output_list = []
             for i, o in enumerate(output):
+                name = config["model"]["io"]["output"][i]["name"]
                 shape = list(o.shape) if isinstance(o, numpy.ndarray) else [len(o)]
                 if isinstance(o, numpy.ndarray):
-                    o = url_root + "api" + self._save_output(o) if numpyToFile else o.tolist()
+                    o = url_root + "api" + self._save_output(o, name) if numpyToFile else o.tolist()
                 output_list.append({
                     'prediction': o,
                     'shape': shape,
                     'type': config["model"]["io"]["output"][i]["type"],
-                    'name': config["model"]["io"]["output"][i]["name"],
+                    'name': name,
                     'description': config["model"]["io"]["output"][i]["description"]
                     if "description" in config["model"]["io"]["output"][i].keys() else ""
                 })
@@ -167,13 +168,13 @@ class ModelHubAPI:
         else:
             return [{'error': "output formatting does not match output specs in config file"}]
 
-    def _save_output(self, output):
+    def _save_output(self, output, name):
         now = datetime.now()
         path = os.path.join(self.output_folder,
                                  "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
                                  "h5"))
         h5f = h5py.File(path, 'w')
-        dataset = h5f.create_dataset('output', data=output)
+        dataset = h5f.create_dataset(name, data=output)
         dataset.attrs["type"] = numpy.string_(str(output.dtype))
         h5f.close()
         return path
