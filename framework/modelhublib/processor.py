@@ -37,10 +37,10 @@ class ImageProcessorBase(object):
         self._config = config
         self._imageLoader = PilImageLoader(self._config)
         self._imageLoader.setSuccessor(SitkImageLoader(self._config))
-        self._imageLoader.setSuccessor(NumpyImageLoader(self._config))
+        self._imageLoader._successor.setSuccessor(NumpyImageLoader(self._config))
         self._imageToNumpyConverter = PilToNumpyConverter()
         self._imageToNumpyConverter.setSuccessor(SitkToNumpyConverter())
-        self._imageToNumpyConverter.setSuccessor(NumpyToNumpyConverter())
+        self._imageToNumpyConverter._successor.setSuccessor(NumpyToNumpyConverter())
 
     def loadAndPreprocess(self, input):
         """
