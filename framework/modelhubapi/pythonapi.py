@@ -166,7 +166,7 @@ class ModelHubAPI:
         elif isinstance(output, list) and len(config["model"]["io"]["output"])>1:
             return output
         else:
-            return [{'error': "output formatting does not match output specs in config file"}]
+            return [{'error': "output formatting does not match output specifications in config file"}]
 
     def _save_output(self, output, name):
         now = datetime.now()
