@@ -7,3 +7,4 @@ SimpleITK==1.1.0
 jupyter==1.0.0
 requests==2.20.0
 python-magic==0.4.15
+h5py==2.8.0
