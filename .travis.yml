@@ -11,6 +11,7 @@ install:
   - pip install SimpleITK==1.1.0
   - pip install requests==2.20.0
   - pip install python-magic==0.4.15
+  - pip install h5py==2.8.0
   - pip install coverage
   - pip install coveralls
 script:
