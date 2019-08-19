@@ -141,17 +141,6 @@ class TestModelHubAPIModelReturnsOneLabelList(unittest.TestCase):
 
     def test_predict_returns_expected_mock_prediction(self):
         result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png")
-
-        #print('Type of result: ' + str(type(result)))
-        #print('Keys of result: ' +str(result.keys()))
-        #print('Error: ' + str(result['error']))
-        #print('Len of result[output]: ' +str(len(result["output"])))
-        #print('Len of result[output][0]: ' +str(len(result["output"][0])))
-        #print('Keys of result[output][0]: ' +str(result["output"][0].keys()))
-        #print('Keys of result[output][0]["prediction"]: ' +str(result["output"][0]["prediction"].keys()))
-        #print('Keys of result[output][1]["prediction"]: ' +str(result["output"][1]["prediction"].keys()))
-        #print(type(result["output"][0]["prediction"]))
-        #print(result["output"][0]["prediction"]["label"])
         self.assertEqual(0.3, result["output"][0]["prediction"][0]["probability"])
         self.assertEqual("class_1", result["output"][0]["prediction"][1]["label"])
         self.assertEqual(0.7, result["output"][0]["prediction"][1]["probability"])
