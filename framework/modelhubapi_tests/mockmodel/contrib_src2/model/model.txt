@@ -1,0 +1,3 @@
+EMPTY MOCK MODEL FOR UNIT TESTING
+
+This model has only one return format
