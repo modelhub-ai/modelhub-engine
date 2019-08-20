@@ -4,6 +4,9 @@ slightly different behaviour, which should be properly handled by the API.
 Also most models are not fully valid, e.g. they do not comply to the mock
 config. This is ok for unit testing, most models are only used for a small
 set of specific tests requiring that model's specific behavioural aspect.
+
+These models test based on the single input mock model (contrib_src_si) with
+multiple outputs.
 """
 
 import os

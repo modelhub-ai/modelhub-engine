@@ -3,7 +3,7 @@
 import unittest
 import os
 from modelhubapi import ModelHubAPI
-from .mockmodel.contrib_src.inference import ModelThrowingError
+from .mockmodels.contrib_src_si.inference import ModelThrowingError
 
 
 class TestModelHubAPIVoidModel(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestModelHubAPIVoidModel(unittest.TestCase):
     def setUp(self):
         model = ModelThrowingError()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        void_contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "void_contrib_src")
+        void_contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "void_contrib_src")
         self.api = ModelHubAPI(model, void_contrib_src_dir)
 
 

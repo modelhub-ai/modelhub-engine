@@ -4,10 +4,10 @@ import numpy
 import shutil
 from modelhubapi import ModelHubAPI
 from .apitestbase import TestAPIBase
-from .mockmodel.contrib_src.inference import Model
-from .mockmodel.contrib_src.inference import ModelReturnsOneNumpyArray, ModelReturnsOneLabelList
-from .mockmodel.contrib_src.inference import ModelReturnsListOfOneNumpyArray, ModelReturnsListOfOneLabelList
-
+from .mockmodels.contrib_src_si.inference import Model
+from .mockmodels.contrib_src_si.inference import ModelReturnsOneNumpyArray
+from .mockmodels.contrib_src_si.inference import ModelReturnsListOfOneNumpyArray, ModelReturnsListOfOneLabelList
+from .mockmodels.contrib_src_mi.inference import ModelReturnsOneLabelList
 
 
 class TestModelHubAPI(TestAPIBase):
@@ -15,7 +15,7 @@ class TestModelHubAPI(TestAPIBase):
     def setUp(self):
         model = Model()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
+        contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_si")
         self.api = ModelHubAPI(model, contrib_src_dir)
         self.setup_self_temp_output_dir()
         self.api.output_folder = self.temp_output_dir
@@ -53,7 +53,7 @@ class TestModelHubAPI(TestAPIBase):
 
     def test_get_samples_returns_path_to_mock_samples(self):
         samples = self.api.get_samples()
-        self.assertEqual(self.this_dir + "/mockmodel/contrib_src/sample_data", samples["folder"])
+        self.assertEqual(self.this_dir + "/mockmodels/contrib_src_si/sample_data", samples["folder"])
         samples["files"].sort()
         self.assertListEqual(["testimage_ramp_4x2.jpg",
                               "testimage_ramp_4x2.png"],
@@ -61,20 +61,20 @@ class TestModelHubAPI(TestAPIBase):
 
 
     def test_predict_returns_expected_mock_prediction_list(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
         self.assert_predict_contains_expected_mock_prediction(result, expectList=True)
 
     def test_predict_returns_expected_mock_prediction_url(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png", numpyToFile=True)
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png", numpyToFile=True)
         self.assert_predict_contains_expected_mock_prediction(result)
 
     def test_predict_returns_expected_mock_meta_info(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png")
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png")
         self.assert_predict_contains_expected_mock_meta_info(result)
 
 
     def test_predict_returns_correct_output_format(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
         self.assertIsInstance(result["output"], list)
         self.assertIsInstance(result["output"][0]["prediction"], list)
         self.assertIsInstance(result["output"][0]["prediction"][0], dict)
@@ -84,7 +84,7 @@ class TestModelHubAPI(TestAPIBase):
 
     def test_predict_output_types_match_config(self):
         model_io = self.api.get_model_io()
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png")
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png")
         self.assertEqual(len(model_io["output"]), len(result["output"]))
         for i in range(len(model_io["output"])):
             self.assertEqual(model_io["output"][i]["type"], result["output"][i]["type"])
@@ -96,7 +96,7 @@ class TestModelHubAPIModelReturnsOneNumpyArray(unittest.TestCase):
     def setUp(self):
         model = ModelReturnsOneNumpyArray()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
+        contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_si")
         self.api = ModelHubAPI(model, contrib_src_dir)
 
 
@@ -105,12 +105,12 @@ class TestModelHubAPIModelReturnsOneNumpyArray(unittest.TestCase):
 
 
     def test_predict_returns_expected_mock_prediction_list(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
         self.assertListEqual([[0,1,1,0],[0,2,2,0]], result["output"][0]["prediction"])
 
 
     def test_predict_returns_correct_output_format(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png", numpyToFile=False)
         self.assertIsInstance(result["output"], list)
         self.assertIsInstance(result["output"][0]["prediction"], list)
 
@@ -121,7 +121,7 @@ class TestModelHubAPIModelReturnsListOfOneNumpyArray(TestModelHubAPIModelReturns
     def setUp(self):
         model = ModelReturnsListOfOneNumpyArray()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
+        contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_si")
         self.api = ModelHubAPI(model, contrib_src_dir)
 
 
@@ -131,8 +131,10 @@ class TestModelHubAPIModelReturnsOneLabelList(unittest.TestCase):
     def setUp(self):
         model = ModelReturnsOneLabelList()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src2")
+        # load config version 2 with only one output specified
+        contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_mi")
         self.api = ModelHubAPI(model, contrib_src_dir)
+
 
 
     def tearDown(self):
@@ -140,7 +142,7 @@ class TestModelHubAPIModelReturnsOneLabelList(unittest.TestCase):
 
 
     def test_predict_returns_expected_mock_prediction(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png")
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png")
         self.assertEqual(0.3, result["output"][0]["prediction"][0]["probability"])
         self.assertEqual("class_1", result["output"][0]["prediction"][1]["label"])
         self.assertEqual(0.7, result["output"][0]["prediction"][1]["probability"])
@@ -148,7 +150,7 @@ class TestModelHubAPIModelReturnsOneLabelList(unittest.TestCase):
 
 
     def test_predict_returns_correct_output_format(self):
-        result = self.api.predict(self.this_dir + "/mockmodel/contrib_src/sample_data/testimage_ramp_4x2.png")
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png")
         self.assertIsInstance(result["output"], list)
         self.assertIsInstance(result["output"][0]["prediction"], list)
         self.assertIsInstance(result["output"][0]["prediction"][0], dict)
@@ -161,7 +163,7 @@ class TestModelHubAPIModelReturnsListOfOneLabelList(TestModelHubAPIModelReturnsO
     def setUp(self):
         model = ModelReturnsListOfOneLabelList()
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
+        contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_si")
         self.api = ModelHubAPI(model, contrib_src_dir)
 
 

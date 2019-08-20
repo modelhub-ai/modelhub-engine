@@ -6,7 +6,7 @@ from zipfile import ZipFile
 import shutil
 import json
 import six
-from modelhubapi_tests.mockmodel.contrib_src.inference import ModelThrowingError
+from modelhubapi_tests.mockmodels.contrib_src_si.inference import ModelThrowingError
 from .apitestbase import TestRESTAPIBase
 
 
@@ -63,7 +63,7 @@ class TestModelHubRESTAPIModelThrowingError(TestRESTAPIBase):
 
     def setUp(self):
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        self.contrib_src_dir = os.path.join(self.this_dir, "mockmodel", "contrib_src")
+        self.contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_si")
         self.setup_self_temp_work_dir()
         self.setup_self_temp_output_dir()
         self.setup_self_test_client(ModelThrowingError(), self.contrib_src_dir)
