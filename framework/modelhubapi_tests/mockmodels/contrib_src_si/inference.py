@@ -1,9 +1,12 @@
 """
-Implementation of several mock models to test the API. Each model has a 
+Implementation of several mock models to test the API. Each model has a
 slightly different behaviour, which should be properly handled by the API.
 Also most models are not fully valid, e.g. they do not comply to the mock
 config. This is ok for unit testing, most models are only used for a small
 set of specific tests requiring that model's specific behavioural aspect.
+
+These models test based on the single input mock model (contrib_src_si) with
+multiple outputs.
 """
 
 import os
@@ -14,7 +17,7 @@ from modelhublib.model import ModelBase
 class Model(ModelBase):
 
     def __init__(self):
-        pass    
+        pass
 
     def infer(self, input):
         if os.path.isfile(input):
@@ -30,7 +33,7 @@ class Model(ModelBase):
 class ModelReturnsOneNumpyArray(ModelBase):
 
     def __init__(self):
-        pass    
+        pass
 
     def infer(self, input):
         if os.path.isfile(input):
@@ -50,13 +53,13 @@ class ModelReturnsListOfOneNumpyArray(ModelReturnsOneNumpyArray):
 class ModelReturnsOneLabelList(ModelBase):
 
     def __init__(self):
-        pass    
+        pass
 
     def infer(self, input):
         if os.path.isfile(input):
             # Return a constant classification result no matter what's the input
-            label_list = [{"label": "class_0", 'probability': 0.3},
-                          {"label": "class_1", 'probability': 0.7}]
+            label_list = [{"label": "class_0", "probability": 0.3},
+                          {"label": "class_1", "probability": 0.7}]
             return label_list
         else:
             raise IOError("File " + input + " does not exist.")
@@ -71,8 +74,7 @@ class ModelReturnsListOfOneLabelList(ModelReturnsOneLabelList):
 class ModelThrowingError(ModelBase):
 
     def __init__(self):
-        pass    
+        pass
 
     def infer(self, input):
         raise NotImplementedError
-
