@@ -8,3 +8,4 @@
 .coverage
 .vscode
 *.code-workspace
+/framework/htmlcov/
