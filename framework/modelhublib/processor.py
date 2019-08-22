@@ -6,7 +6,7 @@ from .imageconverters import PilToNumpyConverter, SitkToNumpyConverter, NumpyToN
 
 class ImageProcessorBase(object):
     """
-    Abstract base class for image pre- and postprocessing, thus handeling all data 
+    Abstract base class for image pre- and postprocessing, thus handeling all data
     processing before and after the inference.
 
     Several methods of this class have to be implemented in a contributed model.
@@ -32,7 +32,7 @@ class ImageProcessorBase(object):
     Args:
         config (dict): Model configuration (loaded from model's config.json)
     """
-    
+
     def __init__(self, config):
         self._config = config
         self._imageLoader = PilImageLoader(self._config)
@@ -44,17 +44,17 @@ class ImageProcessorBase(object):
 
     def loadAndPreprocess(self, input):
         """
-        Loads input, preprocesses it and returns a numpy array appropriate to feed 
+        Loads input, preprocesses it and returns a numpy array appropriate to feed
         into the inference model (4 dimensions: [batchsize, z/color, height, width]).
 
-        There should be no need to overwrite this method in a derived class! 
+        There should be no need to overwrite this method in a derived class!
         Rather overwrite the individual preprocessing steps used by this method!
 
         Args:
             input (str): Name of the input file to be loaded
 
         Returns:
-            numpy array appropriate to feed into the inference model 
+            numpy array appropriate to feed into the inference model
             (4 dimensions: [batchsize, z/color, height, width])
         """
         image = self._load(input)
@@ -66,49 +66,49 @@ class ImageProcessorBase(object):
 
     def computeOutput(self, inferenceResults):
         """
-        Abstract method. Overwrite this method to define how to postprocess 
-        the inference results computed by the model into a proper output as 
+        Abstract method. Overwrite this method to define how to postprocess
+        the inference results computed by the model into a proper output as
         defined in the model configuration file.
 
         Args:
             inferenceResults: Results of the inference as computed by the model.
-        
+
         Returns:
-            Converted inference results into format as defined in the model configuration. 
+            Converted inference results into format as defined in the model configuration.
         """
         raise NotImplementedError("This is a method of an abstract class.")
-    
+
 
     def _load(self, input):
         """
         Performs the actual loading of the image.
 
         There should be no need to overwrite this method in a derived class!
-        Rather implement an additional 
+        Rather implement an additional
         :class:`~modelhublib.imageloaders.imageLoader.ImageLoader` to support
         further image formats. See also documentation of :class:`~ImageProcessorBase`
         above.
-        
+
         Args:
             input (str): Name of the input file to be loaded
 
         Returns:
-            Image object which type will be the native image object type of 
-            the library/handler used for loading (default implementation uses PIL or SimpleITK). 
+            Image object which type will be the native image object type of
+            the library/handler used for loading (default implementation uses PIL or SimpleITK).
             Hence it might not always be the same.
         """
         image = self._imageLoader.load(input)
         return image
-    
+
 
     def _preprocessBeforeConversionToNumpy(self, image):
         """
         Perform preprocessing on the loaded image object (see :func:`~modelhublib.processor.ImageProcessorBase._load`).
-        
+
         Overwrite this to implement image preprocessing using the loaded image object.
         If not overwritten, just returns the image object unchanged.
 
-        When overwriting this, make sure to handle the possible types appropriately 
+        When overwriting this, make sure to handle the possible types appropriately
         and throw an IOException if you cannot preprocess a certain type.
 
         Args:
@@ -118,17 +118,17 @@ class ImageProcessorBase(object):
             Image object which must be of the same type as input image object.
         """
         return image
-    
+
 
     def _convertToNumpy(self, image):
         """
-        Converts the image object into a corresponding numpy array 
+        Converts the image object into a corresponding numpy array
         with 4 dimensions: [batchsize, z/color, height, width].
 
         There should be no need to overwrite this method in a derived class!
-        Rather implement an additional 
+        Rather implement an additional
         :class:`~modelhublib.imageconverters.imageConverter.ImageConverter` to support
-        further image format conversions. See also documentation of 
+        further image format conversions. See also documentation of
         :class:`~ImageProcessorBase` above.
 
         Args:
@@ -139,7 +139,7 @@ class ImageProcessorBase(object):
         """
         npArr = self._imageToNumpyConverter.convert(image)
         return npArr
-    
+
 
     def _preprocessAfterConversionToNumpy(self, npArr):
         """
@@ -155,5 +155,3 @@ class ImageProcessorBase(object):
             Preprocessed numpy array with 4 dimensions [batchsize, z/color, height, width].
         """
         return npArr
-
-    

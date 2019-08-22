@@ -1,0 +1,10 @@
+{
+  "t1":{
+    "type": "nii.gz",
+    "fileurl": "this/path/here"
+  },
+  "flair":{
+    "type": "nii.gz",
+    "fileurl": "http://anythingontheweb.url/dogbrain.nii.gz"
+  }
+}

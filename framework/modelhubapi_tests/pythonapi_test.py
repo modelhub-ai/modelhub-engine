@@ -7,7 +7,7 @@ from .apitestbase import TestAPIBase
 from .mockmodels.contrib_src_si.inference import Model
 from .mockmodels.contrib_src_si.inference import ModelReturnsOneNumpyArray
 from .mockmodels.contrib_src_si.inference import ModelReturnsListOfOneNumpyArray, ModelReturnsListOfOneLabelList
-from .mockmodels.contrib_src_mi.inference import ModelReturnsOneLabelList
+from .mockmodels.contrib_src_mi.inference import ModelReturnsOneLabelList, ModelNeedsTwoInputs
 
 
 class TestModelHubAPI(TestAPIBase):
@@ -88,6 +88,25 @@ class TestModelHubAPI(TestAPIBase):
         self.assertEqual(len(model_io["output"]), len(result["output"]))
         for i in range(len(model_io["output"])):
             self.assertEqual(model_io["output"][i]["type"], result["output"][i]["type"])
+
+# test cases for nultiple inputs
+class TestModelHUBAPIMultiInput(unittest.TestCase):
+    def setUp(self):
+        model = ModelNeedsTwoInputs()
+        self.this_dir = os.path.dirname(os.path.realpath(__file__))
+        contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_mi")
+        self.api = ModelHubAPI(model, contrib_src_dir)
+
+    def tearDown(self):
+        pass
+
+    def test_predict_accepts_and_processes_valid_json(self):
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_mi/sample_data/valid_input_list.json")
+        self.assertEquals(result, True)
+
+    def test_predict_rejects_invalid_file(self):
+        result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png")
+        self.assertIn("error", result)
 
 
 

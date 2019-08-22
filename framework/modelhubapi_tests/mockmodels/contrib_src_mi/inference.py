@@ -22,6 +22,16 @@ class Model(ModelBase):
     def infer(self, input):
         pass
 
+class ModelNeedsTwoInputs(ModelBase):
+    def _init_(self):
+        pass
+
+    def infer(self, input):
+        if isinstance(input, dict):
+            return True 
+        else:
+            raise IOError("Passed file" + input + "is no dictionary!")
+
 class ModelReturnsOneLabelList(ModelBase):
 
     def __init__(self):
