@@ -42,7 +42,7 @@ class ImageProcessorBase(object):
         self._imageToNumpyConverter.setSuccessor(SitkToNumpyConverter())
         self._imageToNumpyConverter._successor.setSuccessor(NumpyToNumpyConverter())
 
-    def loadAndPreprocess(self, input):
+    def loadAndPreprocess(self, input, id=None):
         """
         Loads input, preprocesses it and returns a numpy array appropriate to feed
         into the inference model (4 dimensions: [batchsize, z/color, height, width]).
@@ -52,12 +52,13 @@ class ImageProcessorBase(object):
 
         Args:
             input (str): Name of the input file to be loaded
+            id (str or None): ID of the input when handling multiple inputs
 
         Returns:
             numpy array appropriate to feed into the inference model
             (4 dimensions: [batchsize, z/color, height, width])
         """
-        image = self._load(input)
+        image = self._load(input, id=id)
         image = self._preprocessBeforeConversionToNumpy(image)
         npArr = self._convertToNumpy(image)
         npArr = self._preprocessAfterConversionToNumpy(npArr)
@@ -79,7 +80,7 @@ class ImageProcessorBase(object):
         raise NotImplementedError("This is a method of an abstract class.")
 
 
-    def _load(self, input):
+    def _load(self, input, id=None):
         """
         Performs the actual loading of the image.
 
@@ -91,13 +92,14 @@ class ImageProcessorBase(object):
 
         Args:
             input (str): Name of the input file to be loaded
-
+            id (str or None): ID of the input when handling multiple inputs
+            
         Returns:
             Image object which type will be the native image object type of
             the library/handler used for loading (default implementation uses PIL or SimpleITK).
             Hence it might not always be the same.
         """
-        image = self._imageLoader.load(input)
+        image = self._imageLoader.load(input, id=id)
         return image
 
 

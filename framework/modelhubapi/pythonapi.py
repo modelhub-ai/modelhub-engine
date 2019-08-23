@@ -108,7 +108,8 @@ class ModelHubAPI:
         try:
             config = self.get_config()
             start = time.time()
-            output = self.model.infer(input_file_path)
+            input = self._unpack_inputs(input_file_path)
+            output = self.model.infer(input)
             output = self._correct_output_list_wrapping(output, config)
             end = time.time()
             output_list = []
@@ -140,6 +141,14 @@ class ModelHubAPI:
     # -------------------------------------------------------------------------
     # Private helper functions
     # -------------------------------------------------------------------------
+
+    def _unpack_inputs(self, file_path):
+        if file_path.lower().endswith('.json'):
+            return self._load_json(file_path)
+        else:
+            return file_path
+
+
     def _load_txt_as_dict(self, file_path, return_key):
         try:
             with io.open(file_path, mode='r', encoding='utf-8') as f:

@@ -102,12 +102,11 @@ class TestModelHUBAPIMultiInput(unittest.TestCase):
 
     def test_predict_accepts_and_processes_valid_json(self):
         result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_mi/sample_data/valid_input_list.json")
-        self.assertEquals(result, True)
+        self.assertEquals(result["output"][0]["prediction"][0], True)
 
     def test_predict_rejects_invalid_file(self):
         result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png")
         self.assertIn("error", result)
-
 
 
 class TestModelHubAPIModelReturnsOneNumpyArray(unittest.TestCase):

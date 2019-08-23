@@ -6,5 +6,13 @@
   "flair":{
     "type": "nii.gz",
     "fileurl": "http://anythingontheweb.url/dogbrain.nii.gz"
+  },
+  "img1":{
+    "type":"[image/png]",
+    "fileurl": "/Users/christoph/Documents/Uni/HiWi/DFCI/modelhub/modelhub-engine/framework/modelhubapi_tests/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png"
+  },
+  "img2":{
+    "type":"[image/jpg]",
+    "fileurl": "/Users/christoph/Documents/Uni/HiWi/DFCI/modelhub/modelhub-engine/framework/modelhubapi_tests/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.jpg"
   }
 }

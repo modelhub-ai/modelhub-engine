@@ -13,7 +13,6 @@ import os
 import numpy as np
 from modelhublib.model import ModelBase
 
-
 class Model(ModelBase):
 
     def __init__(self):
@@ -28,7 +27,7 @@ class ModelNeedsTwoInputs(ModelBase):
 
     def infer(self, input):
         if isinstance(input, dict):
-            return True 
+            return [True]
         else:
             raise IOError("Passed file" + input + "is no dictionary!")
 

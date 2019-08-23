@@ -31,20 +31,68 @@
     "architecture": "Empty",
     "learning_type": "None",
     "io": {
-      "input": {
-        "format": ["image/png"],
-        "dim_limits": [
-          {
-            "min": 1,
-            "max": 4
-          },
-          {
-            "min": 1
-          },
-          {
-            "min": 1
-          }
-        ]
+      "input":{
+        "format":["image/png", "application/json", "image/jpg"],
+        "img1":{
+          "format": ["image/png"],
+          "dim_limits": [
+            {
+              "min": 1,
+              "max": 4
+            },
+            {
+              "min": 1
+            },
+            {
+              "min": 1
+            }
+          ]
+        },
+        "img2":{
+          "format": ["image/jpg"],
+          "dim_limits": [
+            {
+              "min": 1,
+              "max": 4
+            },
+            {
+              "min": 1
+            },
+            {
+              "min": 1
+            }
+          ]
+        },
+        "t2":{
+          "format": ["image/png"],
+          "dim_limits": [
+            {
+              "min": 1,
+              "max": 4
+            },
+            {
+              "min": 1
+            },
+            {
+              "min": 1
+            }
+          ]
+        },
+        "flair":{
+          "format": ["image/png"],
+          "dim_limits": [
+            {
+              "min": 1,
+              "max": 4
+            },
+            {
+              "min": 1
+            },
+            {
+              "min": 1
+            }
+          ]
+        }
       },
       "output": [
         {

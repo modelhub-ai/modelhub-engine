@@ -44,11 +44,11 @@ class TestAPIBase(unittest.TestCase):
 
 
     def assert_model_io_contains_expected_mock_values(self, model_io):
-        self.assertListEqual(["image/png"], model_io["input"]["format"])
-        self.assertEqual(1, model_io["input"]["dim_limits"][0]["min"])
-        self.assertEqual(4, model_io["input"]["dim_limits"][0]["max"])
-        self.assertEqual(1, model_io["input"]["dim_limits"][1]["min"])
-        self.assertEqual(1, model_io["input"]["dim_limits"][2]["min"])
+        self.assertListEqual(["image/png"], model_io["input"]["single"]["format"])
+        self.assertEqual(1, model_io["input"]["single"]["dim_limits"][0]["min"])
+        self.assertEqual(4, model_io["input"]["single"]["dim_limits"][0]["max"])
+        self.assertEqual(1, model_io["input"]["single"]["dim_limits"][1]["min"])
+        self.assertEqual(1, model_io["input"]["single"]["dim_limits"][2]["min"])
         self.assertEqual("probabilities", model_io["output"][0]["name"])
         self.assertEqual("label_list", model_io["output"][0]["type"])
         self.assertEqual("mask", model_io["output"][1]["name"])

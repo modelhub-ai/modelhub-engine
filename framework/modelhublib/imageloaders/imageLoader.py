@@ -4,9 +4,9 @@ import six
 class ImageLoader(object):
     """
     Abstract base class for image loaders, following chain of responsibility design pattern.
-    For each image loader you should implement a corresponding image converter using 
+    For each image loader you should implement a corresponding image converter using
     :class:`~modelhublib.imageconverters.imageConverter.ImageConverter` as base class.
-    
+
     Args:
         sucessor (ImageLoader): Next loader in chain to attempt loading the image if this one fails.
     """
@@ -25,7 +25,7 @@ class ImageLoader(object):
         self._successor = successor
 
 
-    def load(self, input):
+    def load(self, input, id=None):
         """
         Tries to load input and on fail forwards load request to next handler
         until success or final fail.
@@ -36,10 +36,10 @@ class ImageLoader(object):
 
         Args:
             input (str): Name of the input file to be loaded.
-        
+
         Returns:
             Image object as loaded by :func:`~_load` or a successor load handler.
-        
+
         Raises:
             IOError if input could not be loaded by any load handler in the chain.
         """
@@ -53,7 +53,7 @@ class ImageLoader(object):
                     raise IOError("Was not able to load the file \"%s\"." % input)
                 else:
                     raise IOError("Was not able to load input of type \"%s\"." % type(input).__name__)
-        self._checkConfigCompliance(image)
+        self._checkConfigCompliance(image, id)
         return image
 
 
@@ -66,29 +66,32 @@ class ImageLoader(object):
 
         Args:
             input (str): Name of the input file to be loaded.
-        
+
         Returns:
             Should return image object in the native format of the library using to load it.
         """
         raise NotImplementedError("This is a method of an abstract class.")
 
 
-    def _checkConfigCompliance(self, image):
+    def _checkConfigCompliance(self, image, id=None):
         """
         Checks if image complies with configuration.
 
         There should be no need to overwrite this. Overwrite only
-        :func:`~_getImageDimensions` 
+        :func:`~_getImageDimensions`
         to supply the image dims to check against config.
 
         Args:
             image: Image object as loaded by :func:`~_load`
-        
+
         Raises:
             IOError if image dimensions do not comply with configuration.
         """
         imageDims = self._getImageDimensions(image)
-        limits = self._config["model"]["io"]["input"]["dim_limits"]
+        if id is None:
+            limits = self._config["model"]["io"]["input"]["single"]["dim_limits"]
+        else:
+            limits = self._config["model"]["io"]["input"][id]["dim_limits"]
         for i in range(3):
             if ((("min" in limits[i]) and (limits[i]["min"] > imageDims[i])) or
                 (("max" in limits[i]) and (limits[i]["max"] < imageDims[i]))):
@@ -105,7 +108,7 @@ class ImageLoader(object):
 
         Args:
             image: Image object as loaded by :func:`~modelhublib.imageloaders.imageLoader.ImageLoader._load`
-        
+
         Returns:
             Should return image dimensions of the image object.
         """
