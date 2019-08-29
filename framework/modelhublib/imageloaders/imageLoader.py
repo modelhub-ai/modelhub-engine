@@ -47,7 +47,7 @@ class ImageLoader(object):
             image = self._load(input)
         except:
             if self._successor:
-                return self._successor.load(input)
+                return self._successor.load(input, id=id)
             else:
                 if isinstance(input, six.string_types):
                     raise IOError("Was not able to load the file \"%s\"." % input)

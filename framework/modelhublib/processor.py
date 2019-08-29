@@ -93,7 +93,7 @@ class ImageProcessorBase(object):
         Args:
             input (str): Name of the input file to be loaded
             id (str or None): ID of the input when handling multiple inputs
-            
+
         Returns:
             Image object which type will be the native image object type of
             the library/handler used for loading (default implementation uses PIL or SimpleITK).

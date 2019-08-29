@@ -144,9 +144,19 @@ class ModelHubAPI:
 
     def _unpack_inputs(self, file_path):
         if file_path.lower().endswith('.json'):
-            return self._load_json(file_path)
+            input_dict = self._load_json(file_path)
+            return self._check_input_compliance(input_dict)
         else:
             return file_path
+
+
+    def _check_input_compliance(self, input_dict):
+        config = self.get_config()["model"]["io"]["input"]
+        for key in config.keys():
+            if key not in input_dict:
+                raise IOError("The input json does not match the input schema in the " \
+                                "configuration file")
+        return input_dict
 
 
     def _load_txt_as_dict(self, file_path, return_key):

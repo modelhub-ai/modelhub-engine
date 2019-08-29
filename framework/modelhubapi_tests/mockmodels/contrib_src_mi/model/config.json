@@ -33,7 +33,7 @@
     "io": {
       "input":{
         "format":["image/png", "application/json", "image/jpg"],
-        "img1":{
+        "t1":{
           "format": ["image/png"],
           "dim_limits": [
             {
@@ -48,7 +48,7 @@
             }
           ]
         },
-        "img2":{
+        "img1":{
           "format": ["image/jpg"],
           "dim_limits": [
             {
@@ -63,7 +63,7 @@
             }
           ]
         },
-        "t2":{
+        "img2":{
           "format": ["image/png"],
           "dim_limits": [
             {

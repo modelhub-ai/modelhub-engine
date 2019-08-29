@@ -33,6 +33,27 @@ class TestSitkImageLoader(unittest.TestCase):
         dims = self.imageLoader._getImageDimensions(image)
         self.assertListEqual([1,32,64], dims)
 
+    def test_load_testimage_nifti_91x109x91(self):
+        imgFileName = os.path.join(self.testDataDir, "testimage_nifti_91x109x91.nii.gz")
+        image = self.imageLoader.load(imgFileName)
+        self.assertTupleEqual((91,109,91), image.GetSize())
+
+    def test_getImageDims_returns_correct_dims_for_nifti(self):
+        imgFileName = os.path.join(self.testDataDir, "testimage_nifti_91x109x91.nii.gz")
+        image = self.imageLoader.load(imgFileName)
+        dims = self.imageLoader._getImageDimensions(image)
+        self.assertListEqual([91,109,91], dims)
+
+    def test_load_testimage_dicom_256x256(self):
+        imgFileName = os.path.join(self.testDataDir, "testimage_dicom_256x256.dcm")
+        image = self.imageLoader.load(imgFileName)
+        self.assertTupleEqual((256,256,1), image.GetSize())
+
+    def test_getImageDims_returns_correct_dims_for_dicom(self):
+        imgFileName = os.path.join(self.testDataDir, "testimage_dicom_256x256.dcm")
+        image = self.imageLoader.load(imgFileName)
+        dims = self.imageLoader._getImageDimensions(image)
+        self.assertListEqual([1,256,256], dims)
 
 
 if __name__ == '__main__':

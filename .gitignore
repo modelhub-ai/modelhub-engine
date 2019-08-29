@@ -9,3 +9,4 @@
 .vscode
 *.code-workspace
 /framework/htmlcov/
+keras-modelhub:1.0.3
