@@ -143,6 +143,11 @@ class ModelHubAPI:
     # -------------------------------------------------------------------------
 
     def _unpack_inputs(self, file_path):
+        """
+        This utility function returns a dictionary with the inputs if a
+        json file with multiple input files is specified, otherwise it just
+        returns the file_path unchanged for single inputs
+        """
         if file_path.lower().endswith('.json'):
             input_dict = self._load_json(file_path)
             return self._check_input_compliance(input_dict)
@@ -151,6 +156,11 @@ class ModelHubAPI:
 
 
     def _check_input_compliance(self, input_dict):
+        """
+        Checks if the input dictionary has all the files needed as specified
+        in the model config file and returns an error if not.
+        * TODO: Check the other way round?
+        """
         config = self.get_config()["model"]["io"]["input"]
         for key in config.keys():
             if key not in input_dict:
