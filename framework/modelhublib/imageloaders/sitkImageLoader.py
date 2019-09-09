@@ -14,12 +14,12 @@ class SitkImageLoader(ImageLoader):
 
         Args:
             input (str): Name of the input file to be loaded
-        
+
         Returns:
             SimpleITK.Image object
         """
         return sitk.ReadImage(input)
-    
+
 
     def _getImageDimensions(self, image):
         """
@@ -34,5 +34,3 @@ class SitkImageLoader(ImageLoader):
             imageDims.append(1)
         imageDims = imageDims[::-1]
         return imageDims
-
-

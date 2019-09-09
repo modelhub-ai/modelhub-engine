@@ -10,3 +10,5 @@
 *.code-workspace
 /framework/htmlcov/
 keras-modelhub:1.0.3
+pytorch-modelhub*
+modelhub:test

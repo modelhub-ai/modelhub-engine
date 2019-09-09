@@ -8,6 +8,8 @@ import requests
 from datetime import datetime
 from flask_cors import CORS
 import magic
+import collections # for isinstance with dicts
+import re # for url matching regex
 
 
 class ModelHubRESTAPI:
@@ -158,7 +160,13 @@ class ModelHubRESTAPI:
         """
         try:
             file_name, mime_type = self._save_file_get_mime_type(request)
+            print(file_name)
+            print(mime_type)
+            print(self._get_allowed_extensions())
             if str(mime_type) in self._get_allowed_extensions():
+                file_name = self._check_multi_inputs(file_name)
+                print('Calling predict now')
+                print('Passing this to predict: ' + file_name)
                 result = self._jsonify(self.api.predict(file_name, url_root=request.url_root))
                 os.remove(file_name)
                 return result
@@ -229,6 +237,55 @@ class ModelHubRESTAPI:
             response.status_code = 400
         return response
 
+    def _check_multi_inputs(self, file_name):
+        if file_name.lower().endswith('.json'):
+            folder = "/"+str(file_name).split('/')[-2]
+            print('Saving to folder: ' + folder)
+            print('is json! Load files!')
+            input_dict = self.api._load_json(file_name)
+            for key, value in input_dict.items():
+                print(value)
+                if key == "format":
+                    continue
+                elif self._check_if_url(value["fileurl"]):
+                    input_dict[key]["fileurl"] = self._save_input_from_url(value["fileurl"], folder, value["type"])
+                else:
+                    print("Apparently this is a local path: " + value["fileurl"])
+            # check if value is a url
+            # if yes, load and save it
+            # then replace the dictionary entry with the local path
+            # dump back to file
+            self.api._write_json(file_name, input_dict)
+        return file_name
+
+    def _check_if_url(self, candidate):
+        url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+] | \
+            [!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', candidate)
+        if len(url) == 1:
+            return True
+        elif len(url) == 0:
+            return False
+        else:
+            raise IOError("Multiple URLs detected in the input!")
+
+    def _save_input_from_url(self, url, folder, type):
+        r = requests.get(url)
+        file_name = str(url).split('/')[-1]
+        # get file extension from mime types
+        file_ext = self._modify_mime_types_inv()[type[0]][0]
+        now = datetime.now()
+        file_path = os.path.join(folder, "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+        file_ext))
+        print('File name in save is: ' + file_path)
+        # save without file extension
+        with open(file_path, 'wb') as f:
+            f.write(r.content)
+        # add extension
+        #file_name_with_extension = os.path.join(folder, file_name)
+        #print(file_name_with_extension)
+        #os.rename(file_path, file_name_with_extension)
+        return file_path
+
 
     def _samples(self, sample_name):
         """
@@ -260,7 +317,10 @@ class ModelHubRESTAPI:
         mimetype is provided, it will return the file without an extension.
         """
         now = datetime.now()
-        extension = self._modify_mime_types()[mime_type][0] if mime_type != "" else mime_type
+        extension = self._modify_mime_types_inv()[mime_type][0] if mime_type != "" else mime_type
+        # print(self._modify_mime_types_inv())
+        print('Extension passed: ' + extension)
+        print('MIME type passed: ' + mime_type)
         file_name = os.path.join(self.working_folder,
                                  "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
                                  extension))
@@ -276,29 +336,72 @@ class ModelHubRESTAPI:
         """
         if request.method == 'GET':
             file_url = request.args.get('fileurl')
+            # cache file extension
+            file_name_raw = str(file_url).split('/')[-1]
+            print('File name is: ' + file_name_raw)
+            file_ext_cache = file_name_raw.split(os.extsep, 1)[-1]
+            print('Extension is: ' + file_ext_cache)
             r = requests.get(file_url)
             file_name = self._get_file_name()
+            print('File name in save is: ' + file_name)
             with open(file_name, 'wb') as f:
                 f.write(r.content)
         elif request.method == 'POST':
             file = request.files.get('file')
+            # cache file extension
+            file_name_raw = str(file).split('/')[-1]
+            print('File name is: ' + file_name_raw)
+            file_ext_cache = file_name_raw.split(os.extsep, 1)[-1]
+            print('Extension is: ' + file_ext_cache)
             file_name = self._get_file_name()
             file.save(file_name)
         #
         _magic = magic.Magic(mime=True)
+        print('Loads MIME type from filename: ' + file_name)
         mime_type = _magic.from_file(file_name)
-        #
+        print('MIME type for save is: ' + mime_type)
+
+        if mime_type == "text/plain" or mime_type == "application/octet-stream":
+            types = self._modify_mime_types()
+            try:
+                mime_type = types["."+file_ext_cache]
+            except KeyError as e:
+                raise KeyError("The file extension " + e + " is not supported.")
+
         file_name_with_extension = self._get_file_name(mime_type)
         os.rename(file_name, file_name_with_extension)
         return file_name_with_extension, mime_type
 
-    def _modify_mime_types(self):
+    def _modify_mime_types_inv(self):
         """
+        Inverse: returns a dictionary with mime types as keys.
+
         Because some file extensions are not available in the MimeTypes library,
         this helper function modeifies it on the fly. This houses all the edge
         conditions.
         """
         mime = MimeTypes()
         original_mime_types = mime.types_map_inv[1]
-        original_mime_types['application/octet-stream'] = [".npy"]
+        original_mime_types["application/octet-stream"] = [".npy"]
+        original_mime_types["application/nii"] = [".nii"]
+        original_mime_types["application/nii-gzip"] = [".nii.gz"]
+        original_mime_types["application/nrrd"] = [".nrrd"]
+        original_mime_types["application/dicom"] = [".dcm"]
+        return original_mime_types
+
+    def _modify_mime_types(self):
+        """
+        Returns a dictionary with file extensions as keys
+
+        Because some file extensions are not available in the MimeTypes library,
+        this helper function modeifies it on the fly. This houses all the edge
+        conditions.
+        """
+        mime = MimeTypes()
+        original_mime_types = mime.types_map[1]
+        original_mime_types[".npy"] = ["application/octet-stream"]
+        original_mime_types[".nii"] = ["application/nii"]
+        original_mime_types[".nii.gz"] = ["application/nii-gzip"]
+        original_mime_types[".nrrd"] = ["application/nrrd"]
+        original_mime_types[".dcm"] = ["application/dicom"]
         return original_mime_types

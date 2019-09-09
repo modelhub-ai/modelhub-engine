@@ -17,7 +17,6 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         self.setup_self_temp_output_dir()
         self.setup_self_test_client(Model(), self.contrib_src_dir)
 
-
     def tearDown(self):
         shutil.rmtree(self.temp_work_dir, ignore_errors=True)
         shutil.rmtree(self.temp_output_dir, ignore_errors=True)
@@ -148,6 +147,20 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
     # should probably use a mock server for this
     def test_predict_by_url_returns_error_on_unsupported_file_type(self):
         response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.jpg")
+        self.assertEqual(400, response.status_code)
+        result = json.loads(response.get_data())
+        self.assertIn("error", result)
+        self.assertIn("Incorrect file type.", result["error"])
+
+    def test_predict_by_url_returns_error_on_unsupported_file_type_nii(self):
+        response = self.client.get("/api/predict?fileurl=https://github.com/christophbrgr/modelhub-tests/blob/master/testimage_nifti_91x109x91.nii.gz")
+        self.assertEqual(400, response.status_code)
+        result = json.loads(response.get_data())
+        self.assertIn("error", result)
+        self.assertIn("Incorrect file type.", result["error"])
+
+    def test_predict_by_url_returns_error_on_unsupported_file_type_dcm(self):
+        response = self.client.get("/api/predict?fileurl=https://github.com/christophbrgr/modelhub-tests/blob/master/testimage_dicom_256x256.dcm")
         self.assertEqual(400, response.status_code)
         result = json.loads(response.get_data())
         self.assertIn("error", result)

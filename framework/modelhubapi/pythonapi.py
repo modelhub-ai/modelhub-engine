@@ -147,9 +147,17 @@ class ModelHubAPI:
         This utility function returns a dictionary with the inputs if a
         json file with multiple input files is specified, otherwise it just
         returns the file_path unchanged for single inputs
+        It also converts the fileurl to a valid string (avoids html escaping)
         """
         if file_path.lower().endswith('.json'):
             input_dict = self._load_json(file_path)
+            # ensure that the paths can be used by the receiving functions
+            print('loading stuff now')
+            print(input_dict)
+            for key, value in input_dict.items():
+                if key == "format":
+                    continue
+                input_dict[key]["fileurl"] = str(value["fileurl"])
             return self._check_input_compliance(input_dict)
         else:
             return file_path
@@ -186,6 +194,12 @@ class ModelHubAPI:
         except Exception as e:
             return {'error': str(e)}
 
+    def _write_json(self, file_path, output_dict):
+        try:
+            with io.open(file_path, mode='w', encoding='utf-8') as f:
+                json.dump(output_dict, file_path, ensure_ascii=False, indent=4)
+        except Exception as e:
+            return {'error': str(e)}
 
     def _correct_output_list_wrapping(self, output, config):
         if not isinstance(output, list):
