@@ -151,9 +151,6 @@ class ModelHubAPI:
         """
         if file_path.lower().endswith('.json'):
             input_dict = self._load_json(file_path)
-            # ensure that the paths can be used by the receiving functions
-            print('loading stuff now')
-            print(input_dict)
             for key, value in input_dict.items():
                 if key == "format":
                     continue
@@ -196,8 +193,8 @@ class ModelHubAPI:
 
     def _write_json(self, file_path, output_dict):
         try:
-            with io.open(file_path, mode='w', encoding='utf-8') as f:
-                json.dump(output_dict, file_path, ensure_ascii=False, indent=4)
+            with open(file_name, mode='w') as f:
+                json.dump(input_dict, f, ensure_ascii=False)
         except Exception as e:
             return {'error': str(e)}
 

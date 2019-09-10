@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, abort, make_response, send_file, url_for, send_from_directory, request
 from .pythonapi import ModelHubAPI
 import os
+import io
 import json
 import shutil
 from mimetypes import MimeTypes
@@ -160,15 +161,13 @@ class ModelHubRESTAPI:
         """
         try:
             file_name, mime_type = self._save_file_get_mime_type(request)
-            print(file_name)
-            print(mime_type)
             print(self._get_allowed_extensions())
             if str(mime_type) in self._get_allowed_extensions():
                 file_name = self._check_multi_inputs(file_name)
                 print('Calling predict now')
                 print('Passing this to predict: ' + file_name)
                 result = self._jsonify(self.api.predict(file_name, url_root=request.url_root))
-                os.remove(file_name)
+                self._delete_temp_files(self.working_folder)
                 return result
             else:
                 return self._jsonify({'error': 'Incorrect file type.' })
@@ -221,6 +220,19 @@ class ModelHubRESTAPI:
     # Private helper functions
     # -------------------------------------------------------------------------
 
+    def _delete_temp_files(self, folder):
+        """
+        Removes all files in the given folder
+        """
+        for file in os.listdir(folder):
+            file_path = os.path.join(folder, file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                #elif os.path.isdir(file_path): shutil.rmtree(file_path)
+            except Exception as e:
+                print(e)
+
     def _jsonify(self, content):
         """
         This helper function wraps the flask jsonify function, and also allows
@@ -238,8 +250,25 @@ class ModelHubRESTAPI:
         return response
 
     def _check_multi_inputs(self, file_name):
+        """
+        If file_name is a path to a json file, the file is
+        loaded and processed as follows:
+        * the function iterates through each key containing
+          files or urls, if it is a local path, it is left
+          untouched, but if it contains a url (_check_if_url
+          returns True), the file is downloaded
+        * the path to the downloaded file is then returned
+          and replaces the URL in the dictionary
+        * afterwards, the new dictionary is dumped to a new
+          json file containing only local paths
+
+        the path to the new json file is then returned.
+
+        If the passed path is no json file, it is simply
+        returned unchanged.
+        """
         if file_name.lower().endswith('.json'):
-            folder = "/"+str(file_name).split('/')[-2]
+            folder = "/working"
             print('Saving to folder: ' + folder)
             print('is json! Load files!')
             input_dict = self.api._load_json(file_name)
@@ -251,14 +280,22 @@ class ModelHubRESTAPI:
                     input_dict[key]["fileurl"] = self._save_input_from_url(value["fileurl"], folder, value["type"])
                 else:
                     print("Apparently this is a local path: " + value["fileurl"])
-            # check if value is a url
-            # if yes, load and save it
-            # then replace the dictionary entry with the local path
-            # dump back to file
-            self.api._write_json(file_name, input_dict)
+            now = datetime.now()
+            file_name = os.path.join(folder, "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
+            '.json'))
+            # dump to file
+            with open(file_name, mode='w') as f:
+                json.dump(input_dict, f, ensure_ascii=False)
         return file_name
 
     def _check_if_url(self, candidate):
+        """
+        Uses a standard regex to check if the passed string is a
+        valid URL. If it is (and the string only contains a single
+        URL), it returns true, otherwise false.
+        Raises an IOError if multiple URLs are contained in the
+        string.
+        """
         url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+] | \
             [!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', candidate)
         if len(url) == 1:
@@ -269,22 +306,34 @@ class ModelHubRESTAPI:
             raise IOError("Multiple URLs detected in the input!")
 
     def _save_input_from_url(self, url, folder, type):
+        """
+        This function downloads an arbitrary file from a URL and
+        saves it first without extension in its raw format and
+        then adds the right file extension after looking up its
+        mime type.
+
+        TODO:
+        * breaks nifti files
+        * breaks nii.gz files
+        """
         r = requests.get(url)
         file_name = str(url).split('/')[-1]
         # get file extension from mime types
         file_ext = self._modify_mime_types_inv()[type[0]][0]
         now = datetime.now()
-        file_path = os.path.join(folder, "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-        file_ext))
+        file_path = os.path.join(folder, "%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f")))
         print('File name in save is: ' + file_path)
         # save without file extension
         with open(file_path, 'wb') as f:
             f.write(r.content)
         # add extension
+        file_path_with_ext = file_path + file_ext
+        os.rename(file_path, file_path_with_ext)
+        # add extension
         #file_name_with_extension = os.path.join(folder, file_name)
         #print(file_name_with_extension)
         #os.rename(file_path, file_name_with_extension)
-        return file_path
+        return file_path_with_ext
 
 
     def _samples(self, sample_name):
@@ -318,9 +367,6 @@ class ModelHubRESTAPI:
         """
         now = datetime.now()
         extension = self._modify_mime_types_inv()[mime_type][0] if mime_type != "" else mime_type
-        # print(self._modify_mime_types_inv())
-        print('Extension passed: ' + extension)
-        print('MIME type passed: ' + mime_type)
         file_name = os.path.join(self.working_folder,
                                  "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
                                  extension))
@@ -338,29 +384,22 @@ class ModelHubRESTAPI:
             file_url = request.args.get('fileurl')
             # cache file extension
             file_name_raw = str(file_url).split('/')[-1]
-            print('File name is: ' + file_name_raw)
             file_ext_cache = file_name_raw.split(os.extsep, 1)[-1]
-            print('Extension is: ' + file_ext_cache)
             r = requests.get(file_url)
             file_name = self._get_file_name()
-            print('File name in save is: ' + file_name)
             with open(file_name, 'wb') as f:
                 f.write(r.content)
         elif request.method == 'POST':
             file = request.files.get('file')
             # cache file extension
             file_name_raw = str(file).split('/')[-1]
-            print('File name is: ' + file_name_raw)
             file_ext_cache = file_name_raw.split(os.extsep, 1)[-1]
-            print('Extension is: ' + file_ext_cache)
             file_name = self._get_file_name()
             file.save(file_name)
-        #
-        _magic = magic.Magic(mime=True)
-        print('Loads MIME type from filename: ' + file_name)
-        mime_type = _magic.from_file(file_name)
-        print('MIME type for save is: ' + mime_type)
 
+        _magic = magic.Magic(mime=True)
+        mime_type = _magic.from_file(file_name)
+        # checks if a catchall type has been set and takes action:
         if mime_type == "text/plain" or mime_type == "application/octet-stream":
             types = self._modify_mime_types()
             try:
