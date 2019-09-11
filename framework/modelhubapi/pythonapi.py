@@ -91,6 +91,9 @@ class ModelHubAPI:
 
         Args:
             input_file_path (str): Path to input file to run inference on.
+                Either a direct input file or a json containing paths to all
+                input files needed for the model to predict. The appropriate
+                structure for the json can be found in the documentation.
             numpyToFile (bool): Only effective if prediction is a numpy array.
                 Indicates if numpy outputs should be saved and a path to it is
                 returned. If false, a json-serializable list representation of
