@@ -196,8 +196,8 @@ class ModelHubAPI:
 
     def _write_json(self, file_path, output_dict):
         try:
-            with open(file_name, mode='w') as f:
-                json.dump(input_dict, f, ensure_ascii=False)
+            with open(file_path, mode='w') as f:
+                json.dump(output_dict, f, ensure_ascii=False)
         except Exception as e:
             return {'error': str(e)}
 

@@ -282,8 +282,7 @@ class ModelHubRESTAPI:
                                      (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
                                       '.json'))
             # dump to file
-            with open(file_name, mode='w') as f:
-                json.dump(input_dict, f, ensure_ascii=False)
+            self.api._write_json(file_name, input_dict)
         return file_name
 
     def _check_if_url(self, candidate):

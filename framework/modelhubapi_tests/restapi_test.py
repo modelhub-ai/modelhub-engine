@@ -8,7 +8,7 @@ from .apitestbase import TestRESTAPIBase
 
 
 
-class TestModelHubRESTAPI(TestRESTAPIBase):
+class TestModelHubRESTAPI_SI(TestRESTAPIBase):
 
     def setUp(self):
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -152,20 +152,6 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         self.assertIn("error", result)
         self.assertIn("Incorrect file type.", result["error"])
 
-    def test_predict_by_url_returns_error_on_unsupported_file_type_nii(self):
-        response = self.client.get("/api/predict?fileurl=https://github.com/christophbrgr/modelhub-tests/blob/master/testimage_nifti_91x109x91.nii.gz")
-        self.assertEqual(400, response.status_code)
-        result = json.loads(response.get_data())
-        self.assertIn("error", result)
-        self.assertIn("Incorrect file type.", result["error"])
-
-    def test_predict_by_url_returns_error_on_unsupported_file_type_dcm(self):
-        response = self.client.get("/api/predict?fileurl=https://github.com/christophbrgr/modelhub-tests/blob/master/testimage_dicom_256x256.dcm")
-        self.assertEqual(400, response.status_code)
-        result = json.loads(response.get_data())
-        self.assertIn("error", result)
-        self.assertIn("Incorrect file type.", result["error"])
-
 
     def test_working_folder_empty_after_predict_by_url(self):
         response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-docker/master/framework/modelhublib_tests/testdata/testimage_ramp_4x2.png")
@@ -184,7 +170,42 @@ class TestModelHubRESTAPI(TestRESTAPIBase):
         response = self.client.get("/api/predict_sample?filename=NON_EXISTENT.png")
         self.assertEqual(400, response.status_code)
 
+class TestModelHubRESTAPI_MI(TestRESTAPIBase):
 
+    def setUp(self):
+        self.this_dir = os.path.dirname(os.path.realpath(__file__))
+        self.contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_mi")
+        self.setup_self_temp_work_dir()
+        self.setup_self_temp_output_dir()
+        self.setup_self_test_client(Model(), self.contrib_src_dir)
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_work_dir, ignore_errors=True)
+        shutil.rmtree(self.temp_output_dir, ignore_errors=True)
+        pass
+
+    def test_get_config_returns_correct_dict(self):
+        response = self.client.get("/api/get_config")
+        self.assertEqual(200, response.status_code)
+        config = json.loads(response.get_data())
+        self.assert_config_contains_correct_dict(config)
+
+    # TODO this is not so nice yet, test should not require a download from the inet
+    # should probably use a mock server for this
+    def test_predict_by_url_returns_expected_mock_prediction(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/mi_restapi_test.json")
+        self.assertEqual(200, response.status_code)
+        result = json.loads(response.get_data())
+        self.assert_predict_contains_expected_mock_prediction(result)
+
+
+    # TODO this is not so nice yet, test should not require a download from the inet
+    # should probably use a mock server for this
+    def test_predict_by_url_returns_expected_mock_meta_info(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/mi_restapi_test.json")
+        self.assertEqual(200, response.status_code)
+        result = json.loads(response.get_data())
+        self.assert_predict_contains_expected_mock_meta_info(result)
 
 if __name__ == '__main__':
     unittest.main()
