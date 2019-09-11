@@ -161,11 +161,8 @@ class ModelHubRESTAPI:
         """
         try:
             file_name, mime_type = self._save_file_get_mime_type(request)
-            print(self._get_allowed_extensions())
             if str(mime_type) in self._get_allowed_extensions():
                 file_name = self._check_multi_inputs(file_name)
-                print('Calling predict now')
-                print('Passing this to predict: ' + file_name)
                 result = self._jsonify(self.api.predict(file_name, url_root=request.url_root))
                 self._delete_temp_files(self.working_folder)
                 return result
@@ -268,21 +265,17 @@ class ModelHubRESTAPI:
         returned unchanged.
         """
         if file_name.lower().endswith('.json'):
-            folder = "/working"
-            print('Saving to folder: ' + folder)
-            print('is json! Load files!')
             input_dict = self.api._load_json(file_name)
             for key, value in input_dict.items():
-                print(value)
                 if key == "format":
                     continue
                 elif self._check_if_url(value["fileurl"]):
-                    input_dict[key]["fileurl"] = self._save_input_from_url(value["fileurl"], folder, value["type"])
+                    input_dict[key]["fileurl"] = self._save_input_from_url(value["fileurl"], value["type"])
                 else:
                     print("Apparently this is a local path: " + value["fileurl"])
             now = datetime.now()
-            file_name = os.path.join(folder, "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"),
-            '.json'))
+            file_name = os.path.join(self.working_folder,
+            "%s%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), '.json'))
             # dump to file
             with open(file_name, mode='w') as f:
                 json.dump(input_dict, f, ensure_ascii=False)
@@ -305,34 +298,38 @@ class ModelHubRESTAPI:
         else:
             raise IOError("Multiple URLs detected in the input!")
 
-    def _save_input_from_url(self, url, folder, type):
+    def _save_input_from_url(self, url, type):
         """
         This function downloads an arbitrary file from a URL and
         saves it first without extension in its raw format and
         then adds the right file extension after looking up its
         mime type.
 
+        Args:
+            url (str): the url pointing to the file to download
+            type (list): the mime type of the file
+
         TODO:
         * breaks nifti files
         * breaks nii.gz files
+        * breaks all files
         """
-        r = requests.get(url)
+        r = requests.get(url, stream=True)
         file_name = str(url).split('/')[-1]
         # get file extension from mime types
         file_ext = self._modify_mime_types_inv()[type[0]][0]
         now = datetime.now()
-        file_path = os.path.join(folder, "%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f")))
-        print('File name in save is: ' + file_path)
+        file_path = os.path.join(self.working_folder,
+            "%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f")))
         # save without file extension
         with open(file_path, 'wb') as f:
-            f.write(r.content)
+            for chunk in r.iter_content(chunk_size=512):
+                f.write(chunk)
+        #with open(file_path, 'wb') as f:
+        #    f.write(r.content)
         # add extension
         file_path_with_ext = file_path + file_ext
         os.rename(file_path, file_path_with_ext)
-        # add extension
-        #file_name_with_extension = os.path.join(folder, file_name)
-        #print(file_name_with_extension)
-        #os.rename(file_path, file_name_with_extension)
         return file_path_with_ext
 
 
