@@ -138,6 +138,7 @@ class ModelHubAPI:
                         }
                     }
         except Exception as e:
+            print(e)
             return {'error': repr(e)}
 
 

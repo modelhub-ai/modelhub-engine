@@ -5,7 +5,7 @@ Also most models are not fully valid, e.g. they do not comply to the mock
 config. This is ok for unit testing, most models are only used for a small
 set of specific tests requiring that model's specific behavioural aspect.
 
-These models test absed on the multi input mock model (contrib_src_mi) with
+These models test based on the multi input mock model (contrib_src_mi) with
 a single output.
 """
 
@@ -50,3 +50,14 @@ class ModelReturnsListOfOneLabelList(ModelReturnsOneLabelList):
 
     def infer(self, input):
         return [super(ModelReturnsListOfOneLabelList, self).infer(input)]
+
+class ModelNeedsFourNiftis(ModelBase):
+    def _init_(self):
+        pass
+
+    def infer(self, input):
+        assert(isinstance(input, dict))
+        for k, v in input.items():
+            if v["type"] != ["application/nii-gzip"]:
+                raise IOError("This is not a correct input!")
+        return [True]

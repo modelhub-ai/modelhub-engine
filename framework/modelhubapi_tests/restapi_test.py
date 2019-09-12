@@ -4,7 +4,9 @@ from zipfile import ZipFile
 import shutil
 import json
 from modelhubapi_tests.mockmodels.contrib_src_si.inference import Model
+from modelhubapi_tests.mockmodels.contrib_src_mi.inference import ModelNeedsTwoInputs
 from .apitestbase import TestRESTAPIBase
+from .monkeypatches import Monkey
 
 
 
@@ -177,7 +179,8 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
         self.contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_mi")
         self.setup_self_temp_work_dir()
         self.setup_self_temp_output_dir()
-        self.setup_self_test_client(Model(), self.contrib_src_dir)
+        self.setup_self_test_client(ModelNeedsTwoInputs(), self.contrib_src_dir)
+        self.client.api = Monkey(ModelNeedsTwoInputs(), self.contrib_src_dir, 'config_4_nii.json')
 
     def tearDown(self):
         shutil.rmtree(self.temp_work_dir, ignore_errors=True)
@@ -190,22 +193,16 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
         config = json.loads(response.get_data())
         self.assert_config_contains_correct_dict(config)
 
-    # TODO this is not so nice yet, test should not require a download from the inet
-    # should probably use a mock server for this
-    def test_predict_by_url_returns_expected_mock_prediction(self):
+    def test_working_folder_empty_after_predict_by_url(self):
         response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/mi_restapi_test.json")
         self.assertEqual(200, response.status_code)
-        result = json.loads(response.get_data())
-        self.assert_predict_contains_expected_mock_prediction(result)
+        self.assertEqual(len(os.listdir(self.temp_work_dir) ), 0)
 
-
-    # TODO this is not so nice yet, test should not require a download from the inet
-    # should probably use a mock server for this
-    def test_predict_by_url_returns_expected_mock_meta_info(self):
-        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/mi_restapi_test.json")
-        self.assertEqual(200, response.status_code)
-        result = json.loads(response.get_data())
-        self.assert_predict_contains_expected_mock_meta_info(result)
+    # def test_predict_sample_returns_expected_mock_prediction(self):
+    #     response = self.client.get("/api/predict_sample?filename=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_mixed.json")
+    #     self.assertEqual(200, response.status_code)
+    #     result = json.loads(response.get_data())
+    #     self.assertEqual(result["output"][0]["prediction"][0], True)
 
 if __name__ == '__main__':
     unittest.main()

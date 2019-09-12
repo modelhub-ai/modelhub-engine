@@ -1,19 +1,19 @@
 {
   "format":["application/json"],
   "t1":{
-    "type": "[application/gzip]",
+    "format": "[application/gzip]",
     "fileurl": "this/path/here"
   },
   "flair":{
-    "type": "[application/gzip]",
+    "format": "[application/gzip]",
     "fileurl": "http://anythingontheweb.url/dogbrain.nii.gz"
   },
   "img1":{
-    "type":"[image/png]",
+    "format":"[image/png]",
     "fileurl": "/sample_data/testimage_ramp_4x2.png"
   },
   "img2":{
-    "type":"[image/jpg]",
+    "format":"[image/jpg]",
     "fileurl": "/sample_data/testimage_ramp_4x2.jpg"
   }
 }

@@ -34,7 +34,7 @@
       "input":{
         "format":["image/png", "application/json", "image/jpg"],
         "t1":{
-          "format": ["image/png"],
+          "type": ["image/png"],
           "dim_limits": [
             {
               "min": 1,
@@ -49,7 +49,7 @@
           ]
         },
         "img1":{
-          "format": ["image/jpg"],
+          "type": ["image/jpg"],
           "dim_limits": [
             {
               "min": 1,
@@ -64,7 +64,7 @@
           ]
         },
         "img2":{
-          "format": ["image/png"],
+          "type": ["image/png"],
           "dim_limits": [
             {
               "min": 1,
@@ -79,7 +79,7 @@
           ]
         },
         "flair":{
-          "format": ["image/png"],
+          "type": ["image/png"],
           "dim_limits": [
             {
               "min": 1,
