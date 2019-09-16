@@ -15,6 +15,7 @@ To package a model with our framework you need to have the following prerequisit
 - Python 2.7 or Python 3.6 (or higher)
 - [Docker](https://docs.docker.com/install/)
 - Clone of the [modelhub-engine repository](https://github.com/modelhub-ai/modelhub-engine.git) (`git clone https://github.com/modelhub-ai/modelhub-engine.git`)
+- For GPU support, you need Docker version >= 19.03 and follow the [instructions here](https://github.com/NVIDIA/nvidia-docker#quickstart).
   <br/><br/>
 
 ### 1. Prepare Docker image
@@ -80,7 +81,7 @@ To package a model with our framework you need to have the following prerequisit
 
 7.  Open _contrib_src/inference.py_ and replace the model initialization and inference with your
     model specific code. The template example shows how to integrate models in ONNX format and running
-    them in caffe2. If your are using a different model format and/or backend you have to change this.
+    them in caffe2. If you are using a different model format and/or backend you have to change this.
 
     There are only two lines you have to modify. In the `__init__` function change the following line,
     which loads the model:
@@ -90,6 +91,8 @@ To package a model with our framework you need to have the following prerequisit
     self._model = onnx.load('model/model.onnx')
     ```
 
+    If your model receives more than one file as input, the `input` argument of `infer` is a dictionary matching the input schema specified in `config.json`. You would then need to pass each individual input through the preprocessing and to your inference function. For example, accessing the input `image_pose` would look like this: `input["image_pose"]["fileurl"]`.
+    <br/>
     In the `infer` function change the following line, which runs the model prediction on the input data:
 
     ```python
