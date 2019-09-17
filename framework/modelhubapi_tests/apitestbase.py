@@ -114,17 +114,6 @@ class TestRESTAPIBase(TestAPIBase):
                                     content_type = 'multipart/form-data')
         return response
 
-    def _post_predict_request_on_sample_image_mi(self, sample_image_name):
-        test_filename = self.contrib_src_dir + "/sample_data/" + sample_image_name
-        extension = os.path.splitext(test_filename)[1]
-        with open(test_filename, "rb") as f:
-            image_data = f.read()
-        response = self.client.post("/api/predict",
-                                    data = {'file': (image_data, 'test_image' + extension)},
-                                    content_type = 'multipart/form-data')
-        return response
-
-
 
 if __name__ == '__main__':
     unittest.main()

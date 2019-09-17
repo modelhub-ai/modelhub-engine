@@ -8,7 +8,7 @@ from .mockmodels.contrib_src_si.inference import Model
 from .mockmodels.contrib_src_si.inference import ModelReturnsOneNumpyArray
 from .mockmodels.contrib_src_si.inference import ModelReturnsListOfOneNumpyArray, ModelReturnsListOfOneLabelList
 from .mockmodels.contrib_src_mi.inference import ModelReturnsOneLabelList, ModelNeedsTwoInputs
-
+from .monkeypatches import MonkeyPythonAPI
 
 class TestModelHubAPI(TestAPIBase):
 
@@ -152,7 +152,6 @@ class TestModelHubAPIModelReturnsOneLabelList(unittest.TestCase):
         # load config version 2 with only one output specified
         contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_mi")
         self.api = ModelHubAPI(model, contrib_src_dir)
-
 
 
     def tearDown(self):

@@ -32,68 +32,68 @@
     "learning_type": "None",
     "io": {
       "input":{
-        "format":["image/png", "application/json", "image/jpg"],
-        "t1":{
-          "type": ["image/png"],
-          "dim_limits": [
-            {
-              "min": 1,
-              "max": 4
+          "format": ["application/json"],
+            "t1":{
+              "format": ["application/nii-gzip"],
+              "dim_limits": [
+                {
+                  "min": 1,
+                  "max": 155
+                },
+                {
+                  "min": 1
+                },
+                {
+                  "min": 1
+                }
+              ]
             },
-            {
-              "min": 1
+            "t1c":{
+              "format": ["application/nii-gzip"],
+              "dim_limits": [
+                {
+                  "min": 1,
+                  "max": 155
+                },
+                {
+                  "min": 1
+                },
+                {
+                  "min": 1
+                }
+              ]
             },
-            {
-              "min": 1
+            "t2":{
+              "format": ["application/nii-gzip"],
+              "dim_limits": [
+                {
+                  "min": 1,
+                  "max": 155
+                },
+                {
+                  "min": 1
+                },
+                {
+                  "min": 1
+                }
+              ]
+            },
+            "flair":{
+              "format": ["application/nii-gzip"],
+              "dim_limits": [
+                {
+                  "min": 1,
+                  "max": 155
+                },
+                {
+                  "min": 1
+                },
+                {
+                  "min": 1
+                }
+              ]
             }
-          ]
-        },
-        "img1":{
-          "type": ["image/jpg"],
-          "dim_limits": [
-            {
-              "min": 1,
-              "max": 4
-            },
-            {
-              "min": 1
-            },
-            {
-              "min": 1
-            }
-          ]
-        },
-        "img2":{
-          "type": ["image/png"],
-          "dim_limits": [
-            {
-              "min": 1,
-              "max": 4
-            },
-            {
-              "min": 1
-            },
-            {
-              "min": 1
-            }
-          ]
-        },
-        "flair":{
-          "type": ["image/png"],
-          "dim_limits": [
-            {
-              "min": 1,
-              "max": 4
-            },
-            {
-              "min": 1
-            },
-            {
-              "min": 1
-            }
-          ]
-        }
-      },
+          },
       "output": [
         {
           "name": "probabilities",

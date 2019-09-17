@@ -300,7 +300,7 @@ class ModelHubRESTAPI:
         elif len(url) == 0:
             return False
         else:
-            raise IOError("Multiple URLs detected in the input!")
+            raise IOError("Multiple URLs detected in the input json!")
 
     def _save_input_from_url(self, url, type):
         """

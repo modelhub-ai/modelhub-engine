@@ -6,7 +6,7 @@ import json
 from modelhubapi_tests.mockmodels.contrib_src_si.inference import Model
 from modelhubapi_tests.mockmodels.contrib_src_mi.inference import ModelNeedsTwoInputs
 from .apitestbase import TestRESTAPIBase
-from .monkeypatches import Monkey
+from .monkeypatches import MonkeyPythonAPI
 
 
 
@@ -180,7 +180,7 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
         self.setup_self_temp_work_dir()
         self.setup_self_temp_output_dir()
         self.setup_self_test_client(ModelNeedsTwoInputs(), self.contrib_src_dir)
-        self.client.api = Monkey(ModelNeedsTwoInputs(), self.contrib_src_dir, 'config_4_nii.json')
+        self.client.api = MonkeyPythonAPI(ModelNeedsTwoInputs(), self.contrib_src_dir, 'config_4_nii.json')
 
     def tearDown(self):
         shutil.rmtree(self.temp_work_dir, ignore_errors=True)
@@ -194,15 +194,23 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
         self.assert_config_contains_correct_dict(config)
 
     def test_working_folder_empty_after_predict_by_url(self):
-        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/mi_restapi_test.json")
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_url.json")
         self.assertEqual(200, response.status_code)
         self.assertEqual(len(os.listdir(self.temp_work_dir) ), 0)
 
-    # def test_predict_sample_returns_expected_mock_prediction(self):
-    #     response = self.client.get("/api/predict_sample?filename=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_mixed.json")
-    #     self.assertEqual(200, response.status_code)
-    #     result = json.loads(response.get_data())
-    #     self.assertEqual(result["output"][0]["prediction"][0], True)
+    def test_api_downloads_files_from_url(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_url.json")
+        self.assertEqual(200, response.status_code)
+
+    def test_api_manages_mix_of_url_and_local_paths(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_mixed.json")
+        self.assertEqual(200, response.status_code)
+
+    def test_api_rejects_wrong_url_in_json(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_urL_error.json")
+        self.assertEqual(400, response.status_code)
+        result = json.loads(response.get_data())
+        self.assertIn("error", result)
 
 if __name__ == '__main__':
     unittest.main()

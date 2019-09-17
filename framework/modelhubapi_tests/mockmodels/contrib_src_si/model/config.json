@@ -32,7 +32,7 @@
     "learning_type": "None",
     "io": {
       "input":{
-        "format":["image/png", "application/json", "image/jpg"],
+        "format":["image/png"],
         "single":{
           "format": ["image/png"],
           "dim_limits": [
