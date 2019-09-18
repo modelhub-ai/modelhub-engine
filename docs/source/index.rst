@@ -6,12 +6,12 @@
 Welcome to Modelhub's documentation!
 ====================================
 
-Crowdsourced through contributions by the scientific research community, 
-modelhub is a repository of deep learning models pretrained for a wide variety 
-of medical applications. Modelhub highlights recent trends in deep learning 
+Crowdsourced through contributions by the scientific research community,
+modelhub is a repository of deep learning models pretrained for a wide variety
+of medical applications. Modelhub highlights recent trends in deep learning
 applications, enables transfer learning approaches and promotes reproducible science.
 
-.. note::  This documentation should contain all essential technical information 
+.. note::  This documentation should contain all essential technical information
            about the Modelhub project and how to contribute models. It is, however,
            still work-in-progress, so possibly you need to be a little patient
            and persistent. If you find anything unclear, need help, or have
@@ -32,6 +32,7 @@ Contents:
    quickstart
    overview
    contribute
+   modelio
    modelhubapi
    modelhublib
 

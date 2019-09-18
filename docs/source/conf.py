@@ -59,8 +59,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'modelhub'
-copyright = u'2018, Ahmed Hosny, Michael Schwier'
-author = u'Ahmed Hosny, Michael Schwier'
+copyright = u'2019, Ahmed Hosny, Michael Schwier'
+author = u'Ahmed Hosny, Michael Schwier, Christoph Berger'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
