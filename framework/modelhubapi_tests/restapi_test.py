@@ -6,7 +6,7 @@ import json
 from modelhubapi_tests.mockmodels.contrib_src_si.inference import Model
 from modelhubapi_tests.mockmodels.contrib_src_mi.inference import ModelNeedsTwoInputs
 from .apitestbase import TestRESTAPIBase
-from .monkeypatches import MonkeyPythonAPI
+from modelhubapi import ModelHubAPI
 
 
 
@@ -180,12 +180,17 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
         self.setup_self_temp_work_dir()
         self.setup_self_temp_output_dir()
         self.setup_self_test_client(ModelNeedsTwoInputs(), self.contrib_src_dir)
-        self.client.api = MonkeyPythonAPI(ModelNeedsTwoInputs(), self.contrib_src_dir, 'config_4_nii.json')
+        self.client.api = ModelHubAPI(ModelNeedsTwoInputs(), self.contrib_src_dir)
+        self.client.api.get_config = self.monkeyconfig()
 
     def tearDown(self):
         shutil.rmtree(self.temp_work_dir, ignore_errors=True)
         shutil.rmtree(self.temp_output_dir, ignore_errors=True)
         pass
+
+    # this can change the config on the fly
+    def monkeyconfig(self):
+        return self.client.api._load_json(self.contrib_src_dir + '/model/config_4_nii.json')
 
     def test_get_config_returns_correct_dict(self):
         response = self.client.get("/api/get_config")
