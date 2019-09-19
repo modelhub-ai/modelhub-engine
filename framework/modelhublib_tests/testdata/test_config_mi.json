@@ -3,7 +3,17 @@
      "io": {
       "input": {
         "format":["image/png", "application/json", "image/jpg"],
-        "single":{
+        "name":{
+          "dim_limits": [
+            {
+            },
+            {
+            },
+            {
+            }
+          ]
+        },
+        "name2":{
           "dim_limits": [
             {
             },

@@ -36,4 +36,5 @@ WORKDIR /output
 WORKDIR /contrib_src
 
 # Run /data/run.py when the container launches
-CMD ["python", "run.py"]
+# If you need Python2, change this command:
+CMD ["python3", "run.py"]

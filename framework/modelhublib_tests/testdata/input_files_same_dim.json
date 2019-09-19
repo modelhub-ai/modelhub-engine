@@ -1,0 +1,10 @@
+{
+  "name":{
+    "type":"[image/png]",
+    "fileurl": "testdata/testimage_ramp_4x2.png"
+  },
+  "name2":{
+    "type":"[image/png]",
+    "fileurl": "testdata/testimage_ramp_4x2.png"
+  }
+}

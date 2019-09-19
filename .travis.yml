@@ -5,7 +5,7 @@ python:
 cache: pip
 install:
   - pip install flask-cors==3.0.6
-  - pip install Flask==0.12.2
+  - pip install Flask==0.12.3
   - pip install numpy
   - pip install Pillow==5.1.0
   - pip install SimpleITK==1.1.0

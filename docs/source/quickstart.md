@@ -7,7 +7,8 @@ But since you are here, follow these steps to get modelhub running on your local
 1. **Install Docker** (if not already installed)
 
    Follow the [official Docker instructions](https://docs.docker.com/install/) to install Docker CE.
-   Docker is required to run models.
+   Docker is required to run models.<br/>
+   **GPU Support**: If you want to run models that require GPU acceleration, please use Docker version >= 19.03 and follow the installation instructions for the [Nvidia-Docker Toolkit here](https://github.com/NVIDIA/nvidia-docker#quickstart).
    <br/><br/>
 
 2. **Install Python 2.7 or 3.6 (or higher)** (if not already installed)

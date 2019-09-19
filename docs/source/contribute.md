@@ -1,12 +1,12 @@
 ## Contribute Your Model to Modelhub
 
-The following figure gives an overview of the necessary steps to packaging your model
+The following figure gives an overview of the necessary steps to package your model
 with the Modelhub framework and eventually contributing it to the Modelhub collection.
 Read further for detailed explanations of all steps.
 
 <img width="75%" alt="modelhub contribution steps" src="https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/docs/source/images/contribution_process.png">
 
-**_HINT_** Take a look at an already integrated model to understand how it looks when finished ([AlexNet](https://github.com/modelhub-ai/AlexNet) is a good and simple example).
+**_HINT_** Take a look at an already integrated model to understand how it looks when finished ([AlexNet](https://github.com/modelhub-ai/AlexNet) is a good and simple example. If you have a more complex model with more than one input for a single inference, have a look at one of the BraTS models, e.g. [lfb-rwth](https://github.com/modelhub-ai/lfb-rwth)).
 
 ### Prerequisites
 
@@ -15,12 +15,13 @@ To package a model with our framework you need to have the following prerequisit
 - Python 2.7 or Python 3.6 (or higher)
 - [Docker](https://docs.docker.com/install/)
 - Clone of the [modelhub-engine repository](https://github.com/modelhub-ai/modelhub-engine.git) (`git clone https://github.com/modelhub-ai/modelhub-engine.git`)
+- For GPU support, you need Docker version >= 19.03 and follow the [instructions here](https://github.com/NVIDIA/nvidia-docker#quickstart).
   <br/><br/>
 
 ### 1. Prepare Docker image
 
 1.  Write a dockerfile preparing/installing all third party dependencies your model needs
-    (e.g. the deep learning library you are using). Use the `ubuntu:16.04` Docker image as base.
+    (e.g. the deep learning library you are using). Use the `ubuntu:16.04` Docker image as base. If you want to use CUDA and GPU acceleration, you can also use one of the `nvidia/cuda` images as base.
 
     You can find examples of dockerfiles for DL environments in the model repositories of
     [modelhub-ai on github](https://github.com/modelhub-ai) (e.g. for [squeezenet](https://github.com/modelhub-ai/squeezenet/blob/master/dockerfiles/caffe2)).
@@ -43,7 +44,7 @@ To package a model with our framework you need to have the following prerequisit
     (required if you want to publish your model on Modelhub, so the image can
     be found when starting a model for the first time. If you don't plan to publish on Modelhub, this step is optional).
 
-- **_NOTE_** We are planning to provide a few pre-build Docker images for the most common deep
+- **_NOTE_** We are planning to provide a few pre-built Docker images for the most common deep
   learning frameworks, so you do not have to build them yourself. For now we only have a small set.
   You can find the existing
   [pre-build images on DockerHub](https://hub.docker.com/u/modelhub/) - use the ones that end with '-modelhub' (the ones that don't end with '-modelhub' have only the pure DL environment without
@@ -69,6 +70,9 @@ To package a model with our framework you need to have the following prerequisit
 4.  Populate the configuration file _contrib_src/model/config.json_ with the relevant information about your model.
     Please refer to the [schema](https://github.com/modelhub-ai/modelhub/blob/master/config_schema.json) for
     allowed values and structure.
+    <br/>
+    Version 0.4 and up breaks the compatibility with older versions of the schema, please validate your configuration file against the current schema if you are submitting a new model. Old models are still compatible anddon't need to be changed unless you are updating the modelhub-engine version of the Docker image. For single-input models, assign the key `"single"` to your input as in the schema above. </br><br/>
+    **_HINT_** For more details on how to set up your model for various input scenarios and implement your own ImageLoader class, see the [IO Configuration documentation](https://modelhub.readthedocs.io/en/latest/modelio.html).
     <br/><br/>
 
 5.  Place your pre-trained model file(s) into the _contrib_src/model/_ folder.
@@ -80,7 +84,7 @@ To package a model with our framework you need to have the following prerequisit
 
 7.  Open _contrib_src/inference.py_ and replace the model initialization and inference with your
     model specific code. The template example shows how to integrate models in ONNX format and running
-    them in caffe2. If your are using a different model format and/or backend you have to change this.
+    them in caffe2. If you are using a different model format and/or backend you have to change this.
 
     There are only two lines you have to modify. In the `__init__` function change the following line,
     which loads the model:
@@ -90,6 +94,8 @@ To package a model with our framework you need to have the following prerequisit
     self._model = onnx.load('model/model.onnx')
     ```
 
+    If your model receives more than one file as input, the `input` argument of `infer` is a dictionary matching the input schema specified in `config.json`. You would then need to pass each individual input through the preprocessing and to your inference function. For example, accessing the input `image_pose` would look like this: `input["image_pose"]["fileurl"]`.
+    <br/>
     In the `infer` function change the following line, which runs the model prediction on the input data:
 
     ```python
@@ -239,7 +245,8 @@ To package a model with our framework you need to have the following prerequisit
 
     2. Run `python start.py YOUR_MODEL_FOLDER_NAME` and check if the web app for your model looks and
        works as expected. **TODO:** Add info on how to use the web app, because the command just
-       starts the REST API, which the web frontend is accessing.
+       starts the REST API, which the web frontend is accessing. <br/>
+       **_NOTE_** If your code uses CUDA on a GPU, you have to add the `-g` flag to `start.py` to enforce the use of the GPU version of Docker. This is only required for testing, once your model is added to the index, the right mode (GPU or CPU) is automatically queried. Run `python start.py -h` for more info.
        <br/><br/>
 
     3. Run `python start.py YOUR_MODEL_FOLDER_NAME -e` and check if the jupyter notebook _contrib_src/sandbox.ipynb_
@@ -270,7 +277,7 @@ To package a model with our framework you need to have the following prerequisit
 1.  `git clone https://github.com/modelhub-ai/modelhub.git` (or update if you cloned already).
     <br/><br/>
 
-2.  Add your model to the model index list _models.json_.
+2.  Add your model to the model index list _models.json_. If your model needs a GPU to run, add `"gpu" : true` to the parameters for your model. This tells the start script to run the model with GPU acceleration.
     <br/><br/>
 
 3.  Send us a pull request.

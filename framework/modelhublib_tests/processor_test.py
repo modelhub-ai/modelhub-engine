@@ -9,19 +9,19 @@ from modelhublib.processor import ImageProcessorBase
 # The MetaTestImageProcessorBase meta class is used to generate tests
 # that have the same test logic but run over different file types. Using
 # this metaclass allows us to simply add new file types for test images
-# and generate the same tests for them, as for the existing file types, 
+# and generate the same tests for them, as for the existing file types,
 # by simply by adding the file extension to the testFileExtensions list.
 testFileExtensions = ["png", "nrrd"]
 class MetaTestImageProcessorBase(type):
-    
+
     def __new__(mcs, name, bases, dictionary):
         def gen_test_load_testimage_ramp_4x2_under_strict_config_dims(fileExt):
             def test(self):
                 imgFileName = os.path.join(self.testDataDir, "testimage_ramp_4x2." + fileExt)
-                self.config["model"]["io"]["input"]["dim_limits"][1]["min"] = 2
-                self.config["model"]["io"]["input"]["dim_limits"][1]["max"] = 2
-                self.config["model"]["io"]["input"]["dim_limits"][2]["min"] = 4
-                self.config["model"]["io"]["input"]["dim_limits"][2]["max"] = 4
+                self.config["model"]["io"]["input"]["single"]["dim_limits"][1]["min"] = 2
+                self.config["model"]["io"]["input"]["single"]["dim_limits"][1]["max"] = 2
+                self.config["model"]["io"]["input"]["single"]["dim_limits"][2]["min"] = 4
+                self.config["model"]["io"]["input"]["single"]["dim_limits"][2]["max"] = 4
                 npArr = self.processor.loadAndPreprocess(imgFileName)
                 self.assertListEqual([[[[50.0,100.0,150.0,200.0],[50.0,100.0,150.0,200.0]]]], npArr.tolist())
             return test
@@ -29,7 +29,7 @@ class MetaTestImageProcessorBase(type):
         def gen_test_load_testimage_ramp_4x2_fails_on_config_noncompliance(fileExt):
             def test(self):
                 imgFileName = os.path.join(self.testDataDir, "testimage_ramp_4x2." + fileExt)
-                self.config["model"]["io"]["input"]["dim_limits"][1]["min"] = 3
+                self.config["model"]["io"]["input"]["single"]["dim_limits"][1]["min"] = 3
                 self.assertRaises(IOError, self.processor.loadAndPreprocess, imgFileName)
             return test
 
@@ -38,7 +38,7 @@ class MetaTestImageProcessorBase(type):
             dictionary[testName] = gen_test_load_testimage_ramp_4x2_under_strict_config_dims(fileExt)
             testName = "test_load_testimage_ramp_4x2_%s_fails_on_config_noncompliance" % fileExt
             dictionary[testName] = gen_test_load_testimage_ramp_4x2_fails_on_config_noncompliance(fileExt)
-            
+
         return type.__new__(mcs, name, bases, dictionary)
 
 @six.add_metaclass(MetaTestImageProcessorBase)
@@ -60,4 +60,3 @@ class TestImageProcessorBase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

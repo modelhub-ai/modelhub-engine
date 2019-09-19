@@ -91,6 +91,9 @@ class ModelHubAPI:
 
         Args:
             input_file_path (str): Path to input file to run inference on.
+                Either a direct input file or a json containing paths to all
+                input files needed for the model to predict. The appropriate
+                structure for the json can be found in the documentation.
             numpyToFile (bool): Only effective if prediction is a numpy array.
                 Indicates if numpy outputs should be saved and a path to it is
                 returned. If false, a json-serializable list representation of
@@ -108,7 +111,8 @@ class ModelHubAPI:
         try:
             config = self.get_config()
             start = time.time()
-            output = self.model.infer(input_file_path)
+            input = self._unpack_inputs(input_file_path)
+            output = self.model.infer(input)
             output = self._correct_output_list_wrapping(output, config)
             end = time.time()
             output_list = []
@@ -134,12 +138,46 @@ class ModelHubAPI:
                         }
                     }
         except Exception as e:
+            print(e)
             return {'error': repr(e)}
 
 
     # -------------------------------------------------------------------------
     # Private helper functions
     # -------------------------------------------------------------------------
+
+    def _unpack_inputs(self, file_path):
+        """
+        This utility function returns a dictionary with the inputs if a
+        json file with multiple input files is specified, otherwise it just
+        returns the file_path unchanged for single inputs
+        It also converts the fileurl to a valid string (avoids html escaping)
+        """
+        if file_path.lower().endswith('.json'):
+            input_dict = self._load_json(file_path)
+            for key, value in input_dict.items():
+                if key == "format":
+                    continue
+                input_dict[key]["fileurl"] = str(value["fileurl"])
+            return self._check_input_compliance(input_dict)
+        else:
+            return file_path
+
+
+    def _check_input_compliance(self, input_dict):
+        """
+        Checks if the input dictionary has all the files needed as specified
+        in the model config file and returns an error if not.
+        * TODO: Check the other way round?
+        """
+        config = self.get_config()["model"]["io"]["input"]
+        for key in config.keys():
+            if key not in input_dict:
+                raise IOError("The input json does not match the input schema in the " \
+                                "configuration file")
+        return input_dict
+
+
     def _load_txt_as_dict(self, file_path, return_key):
         try:
             with io.open(file_path, mode='r', encoding='utf-8') as f:
@@ -157,6 +195,12 @@ class ModelHubAPI:
         except Exception as e:
             return {'error': str(e)}
 
+    def _write_json(self, file_path, output_dict):
+        try:
+            with open(file_path, mode='w') as f:
+                json.dump(output_dict, f, ensure_ascii=False)
+        except Exception as e:
+            return {'error': str(e)}
 
     def _correct_output_list_wrapping(self, output, config):
         if not isinstance(output, list):
