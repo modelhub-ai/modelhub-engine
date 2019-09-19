@@ -198,21 +198,29 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
         config = json.loads(response.get_data())
         self.assert_config_contains_correct_dict(config)
 
+    # TODO this is not so nice yet, test should not require a download from the inet
+    # should probably use a mock server for this
     def test_working_folder_empty_after_predict_by_url(self):
-        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_url.json")
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/framework/modelhubapi_tests/mockmodels/contrib_src_mi/sample_data/4_nii_gz_url.json")
         self.assertEqual(200, response.status_code)
         self.assertEqual(len(os.listdir(self.temp_work_dir) ), 0)
 
+    # TODO this is not so nice yet, test should not require a download from the inet
+    # should probably use a mock server for this
     def test_api_downloads_files_from_url(self):
-        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_url.json")
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/framework/modelhubapi_tests/mockmodels/contrib_src_mi/sample_data/4_nii_gz_url.json")
         self.assertEqual(200, response.status_code)
 
+    # TODO this is not so nice yet, test should not require a download from the inet
+    # should probably use a mock server for this
     def test_api_manages_mix_of_url_and_local_paths(self):
-        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_mixed.json")
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/framework/modelhubapi_tests/mockmodels/contrib_src_mi/sample_data/4_nii_gz_mixed.json")
         self.assertEqual(200, response.status_code)
 
+    # TODO this is not so nice yet, test should not require a download from the inet
+    # should probably use a mock server for this
     def test_api_rejects_wrong_url_in_json(self):
-        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/4_nii_gz_urL_error.json")
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/framework/modelhubapi_tests/mockmodels/contrib_src_mi/sample_data/4_nii_gz_urL_error.json")
         self.assertEqual(400, response.status_code)
         result = json.loads(response.get_data())
         self.assertIn("error", result)

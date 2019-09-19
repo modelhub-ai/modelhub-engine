@@ -1,0 +1,19 @@
+{
+    "format": ["application/json"],
+    "t1": {
+        "type": ["application/nii-gzip"],
+        "fileurl":"https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/testimage_nifti_91x109x91.nii"
+    },
+    "t1c": {
+        "type": ["application/nii-gzip"],
+        "fileurl":"https://raw.githubusercontent.com/christophbrgr/modelhub-tests/master/testimage_nifti_91x109x91.nii.gz"
+    },
+    "t2": {
+        "type": ["application/nii-gzip"],
+        "fileurl":"sample_data/patient_1/flair.nii.gz"
+    },
+    "flair": {
+        "type": ["application/nii-gzip"],
+        "fileurl":"sample_data/patient_1/t1.nii.gz"
+    }
+}

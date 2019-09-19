@@ -8,7 +8,6 @@ from .mockmodels.contrib_src_si.inference import Model
 from .mockmodels.contrib_src_si.inference import ModelReturnsOneNumpyArray
 from .mockmodels.contrib_src_si.inference import ModelReturnsListOfOneNumpyArray, ModelReturnsListOfOneLabelList
 from .mockmodels.contrib_src_mi.inference import ModelReturnsOneLabelList, ModelNeedsTwoInputs
-from .monkeypatches import MonkeyPythonAPI
 
 class TestModelHubAPI(TestAPIBase):
 

@@ -1,0 +1,11 @@
+{
+    "format": ["application/json"],
+    "img1":{
+        "type":["image/jpeg"],
+        "fileurl":"http://www.desibucket.com/db2/01/20483/20483.jpg"
+    },
+    "img2":{
+        "type":["image/jpeg"],
+        "fileurl":"http://www.desibucket.com/db2/01/20483/20483.jpg"
+    }
+}
