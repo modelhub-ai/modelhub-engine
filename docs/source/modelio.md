@@ -7,7 +7,7 @@ If the model only requires a single image or other type of file for inference, y
 ```
 http://localhost:80/api/predict?fileurl=http://example.org/cutedogsandcats.jpg
 ```
-The API then returns the prediction in the specified format.
+The API then returns the prediction in the specified format. For a thorough description of the API, have a look at its [documentation](https://modelhub.readthedocs.io/en/latest/modelhubapi.html). <br/><br/>
 
 #### As a Collaborator submitting a new Model
 For single inputs, please create a configuration for your model according to the [example configuration](https://github.com/modelhub-ai/modelhub/blob/master/example_config_single_input.json). It is important that you keep the key `"single"` in the config, as the API uses this for accessing the dimension constraints when loading an image. Populate the rest of the configuration file as stated in the contribution guide and the [schema](https://github.com/modelhub-ai/modelhub/blob/master/config_schema.json). Validate your config file against our config schema with a JSON validator, e.g. [this one](https://www.jsonschemavalidator.net).<br/>
@@ -15,22 +15,26 @@ Take care to choose the right MIME type for your input, this format will be chec
 <table>
 <thead>
   <tr>
-  <th> MIME type&emsp;
-  <th> File extension&emsp;
-  <th> Description&emsp;
+  <th>MIME type&emsp;
+  <th>File extension&emsp;
+  <th>Description&emsp;
 </thead>
 <tr>
   <td> "application/nii"&emsp;
-  <td> .nii&emsp;
+  <td> .nii           &emsp;&emsp;
   <td> Nifti-1 image&emsp;
 <tr>
   <td> "application/nii-gzip"&emsp;
-  <td> .nii.gz&emsp;
+  <td> .nii.gz        &emsp;&emsp;
   <td> Compressed Nifti-1 image&emsp;
 <tr>
   <td> "application/nrrd"&emsp;
-  <td> .nrrd&emsp;
+  <td> .nrrd          &emsp;&emsp;
   <td> NRRD image&emsp;
+<tr>
+  <td> "application/octet-stream"&emsp;
+  <td> .npy           &emsp;&emsp;
+  <td> Numpy Array File&emsp;
 </table>
 
 
@@ -52,7 +56,10 @@ Passing an input file to the REST API would then look like this:
 ```
 http://localhost:80/api/predict?fileurl=http://example.org/fourimagesofdogs.json
 ```
+For a thorough description of the API, have a look at its [documentation](https://modelhub.readthedocs.io/en/latest/modelhubapi.html).
 <br/><br/>
+
+
 #### As a Collaborator submitting a new Model
 For multiple inputs, please create a configuration for your model according to the [example configuration](https://github.com/modelhub-ai/modelhub/blob/master/example_config_multiple_inputs.json). The `format` key has to be present at the `input` level and must be equal to `application/json` as all input files will be passed in a json to the API.
 <br/>
@@ -60,8 +67,8 @@ The other keys stand for one input file each and must contain a valid format (e.
 <br/>
 Populate the rest of the configuration file as stated in the contribution guide and the [schema](https://github.com/modelhub-ai/modelhub/blob/master/config_schema.json). Validate your config file against our config schema with a JSON validator, e.g. [this one](https://www.jsonschemavalidator.net).<br/><br/>
 To access the files passed to your model in the `infer` function, use the keys you specified in the configuration and in the input json file. For example, suppose you have an input with key `t1`: You can access the path the the file in `infer` by using the passed dictionary: `input["t1"]["fileurl"]`. This way you can always be sure that you are accessing the right file. <br/><br/>
-**_HINT_** You can implement additional classes for the loading of your images by adding your own class that extends the `ImageLoader` class and add it to the chain of responsibility for loading the images. One good example is the [lfb-rwth](https://github.com/modelhub-ai/lfb-rwth) model.
+**_HINT_** You can implement additional classes for the loading of your images by adding your own class that extends the `ImageLoader` class and add it to the chain of responsibility for loading the images. One good example is the [lfb-rwth-brats](https://github.com/modelhub-ai/lfb-rwth-brats) model.
 <br/><br/>
 Additionally, mismatches between the config file and the input file the user passes to the API are automatically checked before the input is passed to your model.
 <br/><br/>
-**_HINT_** Check out existing models with multiple inputs to see how they implemented the input handling of multiple inputs, for example one of the BraTS models, e.g. [lfb-rwth](https://github.com/modelhub-ai/lfb-rwth).
+**_HINT_** Check out existing models with multiple inputs to see how they implemented the input handling of multiple inputs, for example one of the BraTS models, e.g. [lfb-rwth-brats](https://github.com/modelhub-ai/lfb-rwth-brats).
