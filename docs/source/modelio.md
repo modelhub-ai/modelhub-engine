@@ -10,7 +10,7 @@ http://localhost:80/api/predict?fileurl=http://example.org/cutedogsandcats.jpg
 The API then returns the prediction in the specified format. For a thorough description of the API, have a look at its [documentation](https://modelhub.readthedocs.io/en/latest/modelhubapi.html). <br/><br/>
 
 #### As a Collaborator submitting a new Model
-For single inputs, please create a configuration for your model according to the [example configuration](https://github.com/modelhub-ai/modelhub/blob/master/example_config_single_input.json). It is important that you keep the key `"single"` in the config, as the API uses this for accessing the dimension constraints when loading an image. Populate the rest of the configuration file as stated in the contribution guide and the [schema](https://github.com/modelhub-ai/modelhub/blob/master/config_schema.json). Validate your config file against our config schema with a JSON validator, e.g. [this one](https://www.jsonschemavalidator.net).<br/>
+For single inputs, please create a configuration for your model according to the [example configuration](https://github.com/modelhub-ai/modelhub/blob/master/examples/example_config_single_input.json). It is important that you keep the key `"single"` in the config, as the API uses this for accessing the dimension constraints when loading an image. Populate the rest of the configuration file as stated in the contribution guide and the [schema](https://github.com/modelhub-ai/modelhub/blob/master/config_schema.json). Validate your config file against our config schema with a JSON validator, e.g. [this one](https://www.jsonschemavalidator.net).<br/>
 Take care to choose the right MIME type for your input, this format will be checked by the API when users call the predict function and load a file. We support a few extra MIME types in addition to the standard MIME types:
 <table>
 <thead>
@@ -45,7 +45,7 @@ If you need other types not supported in the standard MIME types and by our exte
 ### Input Configuration for Multiple Inputs
 
 #### As a User
-When you use a model that needs more than a single input file for a prediction, you have to pass a JSON file with all the inputs needed for that model. You can have a look at an example [here](https://github.com/modelhub-ai/modelhub/blob/master/example_input_file_multiple_inputs.json). <br/>
+When you use a model that needs more than a single input file for a prediction, you have to pass a JSON file with all the inputs needed for that model. You can have a look at an example [here](https://github.com/modelhub-ai/modelhub/blob/master/examples/example_input_file_multiple_inputs.json). <br/>
 The important points to keep in mind are:
 - There has to be a `format` key with `"application/json"` so that the API can handle the file
 - Each of the other keys describes one input and has to have a `format` (see the MIME types above) and a `fileurl`
@@ -61,7 +61,7 @@ For a thorough description of the API, have a look at its [documentation](https:
 
 
 #### As a Collaborator submitting a new Model
-For multiple inputs, please create a configuration for your model according to the [example configuration](https://github.com/modelhub-ai/modelhub/blob/master/example_config_multiple_inputs.json). The `format` key has to be present at the `input` level and must be equal to `application/json` as all input files will be passed in a json to the API.
+For multiple inputs, please create a configuration for your model according to the [example configuration](https://github.com/modelhub-ai/modelhub/blob/master/examples/example_config_multiple_inputs.json). The `format` key has to be present at the `input` level and must be equal to `application/json` as all input files will be passed in a json to the API.
 <br/>
 The other keys stand for one input file each and must contain a valid format (e.g. `application/dicom`) and dimensions. You can additionally add a description for the input.
 <br/>
