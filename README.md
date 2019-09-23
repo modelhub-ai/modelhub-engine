@@ -21,16 +21,14 @@ For a detailed technical documentation of the whole Modelhub project and infrast
 
 **/framework** contains the modelhub framework code.
 
-**/modelhub** contains the modelhub python package files.
-
 Template files for the contributer source (integrating the actual net plus required pre- and postprocessing) are locateded [here](https://github.com/modelhub-ai/model-template). Instructions on how to prepare a new contribution can be found [here](http://modelhub.readthedocs.io/en/latest/contribute.html).
 
 ### Running a model with a development version of the framework
 
-For deployment of a model the framework is part of the runtime docker. However, when developing on the framework you would not want to re-build a docker to test each change. Hence the start script [here](https://github.com/modelhub-ai/modelhub) has the option to mount a framework folder, temporarily replacing the internal framwork:
+For deployment of a model the framework is part of the runtime docker. However, when developing on the framework you would not want to re-build a docker to test each change. Hence the start script [here](https://github.com/modelhub-ai/modelhub/) has the option to mount a framework folder, temporarily replacing the internal framwork. After installing the start script via `pip install modelhub-ai`, simply run:
 
 ```
-python start.py MODEL_NAME -mf PATH_TO_FRAMEWORK
+modelhub MODEL_NAME -mf PATH_TO_FRAMEWORK
 ```
 
 ### Docker Build Instructions
@@ -47,7 +45,7 @@ docker build -t <name+tag> -f docker/<docker-file-name> .
 #### How to push an image to DockerHub
 
 Make sure the Docker name starts with "modelhub/" and the tag should also be
-a unique version number (e.g. "modelhub/release:1.2.3").
+a unique version number (e.g. "modelhub/release:3").
 
 Then login to docker with your credentials:
 ```
@@ -62,27 +60,6 @@ docker push <name+tag>
 Logout:
 ```
 docker logout
-```
-
-
-### Python Package Instructions
-
-To build a new version:
-
-```
-python setup.py sdist bdist_wheel
-```
-
-To upload to test PyPi:
-
-```
-twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-```
-
-To upload to PyPi:
-
-```
-twine upload dist/*
 ```
 
 ## Acknowledgements
