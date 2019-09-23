@@ -1,6 +1,7 @@
 import unittest
 import os
 import numpy
+import json 
 import shutil
 from modelhubapi import ModelHubAPI
 from .apitestbase import TestAPIBase
@@ -102,6 +103,12 @@ class TestModelHUBAPIMultiInput(unittest.TestCase):
     def test_predict_accepts_and_processes_valid_json(self):
         result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_mi/sample_data/valid_input_list.json")
         self.assertEqual(result["output"][0]["prediction"][0], True)
+    
+    def test_predict_accepts_and_processes_valid_dict(self):
+        with open(self.this_dir + "/mockmodels/contrib_src_mi/sample_data/valid_input_list.json", "r") as f:
+            input_dict = json.load(f)
+        result = self.api.predict(input_dict)
+        self.assertEqual(result["output"][0]["prediction"][0], True)
 
     def test_predict_rejects_invalid_file(self):
         result = self.api.predict(self.this_dir + "/mockmodels/contrib_src_si/sample_data/testimage_ramp_4x2.png")
@@ -141,7 +148,22 @@ class TestModelHubAPIModelReturnsListOfOneNumpyArray(TestModelHubAPIModelReturns
         contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_si")
         self.api = ModelHubAPI(model, contrib_src_dir)
 
+class TestModelHubAPIUtitilyFunctions(unittest.TestCase):
 
+    def setUp(self):
+        model = ModelReturnsOneLabelList()
+        self.this_dir = os.path.dirname(os.path.realpath(__file__))
+        # load config version 2 with only one output specified
+        contrib_src_dir = os.path.join(self.this_dir, "mockmodels", "contrib_src_mi")
+        self.api = ModelHubAPI(model, contrib_src_dir)
+
+
+    def tearDown(self):
+        pass
+
+    def test_json_write_fails_for_invalid_path(self):
+        result = self.api._write_json({"some":"key"}, "this/does/not/exist/johndoe.json")
+        self.assertIn("error", result)
 
 class TestModelHubAPIModelReturnsOneLabelList(unittest.TestCase):
 

@@ -220,7 +220,7 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
     # TODO this is not so nice yet, test should not require a download from the inet
     # should probably use a mock server for this
     def test_api_rejects_wrong_url_in_json(self):
-        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/framework/modelhubapi_tests/mockmodels/contrib_src_mi/sample_data/4_nii_gz_urL_error.json")
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/framework/modelhubapi_tests/mockmodels/contrib_src_mi/sample_data/4_nii_gz_url_error.json")
         self.assertEqual(400, response.status_code)
         result = json.loads(response.get_data())
         self.assertIn("error", result)
