@@ -1,2 +1,0 @@
-name = "modelhub"
-test = "OK"

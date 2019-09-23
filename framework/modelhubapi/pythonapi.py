@@ -90,10 +90,11 @@ class ModelHubAPI:
         Preforms the model's inference on the given input.
 
         Args:
-            input_file_path (str): Path to input file to run inference on.
+            input_file_path (str or dict): Path to input file to run inference on.
                 Either a direct input file or a json containing paths to all
                 input files needed for the model to predict. The appropriate
                 structure for the json can be found in the documentation.
+                If used directly, you can also pass a dict with the keys.
             numpyToFile (bool): Only effective if prediction is a numpy array.
                 Indicates if numpy outputs should be saved and a path to it is
                 returned. If false, a json-serializable list representation of
@@ -153,7 +154,9 @@ class ModelHubAPI:
         returns the file_path unchanged for single inputs
         It also converts the fileurl to a valid string (avoids html escaping)
         """
-        if file_path.lower().endswith('.json'):
+        if isinstance(file_path, dict):
+            return self._check_input_compliance(file_path)
+        elif file_path.lower().endswith('.json'):
             input_dict = self._load_json(file_path)
             for key, value in input_dict.items():
                 if key == "format":

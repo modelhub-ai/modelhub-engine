@@ -223,13 +223,13 @@ class ModelHubRESTAPI:
         """
         Removes all files in the given folder
         """
-        for file in os.listdir(folder):
-            file_path = os.path.join(folder, file)
-            try:
+        try:
+            for file in os.listdir(folder):
+                file_path = os.path.join(folder, file)
                 if os.path.isfile(file_path):
                     os.unlink(file_path)
-            except Exception as e:
-                print(e)
+        except Exception as e:
+            print(e)
 
     def _jsonify(self, content):
         """
