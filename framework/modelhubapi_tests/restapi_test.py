@@ -225,5 +225,11 @@ class TestModelHubRESTAPI_MI(TestRESTAPIBase):
         result = json.loads(response.get_data())
         self.assertIn("error", result)
 
+    def test_api_fails_on_config_mismatch(self):
+        response = self.client.get("/api/predict?fileurl=https://raw.githubusercontent.com/modelhub-ai/modelhub-engine/master/framework/modelhubapi_tests/mockmodels/contrib_src_mi/sample_data/missing_key.json")
+        self.assertEqual(400, response.status_code)
+        result = json.loads(response.get_data())
+        self.assertIn("error", result)
+
 if __name__ == '__main__':
     unittest.main()
